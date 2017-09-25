@@ -16,6 +16,8 @@ import model.NodeItem;
 public final class SensorUtility {
     public static int numberColum =200;
     public static int numberRow = 200;
+    public static float mRsValue = 2.0f;
+    public static float mRtValue = 3.0f;
     public static List<NodeItem> mListNodes = new ArrayList<>(300000);
     public static List<NodeItem> mListSensorNodes = new ArrayList<>(300000);
     public static List<NodeItem> mListTargetNodes = new ArrayList<>(30000);

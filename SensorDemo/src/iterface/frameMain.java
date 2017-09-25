@@ -5,7 +5,11 @@
  */
 package iterface;
 
+import iterface.setting.frameSetNetworkSize;
+import java.awt.Frame;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ItemEvent;
+import javax.swing.JFrame;
 
 /**
  *
@@ -22,19 +26,20 @@ public class frameMain extends javax.swing.JFrame {
     }
 
     public void initOtherComponents() {
-        coordinatePanel = new frameCoordinateSystemPanel(1000,1000);
+        coordinatePanel = new frameCoordinateSystemPanel(1200,1200);
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(coordinatePanel);
         coordinatePanel.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1000, Short.MAX_VALUE)
+            .addGap(0, 1200, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1000, Short.MAX_VALUE)
+            .addGap(0, 1200, Short.MAX_VALUE)
         );
 
         jScrollPane1.setViewportView(coordinatePanel);
+
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -231,13 +236,13 @@ public class frameMain extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1295, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1500, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 632, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -250,7 +255,10 @@ public class frameMain extends javax.swing.JFrame {
 
     private void NetworkSizeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NetworkSizeMenuItemActionPerformed
         // TODO add your handling code here:
-        coordinatePanel.setCoordinateSize(50, 50);
+        
+        frameSetNetworkSize frameNetworkSize = new frameSetNetworkSize();
+        frameNetworkSize.setVisible(true);
+        //coordinatePanel.refresh();
     }//GEN-LAST:event_NetworkSizeMenuItemActionPerformed
 
     private void ShowSensorMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ShowSensorMenuItemActionPerformed
@@ -331,11 +339,18 @@ public class frameMain extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new frameMain().setVisible(true);
-                coordinatePanel.fillCell(20, 14, 0);
-                coordinatePanel.fillCell(20, 30, 0);
-                coordinatePanel.fillCell(30, 21, 1);
-                coordinatePanel.fillCell(20, 2, 2);
+                frameMain mFrameMain = new frameMain();
+               // mFrameMain.setState(JFrame.MAXIMIZED_BOTH);
+                mFrameMain.setExtendedState(JFrame.MAXIMIZED_BOTH);
+//                GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();  
+//                mFrameMain.setMaximizedBounds(env.getMaximumWindowBounds());  
+                mFrameMain.setVisible(true);
+                mFrameMain.setTitle("Sensor Simulation");
+                
+                coordinatePanel.fillCell(199, 199, 0);
+                coordinatePanel.fillCell(0, 199, 0);
+                coordinatePanel.fillCell(199, 0, 1);
+                coordinatePanel.fillCell(0, 4, 2);
             }
         });
     }
@@ -372,5 +387,5 @@ public class frameMain extends javax.swing.JFrame {
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem saveAsMenuItem;
     // End of variables declaration//GEN-END:variables
-    private static frameCoordinateSystemPanel coordinatePanel;
+    public static frameCoordinateSystemPanel coordinatePanel;
 }

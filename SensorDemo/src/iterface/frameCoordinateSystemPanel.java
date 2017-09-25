@@ -9,7 +9,10 @@ import common.SensorUtility;
 import static common.SensorUtility.mListNodes;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Iterator;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import model.NodeItem;
 
@@ -34,20 +37,31 @@ public class frameCoordinateSystemPanel extends JPanel{
     }
     public frameCoordinateSystemPanel(int withScreen, int heightScreen) {
        sizeWidthPanel = withScreen;
-       sizeHeightPanel = heightScreen;
+       sizeHeightPanel = heightScreen -100;
        setCoordinateSize(SensorUtility.numberRow,SensorUtility.numberColum);
+       this.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                int x = e.getX();
+                int y = e.getY();
+                int cellX = x / sizeRect - 1;
+                int cellY = y / sizeRect - 1;
+                if (cellX < SensorUtility.numberRow && cellX >= 0 && cellY < SensorUtility.numberColum && cellY >=0 )
+                   JOptionPane.showMessageDialog(null, "X ="+cellX +" Y =" +cellY );
+                //System.out.println("Clicked! X=" +cellX +" Y =" +cellY);
+            }
+        });
     }
     
     public void setCoordinateSize(int  nRow,int nColum) {
         SensorUtility.numberColum = nColum;
         SensorUtility.numberRow = nRow;
-        if (sizeWidthPanel/SensorUtility.numberRow > sizeHeightPanel/SensorUtility.numberColum) {
-            sizeRect = (int) sizeHeightPanel/SensorUtility.numberColum;
+        if (sizeWidthPanel/(SensorUtility.numberRow+2) > sizeHeightPanel/(SensorUtility.numberColum+2)) {
+            sizeRect = (int) sizeHeightPanel/(SensorUtility.numberColum+2);
         } else {
-            sizeRect = (int) sizeWidthPanel/SensorUtility.numberRow;
+            sizeRect = (int) sizeWidthPanel/(SensorUtility.numberRow+2);
         }
-        sizeWidthCoordinater = (SensorUtility.numberRow-2)*sizeRect;
-        sizeHeightCoordianter = (SensorUtility.numberColum-2)*sizeRect;
+        sizeWidthCoordinater = (SensorUtility.numberRow)*sizeRect;
+        sizeHeightCoordianter = (SensorUtility.numberColum)*sizeRect;
         repaint();
     }
     

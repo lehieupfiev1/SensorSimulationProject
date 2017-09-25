@@ -5,6 +5,10 @@
  */
 package iterface.setting;
 
+import common.SensorUtility;
+import iterface.frameMain;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Hieu
@@ -14,8 +18,25 @@ public class frameSetNetworkSize extends javax.swing.JFrame {
     /**
      * Creates new form frameSetNetworkSize
      */
+    int numberRow;
+    int numberColum;
+    float mRsValue;
+    float mRtValue;
+    
     public frameSetNetworkSize() {
         initComponents();
+        initOtherComponents();
+    }
+
+    private void initOtherComponents() {
+        numberRow = SensorUtility.numberRow;
+        numberColum = SensorUtility.numberColum;
+        mRsValue = SensorUtility.mRsValue;
+        mRtValue = SensorUtility.mRtValue;
+        networkWidthTextField.setText(""+numberRow);
+        networkHeightTextField.setText(""+numberColum);
+        RsTextField.setText(""+mRsValue);
+        RtTextField.setText(""+mRtValue);
     }
 
     /**
@@ -28,16 +49,76 @@ public class frameSetNetworkSize extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        networkWidthTextField = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        networkHeightTextField = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        RsTextField = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        RtTextField = new javax.swing.JTextField();
+        cancelButton = new javax.swing.JButton();
+        changeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("Network Width");
 
-        jTextField1.setText("jTextField1");
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        networkWidthTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                networkWidthTextFieldActionPerformed(evt);
+            }
+        });
+        networkWidthTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                networkWidthKeyReleased(evt);
+            }
+        });
+
+        jLabel2.setText("Network Height");
+
+        networkHeightTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                networkHeightTextFieldActionPerformed(evt);
+            }
+        });
+        networkHeightTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                networkHeightKeyReleased(evt);
+            }
+        });
+
+        jLabel3.setText("Rs Value");
+
+        RsTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RsTextFieldActionPerformed(evt);
+            }
+        });
+        RsTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                RsKeyReleased(evt);
+            }
+        });
+
+        jLabel4.setText("Rt Value");
+
+        RtTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                RtKeyReleased(evt);
+            }
+        });
+
+        cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
+
+        changeButton.setText("Change");
+        changeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changeButtonActionPerformed(evt);
             }
         });
 
@@ -46,11 +127,24 @@ public class frameSetNetworkSize extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(244, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(121, 121, 121)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel1)
+                            .addComponent(networkWidthTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
+                            .addComponent(jLabel2)
+                            .addComponent(networkHeightTextField)
+                            .addComponent(jLabel3)
+                            .addComponent(RsTextField)
+                            .addComponent(RtTextField)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(77, 77, 77)
+                        .addComponent(cancelButton)
+                        .addGap(80, 80, 80)
+                        .addComponent(changeButton)))
+                .addContainerGap(99, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -58,54 +152,141 @@ public class frameSetNetworkSize extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(249, Short.MAX_VALUE))
+                .addComponent(networkWidthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(16, 16, 16)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(networkHeightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(RsTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(RtTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cancelButton)
+                    .addComponent(changeButton))
+                .addGap(39, 39, 39))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void networkWidthTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_networkWidthTextFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_networkWidthTextFieldActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(frameSetNetworkSize.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(frameSetNetworkSize.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(frameSetNetworkSize.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(frameSetNetworkSize.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    private void networkHeightTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_networkHeightTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_networkHeightTextFieldActionPerformed
+
+    private void RsTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RsTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_RsTextFieldActionPerformed
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void changeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeButtonActionPerformed
+        // TODO add your handling code here:
+        if (networkWidthTextField.getText().equals("") || networkHeightTextField.getText().equals("") || RsTextField.getText().equals("") || RtTextField.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Please insert Valid Number Only");
+        } else {
+            SensorUtility.numberRow = numberRow;
+            SensorUtility.numberColum = numberColum ;
+            SensorUtility.mRsValue = mRsValue ;
+            SensorUtility.mRtValue = mRtValue ;
+            frameMain.coordinatePanel.setCoordinateSize(SensorUtility.numberRow,SensorUtility.numberColum);
+            this.dispose();
         }
-        //</editor-fold>
+    }//GEN-LAST:event_changeButtonActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new frameSetNetworkSize().setVisible(true);
-            }
-        });
-    }
+    private void networkWidthKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_networkWidthKeyReleased
+        // TODO add your handling code here:
+        try {
+            numberRow = Integer.parseInt(networkWidthTextField.getText());
+        } catch (NumberFormatException nfe) {
+            networkWidthTextField.setText("");
+        }
+    }//GEN-LAST:event_networkWidthKeyReleased
+
+    private void networkHeightKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_networkHeightKeyReleased
+        // TODO add your handling code here:
+        try {
+            numberColum = Integer.parseInt(networkHeightTextField.getText());
+        } catch (NumberFormatException nfe) {
+            networkHeightTextField.setText("");
+        }
+    }//GEN-LAST:event_networkHeightKeyReleased
+
+    private void RsKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_RsKeyReleased
+        // TODO add your handling code here:
+        try {
+            mRsValue = Float.parseFloat(RsTextField.getText());
+        } catch (NumberFormatException nfe) {
+            RsTextField.setText("");
+        }
+    }//GEN-LAST:event_RsKeyReleased
+
+    private void RtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_RtKeyReleased
+        // TODO add your handling code here:
+        try {
+            mRtValue = Float.parseFloat(RtTextField.getText());
+        } catch (NumberFormatException nfe) {
+            RtTextField.setText("");
+        }
+    }//GEN-LAST:event_RtKeyReleased
+
+//    /**
+//     * @param args the command line arguments
+//     */
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(frameSetNetworkSize.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(frameSetNetworkSize.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(frameSetNetworkSize.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(frameSetNetworkSize.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new frameSetNetworkSize().setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField RsTextField;
+    private javax.swing.JTextField RtTextField;
+    private javax.swing.JButton cancelButton;
+    private javax.swing.JButton changeButton;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JTextField networkHeightTextField;
+    private javax.swing.JTextField networkWidthTextField;
     // End of variables declaration//GEN-END:variables
 }
