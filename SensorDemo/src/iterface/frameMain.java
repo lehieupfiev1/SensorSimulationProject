@@ -5,7 +5,9 @@
  */
 package iterface;
 
+import iterface.setting.frameCalculateDistance;
 import iterface.setting.frameSetNetworkSize;
+import iterface.target.frameAddTarget;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ItemEvent;
@@ -54,7 +56,7 @@ public class frameMain extends javax.swing.JFrame {
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         NetworkSizeMenuItem = new javax.swing.JMenuItem();
-        SaveMenuItem = new javax.swing.JMenuItem();
+        CalculateDistanceMenuItem = new javax.swing.JMenuItem();
         ShowGridMenuItem = new javax.swing.JCheckBoxMenuItem();
         saveAsMenuItem = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
@@ -95,9 +97,14 @@ public class frameMain extends javax.swing.JFrame {
         });
         fileMenu.add(NetworkSizeMenuItem);
 
-        SaveMenuItem.setMnemonic('s');
-        SaveMenuItem.setText("Save");
-        fileMenu.add(SaveMenuItem);
+        CalculateDistanceMenuItem.setMnemonic('s');
+        CalculateDistanceMenuItem.setText("Calculate Distance");
+        CalculateDistanceMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CalculateDistanceMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(CalculateDistanceMenuItem);
 
         ShowGridMenuItem.setSelected(true);
         ShowGridMenuItem.setText("ShowGrid");
@@ -158,6 +165,11 @@ public class frameMain extends javax.swing.JFrame {
         TargetMenu.setText("Target");
 
         AddTargetMenuItem.setText("Add");
+        AddTargetMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddTargetMenuItemActionPerformed(evt);
+            }
+        });
         TargetMenu.add(AddTargetMenuItem);
 
         ModifyTargetMenuItem.setText("Modify");
@@ -257,6 +269,7 @@ public class frameMain extends javax.swing.JFrame {
         // TODO add your handling code here:
         
         frameSetNetworkSize frameNetworkSize = new frameSetNetworkSize();
+        frameNetworkSize.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         frameNetworkSize.setVisible(true);
         //coordinatePanel.refresh();
     }//GEN-LAST:event_NetworkSizeMenuItemActionPerformed
@@ -308,6 +321,20 @@ public class frameMain extends javax.swing.JFrame {
             coordinatePanel.setShowGrid(false);
         }
     }//GEN-LAST:event_ShowGridItemStateChangedListener
+
+    private void AddTargetMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddTargetMenuItemActionPerformed
+        // TODO add your handling code here:
+        frameAddTarget mFrameAddTarget = new frameAddTarget();
+        mFrameAddTarget.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        mFrameAddTarget.setVisible(true);
+    }//GEN-LAST:event_AddTargetMenuItemActionPerformed
+
+    private void CalculateDistanceMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CalculateDistanceMenuItemActionPerformed
+        // TODO add your handling code here:
+        frameCalculateDistance mCalculateDistance = new frameCalculateDistance();
+        mCalculateDistance.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        mCalculateDistance.setVisible(true);
+    }//GEN-LAST:event_CalculateDistanceMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -362,6 +389,7 @@ public class frameMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem Algorithm1MenuItem;
     private javax.swing.JMenuItem Algorithm2MenuItem;
     private javax.swing.JMenu AlgorithmMenu;
+    private javax.swing.JMenuItem CalculateDistanceMenuItem;
     private javax.swing.JMenuItem DeleteAllRobotMenuItem;
     private javax.swing.JMenuItem DeleteAllSenorMenuItem;
     private javax.swing.JMenuItem DeleteAllTargetMenuItem;
@@ -371,7 +399,6 @@ public class frameMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem MyAlgorithmMenuItem;
     private javax.swing.JMenuItem NetworkSizeMenuItem;
     private javax.swing.JMenu RobotMenu;
-    private javax.swing.JMenuItem SaveMenuItem;
     private javax.swing.JMenu SensorMenu;
     private javax.swing.JCheckBoxMenuItem ShowGridMenuItem;
     private javax.swing.JCheckBoxMenuItem ShowRobotMenuItem;

@@ -60,6 +60,7 @@ public class frameSetNetworkSize extends javax.swing.JFrame {
         changeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jLabel1.setText("Network Width");
 
@@ -242,9 +243,9 @@ public class frameSetNetworkSize extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_RtKeyReleased
 
-//    /**
-//     * @param args the command line arguments
-//     */
+    /**
+     * @param args the command line arguments
+     */
 //    public static void main(String args[]) {
 //        /* Set the Nimbus look and feel */
 //        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -272,7 +273,9 @@ public class frameSetNetworkSize extends javax.swing.JFrame {
 //        /* Create and display the form */
 //        java.awt.EventQueue.invokeLater(new Runnable() {
 //            public void run() {
-//                new frameSetNetworkSize().setVisible(true);
+//                frameSetNetworkSize mFrameNetworkSize = new frameSetNetworkSize();
+//                mFrameNetworkSize.setVisible(true);
+//                mFrameNetworkSize.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 //            }
 //        });
 //    }

@@ -7,6 +7,9 @@ package iterface;
 
 import common.SensorUtility;
 import static common.SensorUtility.mListNodes;
+import static common.SensorUtility.mListRobotNodes;
+import static common.SensorUtility.mListSensorNodes;
+import static common.SensorUtility.mListTargetNodes;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
@@ -152,6 +155,23 @@ public class frameCoordinateSystemPanel extends JPanel{
         repaint();
     }
     public void refresh() {
+        mListNodes.clear();
+        //Add target nodes
+        for (Iterator<NodeItem> iterator = mListTargetNodes.iterator(); iterator.hasNext();) {
+            NodeItem next = iterator.next();
+            mListNodes.add(next);
+        }
+        //Add robot nodes
+        for (Iterator<NodeItem> iterator = mListRobotNodes.iterator(); iterator.hasNext();) {
+            NodeItem next = iterator.next();
+            mListNodes.add(next);
+        }
+        
+        //Add sensor nodes
+        for (Iterator<NodeItem> iterator = mListSensorNodes.iterator(); iterator.hasNext();) {
+            NodeItem next = iterator.next();
+            mListNodes.add(next);
+        }
         repaint();
     }
     

@@ -2,6 +2,18 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/D:/Le-Hieu/HOC%20TAP/CAO%20HOC/He%20Thong/SensorSimulationProject-master/SensorDemo/src/iterface/frameCoordinateSystemPanel.java</file>
+            <file>file:/D:/Le-Hieu/HOC%20TAP/CAO%20HOC/He%20Thong/SensorSimulationProject-master/SensorDemo/src/iterface/frameMain.java</file>
+            <file>file:/D:/Le-Hieu/HOC%20TAP/CAO%20HOC/He%20Thong/SensorSimulationProject-master/SensorDemo/src/iterface/target/frameModifyTarget.java</file>
+            <file>file:/D:/Le-Hieu/HOC%20TAP/CAO%20HOC/He%20Thong/SensorSimulationProject-master/SensorDemo/src/iterface/setting/frameCalculateDistance.java</file>
+            <file>file:/D:/Le-Hieu/HOC%20TAP/CAO%20HOC/He%20Thong/SensorSimulationProject-master/SensorDemo/src/iterface/robot/frameModifyRobot.java</file>
+            <file>file:/D:/Le-Hieu/HOC%20TAP/CAO%20HOC/He%20Thong/SensorSimulationProject-master/SensorDemo/src/common/SensorUtility.java</file>
+            <file>file:/D:/Le-Hieu/HOC%20TAP/CAO%20HOC/He%20Thong/SensorSimulationProject-master/SensorDemo/src/iterface/robot/frameAddRobot.java</file>
+            <file>file:/D:/Le-Hieu/HOC%20TAP/CAO%20HOC/He%20Thong/SensorSimulationProject-master/SensorDemo/src/iterface/target/frameAddTarget.java</file>
+            <file>file:/D:/Le-Hieu/HOC%20TAP/CAO%20HOC/He%20Thong/SensorSimulationProject-master/SensorDemo/src/model/NodeItem.java</file>
+            <file>file:/D:/Le-Hieu/HOC%20TAP/CAO%20HOC/He%20Thong/SensorSimulationProject-master/SensorDemo/src/iterface/setting/frameSetNetworkSize.java</file>
+            <file>file:/D:/Le-Hieu/HOC%20TAP/CAO%20HOC/He%20Thong/SensorSimulationProject-master/SensorDemo/src/iterface/sensor/frameModifySensor.java</file>
+        </group>
     </open-files>
 </project-private>
