@@ -5,6 +5,17 @@
  */
 package iterface.sensor;
 
+import common.SensorUtility;
+import static common.SensorUtility.mListSensorNodes;
+import iterface.frameMain;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import model.NodeItem;
+
 /**
  *
  * @author sev_user
@@ -14,10 +25,53 @@ public class frameModifySensor extends javax.swing.JFrame {
     /**
      * Creates new form frameModifySensor
      */
+    public DefaultListModel dataModel;
+    public int mIndex = -1;
+    public int mOldPostionX;
+    public int mOldPostionY;
+    public int mNewPostionX;
+    public int mNewPostionY;
     public frameModifySensor() {
         initComponents();
+        initOtherComponents();
+        this.setTitle("Modify Sensor");
+    }
+    
+    public ListSelectionListener mListSelectionListener = new ListSelectionListener() {
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+                if (!dataModel.isEmpty()) {
+                    mIndex = mJListSensor.getSelectedIndex();
+                    if (mIndex < mListSensorNodes.size()) {
+                        mOldPostionX = mListSensorNodes.get(mIndex).getX();
+                        mOldPostionY = mListSensorNodes.get(mIndex).getY();
+                        mNewPostionX = mOldPostionX;
+                        mNewPostionY = mOldPostionY;
+                        positonXTextField.setText("" + mListSensorNodes.get(mIndex).getX());
+                        postionYTextField.setText("" + mListSensorNodes.get(mIndex).getY());
+                    }
+                }
+        }
+    };
+    private void initOtherComponents() {
+        dataModel = new DefaultListModel();
+        mJListSensor = new JList(dataModel);
+
+        updateListSensor();
+        mJListSensor.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        listSensorScrollPane.setViewportView(mJListSensor);
+        mJListSensor.addListSelectionListener(mListSelectionListener);
     }
 
+    public void updateListSensor() {
+         dataModel.clear();
+         for (int i =0 ; i< mListSensorNodes.size();i++) {
+             NodeItem next = mListSensorNodes.get(i);
+             ((DefaultListModel)mJListSensor.getModel()).addElement(i+".( X = "+next.getX()+", Y= "+next.getY() +")");
+         }
+         mListSensorLabel.setText("List Sensors : "+mListSensorNodes.size());
+
+     }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -27,21 +81,206 @@ public class frameModifySensor extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        mDeleteBtn = new javax.swing.JButton();
+        listSensorScrollPane = new javax.swing.JScrollPane();
+        mCloseBtn = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        positonXTextField = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        postionYTextField = new javax.swing.JTextField();
+        mListSensorLabel = new javax.swing.JLabel();
+        mChangeBtn = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        mDeleteBtn.setText("Delete");
+        mDeleteBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mDeleteBtnActionPerformed(evt);
+            }
+        });
+
+        mCloseBtn.setText("Close");
+        mCloseBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mCloseBtnActionPerformed(evt);
+            }
+        });
+
+        jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+
+        jLabel3.setText("Sensor choose :");
+
+        jLabel4.setText("Position X");
+
+        positonXTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                positionXKeyReleased(evt);
+            }
+        });
+
+        jLabel5.setText("Position Y");
+
+        postionYTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                positionYKeyReleased(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(32, 32, 32)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(positonXTextField)
+                    .addComponent(postionYTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE))
+                .addContainerGap(31, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(positonXTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(postionYTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(66, Short.MAX_VALUE))
+        );
+
+        mListSensorLabel.setText("List Sensor : 0");
+
+        mChangeBtn.setText("Change");
+        mChangeBtn.setToolTipText("");
+        mChangeBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mChangeBtnActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("Detail Sensor");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(81, 81, 81)
+                .addComponent(mListSensorLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addGap(117, 117, 117))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(50, 50, 50)
+                .addComponent(listSensorScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(102, 102, 102)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(76, 76, 76)
+                .addComponent(mChangeBtn)
+                .addGap(108, 108, 108)
+                .addComponent(mDeleteBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(mCloseBtn)
+                .addGap(72, 72, 72))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(mListSensorLabel)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(listSensorScrollPane))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(mChangeBtn)
+                    .addComponent(mDeleteBtn)
+                    .addComponent(mCloseBtn))
+                .addGap(32, 32, 32))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void mDeleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mDeleteBtnActionPerformed
+        // TODO add your handling code here:
+        if (mIndex >= 0 && mIndex < mListSensorNodes.size()) {
+            mJListSensor.removeListSelectionListener(mListSelectionListener);
+            mJListSensor.clearSelection();
+            mListSensorNodes.remove(mIndex);
+            mIndex = -1;
+
+            updateListSensor();
+            mJListSensor.addListSelectionListener(mListSelectionListener);
+        }
+    }//GEN-LAST:event_mDeleteBtnActionPerformed
+
+    private void mCloseBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mCloseBtnActionPerformed
+        // TODO add your handling code here:
+        try {
+           frameMain.coordinatePanel.refresh();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+        this.dispose();
+    }//GEN-LAST:event_mCloseBtnActionPerformed
+
+    private void mChangeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mChangeBtnActionPerformed
+        // TODO add your handling code here:
+        if (positonXTextField.getText().equals("") || postionYTextField.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Please insert Valid Number Only");
+        } else if (mNewPostionX >= SensorUtility.numberRow || mNewPostionY >= SensorUtility.numberColum){
+            int maxX = SensorUtility.numberRow-1;
+            int maxY = SensorUtility.numberColum-1;
+            JOptionPane.showMessageDialog(null, "Maximum positon X =" + maxX +" and Maximum positon Y =" +maxY);
+        } else if (mNewPostionX == mOldPostionX && mNewPostionY == mOldPostionY) {
+            JOptionPane.showMessageDialog(null, "There are no change ^_^" );
+        } else if (mIndex >= 0 && mIndex < mListSensorNodes.size()){
+            mJListSensor.removeListSelectionListener(mListSelectionListener);
+
+            mListSensorNodes.get(mIndex).setX(mNewPostionX);
+            mListSensorNodes.get(mIndex).setY(mNewPostionY);
+
+            updateListSensor();
+            mJListSensor.addListSelectionListener(mListSelectionListener);
+            mJListSensor.setSelectedIndex(mIndex);
+        }
+    }//GEN-LAST:event_mChangeBtnActionPerformed
+
+    private void positionXKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_positionXKeyReleased
+        // TODO add your handling code here:
+        try {
+            mNewPostionX = Integer.parseInt(positonXTextField.getText());
+        } catch (NumberFormatException nfe) {
+            positonXTextField.setText("");
+        }
+    }//GEN-LAST:event_positionXKeyReleased
+
+    private void positionYKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_positionYKeyReleased
+        // TODO add your handling code here:
+        try {
+            mNewPostionY = Integer.parseInt(postionYTextField.getText());
+        } catch (NumberFormatException nfe) {
+            postionYTextField.setText("");
+        }
+    }//GEN-LAST:event_positionYKeyReleased
 
     /**
      * @param args the command line arguments
@@ -79,5 +318,18 @@ public class frameModifySensor extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane listSensorScrollPane;
+    private javax.swing.JButton mChangeBtn;
+    private javax.swing.JButton mCloseBtn;
+    private javax.swing.JButton mDeleteBtn;
+    private javax.swing.JLabel mListSensorLabel;
+    private javax.swing.JTextField positonXTextField;
+    private javax.swing.JTextField postionYTextField;
     // End of variables declaration//GEN-END:variables
+    private javax.swing.JList mJListSensor;
 }

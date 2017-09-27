@@ -5,6 +5,9 @@
  */
 package sensordemo;
 
+import iterface.frameMain;
+import javax.swing.JFrame;
+
 /**
  *
  * @author Hieu
@@ -16,6 +19,13 @@ public class SensorDemo {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        frameMain mFrameMain = new frameMain();
+        // mFrameMain.setState(JFrame.MAXIMIZED_BOTH);
+        mFrameMain.setExtendedState(JFrame.MAXIMIZED_BOTH);
+//                GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();  
+//                mFrameMain.setMaximizedBounds(env.getMaximumWindowBounds());  
+        mFrameMain.setVisible(true);
+        mFrameMain.setTitle("Sensor Simulation");
     }
     
 }

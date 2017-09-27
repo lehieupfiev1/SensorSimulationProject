@@ -64,4 +64,9 @@ public class NodeItem {
         this.group = group;
     }
 
+    @Override
+    public String toString() {
+        return "NodeItem{" + "x=" + x + ", y=" + y + ", type=" + type + ", group=" + group + '}';
+    }
+
 }

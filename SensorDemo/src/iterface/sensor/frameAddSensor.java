@@ -5,6 +5,12 @@
  */
 package iterface.sensor;
 
+import common.SensorUtility;
+import iterface.frameMain;
+import java.util.Random;
+import javax.swing.JOptionPane;
+import model.NodeItem;
+
 /**
  *
  * @author sev_user
@@ -14,10 +20,25 @@ public class frameAddSensor extends javax.swing.JFrame {
     /**
      * Creates new form frameAddSensor
      */
+    public int positionX = 0;
+    public int positionY = 0;
+    public int numberSensor = 0;
     public frameAddSensor() {
         initComponents();
+        initOtherComponents();
+        this.setTitle("Add new Sensor");
     }
-
+    
+    private void initOtherComponents() {
+        maunalRadioButton.setSelected(true);
+        RandomRadioButton.setSelected(false);
+        RandomNumberSensorTextField.setEnabled(false);
+        RandomSensorButton.setEnabled(false);
+        updateNumberSensor(); 
+    }
+    private void updateNumberSensor() {
+        manualNumberSensorLabel.setText("Number Sensor : "+SensorUtility.mListSensorNodes.size());
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -27,21 +48,253 @@ public class frameAddSensor extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        RandomNumberSensorTextField = new javax.swing.JTextField();
+        RandomSensorButton = new javax.swing.JButton();
+        maunalRadioButton = new javax.swing.JRadioButton();
+        DoneAddSensorButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        manualPositionXTextField = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        manualPositionYTextField = new javax.swing.JTextField();
+        AddNewSensorBtn = new javax.swing.JButton();
+        manualNumberSensorLabel = new java.awt.Label();
+        RandomRadioButton = new javax.swing.JRadioButton();
+        jLabel3 = new javax.swing.JLabel();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        RandomNumberSensorTextField.setText("0");
+        RandomNumberSensorTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                RandomNumberSensorTextFieldrandomTargetTextFieldKeyReleased(evt);
+            }
+        });
+
+        RandomSensorButton.setText("Random");
+        RandomSensorButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RandomSensorButtonActionPerformed(evt);
+            }
+        });
+
+        maunalRadioButton.setText("Manual");
+        maunalRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                maunalRadioButtonActionPerformed(evt);
+            }
+        });
+
+        DoneAddSensorButton.setText("Done");
+        DoneAddSensorButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DoneAddSensorButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Position X");
+
+        manualPositionXTextField.setText("0");
+        manualPositionXTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                manualPositionXTextFieldmanualPositionXKeyReleased(evt);
+            }
+        });
+
+        jLabel2.setText("Position Y");
+
+        manualPositionYTextField.setText("0");
+        manualPositionYTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                manualPositionYTextFieldmanualPositionYKeyReleased(evt);
+            }
+        });
+
+        AddNewSensorBtn.setText("Add");
+        AddNewSensorBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddNewSensorBtnActionPerformed(evt);
+            }
+        });
+
+        manualNumberSensorLabel.setText("Number Sensor : ");
+
+        RandomRadioButton.setText("Random");
+        RandomRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RandomRadioButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("Number of sensors");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(maunalRadioButton)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(manualPositionXTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(35, 35, 35)
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(manualPositionYTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(18, 18, 18)
+                                .addComponent(RandomNumberSensorTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(RandomSensorButton, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE)
+                            .addComponent(AddNewSensorBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(41, 41, 41))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(RandomRadioButton)
+                            .addComponent(manualNumberSensorLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(196, 196, 196)
+                .addComponent(DoneAddSensorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addComponent(maunalRadioButton)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(manualPositionXTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(manualPositionYTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(AddNewSensorBtn))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(manualNumberSensorLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(23, 23, 23)
+                .addComponent(RandomRadioButton)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(RandomNumberSensorTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(RandomSensorButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                .addComponent(DoneAddSensorButton)
+                .addGap(25, 25, 25))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void RandomNumberSensorTextFieldrandomTargetTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_RandomNumberSensorTextFieldrandomTargetTextFieldKeyReleased
+        // TODO add your handling code here:
+        try {
+            numberSensor = Integer.parseInt(RandomNumberSensorTextField.getText());
+        } catch (NumberFormatException nfe) {
+            RandomNumberSensorTextField.setText("");
+        }
+    }//GEN-LAST:event_RandomNumberSensorTextFieldrandomTargetTextFieldKeyReleased
+
+    private void RandomSensorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RandomSensorButtonActionPerformed
+        // TODO add your handling code here:
+        if (RandomNumberSensorTextField.getText().equals("") ) {
+            JOptionPane.showMessageDialog(null, "Please insert Valid Number Only");
+        } else {
+            Random random = new Random();
+            for (int i = 0;i < numberSensor;i++) {
+                int x = random.nextInt(SensorUtility.numberRow-1);
+                int y = random.nextInt(SensorUtility.numberColum-1);
+                SensorUtility.mListSensorNodes.add(new NodeItem(x, y, 2));
+            }
+            JOptionPane.showMessageDialog(null, "Create new sensors success !");
+            updateNumberSensor();
+        }
+    }//GEN-LAST:event_RandomSensorButtonActionPerformed
+
+    private void maunalRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_maunalRadioButtonActionPerformed
+        // TODO add your handling code here:
+        maunalRadioButton.setSelected(true);
+        if (RandomRadioButton.isSelected()) {
+            //Enable Manual Mode
+            manualPositionXTextField.setEnabled(true);
+            manualPositionYTextField.setEnabled(true);
+            AddNewSensorBtn.setEnabled(true);
+
+            //Disable Random Mode
+            RandomRadioButton.setSelected(false);
+            RandomNumberSensorTextField.setEnabled(false);
+            RandomSensorButton.setEnabled(false);
+
+        }
+    }//GEN-LAST:event_maunalRadioButtonActionPerformed
+
+    private void DoneAddSensorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DoneAddSensorButtonActionPerformed
+        // TODO add your handling code here:
+        try {
+           frameMain.coordinatePanel.refresh();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+        this.dispose();
+    }//GEN-LAST:event_DoneAddSensorButtonActionPerformed
+
+    private void manualPositionXTextFieldmanualPositionXKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_manualPositionXTextFieldmanualPositionXKeyReleased
+        // TODO add your handling code here:
+        try {
+            positionX = Integer.parseInt(manualPositionXTextField.getText());
+        } catch (NumberFormatException nfe) {
+            manualPositionXTextField.setText("");
+        }
+    }//GEN-LAST:event_manualPositionXTextFieldmanualPositionXKeyReleased
+
+    private void manualPositionYTextFieldmanualPositionYKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_manualPositionYTextFieldmanualPositionYKeyReleased
+        // TODO add your handling code here:
+        try {
+            positionY = Integer.parseInt(manualPositionYTextField.getText());
+        } catch (NumberFormatException nfe) {
+            manualPositionYTextField.setText("");
+        }
+    }//GEN-LAST:event_manualPositionYTextFieldmanualPositionYKeyReleased
+
+    private void AddNewSensorBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddNewSensorBtnActionPerformed
+        // TODO add your handling code here:
+        if (manualPositionXTextField.getText().equals("") || manualPositionYTextField.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Please insert Valid Number Only");
+        } else if (positionX >= SensorUtility.numberRow || positionY >= SensorUtility.numberColum){
+            int maxX = SensorUtility.numberRow-1;
+            int maxY = SensorUtility.numberColum-1;
+            JOptionPane.showMessageDialog(null, "Maximum positon X =" + maxX +" and Maximum positon Y =" +maxY);
+        } else {
+            SensorUtility.mListSensorNodes.add(new NodeItem(positionX, positionY, 2));
+            updateNumberSensor();
+        }
+    }//GEN-LAST:event_AddNewSensorBtnActionPerformed
+
+    private void RandomRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RandomRadioButtonActionPerformed
+        // TODO add your handling code here:
+        RandomRadioButton.setSelected(true);
+        if (maunalRadioButton.isSelected()) {
+            //Disable Manual Mode
+            maunalRadioButton.setSelected(false);
+            manualPositionXTextField.setEnabled(false);
+            manualPositionYTextField.setEnabled(false);
+            AddNewSensorBtn.setEnabled(false);
+
+            //Enable Random Mode
+            RandomNumberSensorTextField.setEnabled(true);
+            RandomSensorButton.setEnabled(true);
+
+        }
+    }//GEN-LAST:event_RandomRadioButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -79,5 +332,17 @@ public class frameAddSensor extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton AddNewSensorBtn;
+    private javax.swing.JButton DoneAddSensorButton;
+    private javax.swing.JTextField RandomNumberSensorTextField;
+    private javax.swing.JRadioButton RandomRadioButton;
+    private javax.swing.JButton RandomSensorButton;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private java.awt.Label manualNumberSensorLabel;
+    private javax.swing.JTextField manualPositionXTextField;
+    private javax.swing.JTextField manualPositionYTextField;
+    private javax.swing.JRadioButton maunalRadioButton;
     // End of variables declaration//GEN-END:variables
 }

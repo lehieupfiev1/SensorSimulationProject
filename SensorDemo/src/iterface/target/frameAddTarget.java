@@ -292,7 +292,11 @@ public class frameAddTarget extends javax.swing.JFrame {
 
     private void DoneAddTargetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DoneAddTargetButtonActionPerformed
         // TODO add your handling code here:
-        frameMain.coordinatePanel.refresh();
+        try {
+           frameMain.coordinatePanel.refresh();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
         this.dispose();
     }//GEN-LAST:event_DoneAddTargetButtonActionPerformed
 

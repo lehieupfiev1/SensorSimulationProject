@@ -74,24 +74,6 @@ public class frameCoordinateSystemPanel extends JPanel{
 
         //Draw list nodes
         for (Iterator<NodeItem> iterator = mListNodes.iterator(); iterator.hasNext();) {
-            //Draw grid 
-            if (isShowGrid) {
-               g.setColor(new Color(0, 0, 0, 40));
-            } else {
-               g.setColor(new Color(0, 0, 0, 0));
-            }
-            
-            for (int i = sizeRect; i <= sizeWidthCoordinater; i += sizeRect) {
-                g.drawLine(i, sizeRect, i, sizeHeightCoordianter + sizeRect);
-            }
-
-            for (int i = sizeRect; i <= sizeHeightCoordianter; i += sizeRect) {
-                g.drawLine(sizeRect, i, sizeWidthCoordinater + sizeRect, i);
-            }
-            // Draw khung toa do
-            g.setColor(Color.BLACK);
-            g.drawRect(sizeRect, sizeRect, sizeWidthCoordinater, sizeHeightCoordianter);
-
             //Draw node
             NodeItem next = iterator.next();
             int cellX = sizeRect + (next.getX() * sizeRect);
@@ -99,7 +81,7 @@ public class frameCoordinateSystemPanel extends JPanel{
             if (next.getType() == 0) {
                 //target Node
                 if (isShowTarget) {
-                    g.setColor(Color.RED);
+                    g.setColor(Color.ORANGE);
                 } else {
                     g.setColor(new Color(0, 0, 0, 0));
                 }
@@ -117,7 +99,7 @@ public class frameCoordinateSystemPanel extends JPanel{
             } else if (next.getType() == 2) {
                 // Sensor node
                 if (isShowSensor) {
-                    g.setColor(Color.WHITE);
+                    g.setColor(Color.RED);
                 } else {
                     g.setColor(new Color(0, 0, 0, 0));
                 }
@@ -125,6 +107,23 @@ public class frameCoordinateSystemPanel extends JPanel{
             }
 
         }
+        //Draw grid 
+        if (isShowGrid) {
+            g.setColor(new Color(0, 0, 0, 40));
+        } else {
+            g.setColor(new Color(0, 0, 0, 0));
+        }
+
+        for (int i = sizeRect; i <= sizeWidthCoordinater; i += sizeRect) {
+            g.drawLine(i, sizeRect, i, sizeHeightCoordianter + sizeRect);
+        }
+
+        for (int i = sizeRect; i <= sizeHeightCoordianter; i += sizeRect) {
+            g.drawLine(sizeRect, i, sizeWidthCoordinater + sizeRect, i);
+        }
+        // Draw khung toa do
+        g.setColor(Color.BLACK);
+        g.drawRect(sizeRect, sizeRect, sizeWidthCoordinater, sizeHeightCoordianter);
 
         
     }

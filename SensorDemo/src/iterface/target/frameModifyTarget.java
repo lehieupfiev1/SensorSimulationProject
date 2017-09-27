@@ -5,6 +5,18 @@
  */
 package iterface.target;
 
+import common.SensorUtility;
+import static common.SensorUtility.mListTargetNodes;
+import iterface.frameMain;
+import java.util.Iterator;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import model.NodeItem;
+
 /**
  *
  * @author sev_user
@@ -14,10 +26,52 @@ public class frameModifyTarget extends javax.swing.JFrame {
     /**
      * Creates new form frameModifyTarget
      */
+    public DefaultListModel dataModel;
+    public int mIndex = -1;
+    public int mOldPostionX;
+    public int mOldPostionY;
+    public int mNewPostionX;
+    public int mNewPostionY;
     public frameModifyTarget() {
         initComponents();
+        initOtherComponents();
+        this.setTitle("Modify Target");
     }
+    public ListSelectionListener mListSelectionListener = new ListSelectionListener() {
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+                if (!dataModel.isEmpty()) {
+                    mIndex = mJListTarget.getSelectedIndex();
+                    if (mIndex < mListTargetNodes.size()) {
+                        mOldPostionX = mListTargetNodes.get(mIndex).getX();
+                        mOldPostionY = mListTargetNodes.get(mIndex).getY();
+                        mNewPostionX = mOldPostionX;
+                        mNewPostionY = mOldPostionY;
+                        positonXTextField.setText("" + mListTargetNodes.get(mIndex).getX());
+                        postionYTextField.setText("" + mListTargetNodes.get(mIndex).getY());
+                    }
+                }
+        }
+    };
 
+    private void initOtherComponents() {
+        dataModel = new DefaultListModel();
+        mJListTarget = new JList(dataModel);
+
+        updateListTagest();
+        mJListTarget.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        listTargetScrollPane.setViewportView(mJListTarget);
+        mJListTarget.addListSelectionListener(mListSelectionListener);
+    }
+     public void updateListTagest() {
+         dataModel.clear();
+         for (int i =0 ; i< mListTargetNodes.size();i++) {
+             NodeItem next = mListTargetNodes.get(i);
+             ((DefaultListModel)mJListTarget.getModel()).addElement(i+".( X = "+next.getX()+", Y= "+next.getY() +")");
+         }
+         mListTargetLabel.setText("List target : "+mListTargetNodes.size());
+
+     }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -27,21 +81,209 @@ public class frameModifyTarget extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        listTargetScrollPane = new javax.swing.JScrollPane();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        positonXTextField = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        postionYTextField = new javax.swing.JTextField();
+        mListTargetLabel = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        mChangeBtn = new javax.swing.JButton();
+        mDeleteBtn = new javax.swing.JButton();
+        mCloseBtn = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
+
+        jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+
+        jLabel3.setText("Target choose :");
+
+        jLabel4.setText("Position X");
+
+        positonXTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                postionXKeyReleased(evt);
+            }
+        });
+
+        jLabel5.setText("Position Y");
+
+        postionYTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                positionYKeyReleased(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(32, 32, 32)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(positonXTextField)
+                    .addComponent(postionYTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE))
+                .addContainerGap(31, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(positonXTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(postionYTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(66, Short.MAX_VALUE))
+        );
+
+        mListTargetLabel.setText("List target : 0");
+
+        jLabel2.setText("Detail target");
+
+        mChangeBtn.setText("Change");
+        mChangeBtn.setToolTipText("");
+        mChangeBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mChangeBtnActionPerformed(evt);
+            }
+        });
+
+        mDeleteBtn.setText("Delete");
+        mDeleteBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mDeleteBtnActionPerformed(evt);
+            }
+        });
+
+        mCloseBtn.setText("Close");
+        mCloseBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mCloseBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(80, 80, 80)
+                .addComponent(mListTargetLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addGap(117, 117, 117))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(50, 50, 50)
+                .addComponent(listTargetScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(102, 102, 102)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(45, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(76, 76, 76)
+                .addComponent(mChangeBtn)
+                .addGap(108, 108, 108)
+                .addComponent(mDeleteBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(mCloseBtn)
+                .addGap(72, 72, 72))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(mListTargetLabel)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(listTargetScrollPane))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(mChangeBtn)
+                    .addComponent(mDeleteBtn)
+                    .addComponent(mCloseBtn))
+                .addGap(32, 32, 32))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void mDeleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mDeleteBtnActionPerformed
+        // TODO add your handling code here:
+        if (mIndex >= 0 && mIndex < mListTargetNodes.size()) {
+            mJListTarget.removeListSelectionListener(mListSelectionListener);
+            mJListTarget.clearSelection();
+            mListTargetNodes.remove(mIndex);
+            mIndex = -1;
+
+            updateListTagest();
+            mJListTarget.addListSelectionListener(mListSelectionListener);
+        }
+        
+    }//GEN-LAST:event_mDeleteBtnActionPerformed
+
+    private void mChangeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mChangeBtnActionPerformed
+        // TODO add your handling code here:
+        if (positonXTextField.getText().equals("") || postionYTextField.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Please insert Valid Number Only");
+        } else if (mNewPostionX >= SensorUtility.numberRow || mNewPostionY >= SensorUtility.numberColum){
+            int maxX = SensorUtility.numberRow-1;
+            int maxY = SensorUtility.numberColum-1;
+            JOptionPane.showMessageDialog(null, "Maximum positon X =" + maxX +" and Maximum positon Y =" +maxY);
+        } else if (mNewPostionX == mOldPostionX && mNewPostionY == mOldPostionY) {
+            JOptionPane.showMessageDialog(null, "There are no change ^_^" );
+        } else if (mIndex >= 0 && mIndex < mListTargetNodes.size()){
+            mJListTarget.removeListSelectionListener(mListSelectionListener);
+
+            mListTargetNodes.get(mIndex).setX(mNewPostionX);
+            mListTargetNodes.get(mIndex).setY(mNewPostionY);
+
+            updateListTagest();
+            mJListTarget.addListSelectionListener(mListSelectionListener);
+            mJListTarget.setSelectedIndex(mIndex);
+        }
+
+    }//GEN-LAST:event_mChangeBtnActionPerformed
+
+    private void mCloseBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mCloseBtnActionPerformed
+        // TODO add your handling code here:
+        try {
+           frameMain.coordinatePanel.refresh();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+        this.dispose();
+    }//GEN-LAST:event_mCloseBtnActionPerformed
+
+    private void postionXKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_postionXKeyReleased
+        // TODO add your handling code here:
+        try {
+            mNewPostionX = Integer.parseInt(positonXTextField.getText());
+        } catch (NumberFormatException nfe) {
+            positonXTextField.setText("");
+        }
+    }//GEN-LAST:event_postionXKeyReleased
+
+    private void positionYKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_positionYKeyReleased
+        // TODO add your handling code here:
+        try {
+            mNewPostionY = Integer.parseInt(postionYTextField.getText());
+        } catch (NumberFormatException nfe) {
+            postionYTextField.setText("");
+        }
+    }//GEN-LAST:event_positionYKeyReleased
 
     /**
      * @param args the command line arguments
@@ -79,5 +321,18 @@ public class frameModifyTarget extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane listTargetScrollPane;
+    private javax.swing.JButton mChangeBtn;
+    private javax.swing.JButton mCloseBtn;
+    private javax.swing.JButton mDeleteBtn;
+    private javax.swing.JLabel mListTargetLabel;
+    private javax.swing.JTextField positonXTextField;
+    private javax.swing.JTextField postionYTextField;
     // End of variables declaration//GEN-END:variables
+    private javax.swing.JList mJListTarget;
 }
