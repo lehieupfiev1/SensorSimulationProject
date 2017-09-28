@@ -6,7 +6,10 @@
 package sensordemo;
 
 import iterface.frameMain;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -22,6 +25,20 @@ public class SensorDemo {
         frameMain mFrameMain = new frameMain();
         // mFrameMain.setState(JFrame.MAXIMIZED_BOTH);
         mFrameMain.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        mFrameMain.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        mFrameMain.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                int confirmed = JOptionPane.showConfirmDialog(null,
+                        "Are you sure you want to exit the program?", "Exit Program Message Box",
+                        JOptionPane.YES_NO_OPTION);
+
+                if (confirmed == JOptionPane.YES_OPTION) {
+                    mFrameMain.dispose();
+                }
+            }
+            
+        });
 //                GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();  
 //                mFrameMain.setMaximizedBounds(env.getMaximumWindowBounds());  
         mFrameMain.setVisible(true);

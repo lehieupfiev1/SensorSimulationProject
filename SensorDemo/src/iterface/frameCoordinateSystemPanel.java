@@ -15,6 +15,7 @@ import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Iterator;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import model.NodeItem;
@@ -161,9 +162,11 @@ public class frameCoordinateSystemPanel extends JPanel{
             mListNodes.add(next);
         }
         //Add robot nodes
-        for (Iterator<NodeItem> iterator = mListRobotNodes.iterator(); iterator.hasNext();) {
-            NodeItem next = iterator.next();
-            mListNodes.add(next);
+        for (Iterator<List<NodeItem>> iterator = mListRobotNodes.iterator(); iterator.hasNext();) {
+            List<NodeItem> next = iterator.next();
+            for (int i =0;i < next.size();i++) {
+               mListNodes.add(next.get(i));
+            }
         }
         
         //Add sensor nodes

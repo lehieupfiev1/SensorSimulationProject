@@ -93,7 +93,7 @@
                   <Component id="RandomNumberSensorTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="RandomSensorButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="34" max="32767" attributes="0"/>
+              <EmptySpace pref="26" max="32767" attributes="0"/>
               <Component id="DoneAddSensorButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
           </Group>
@@ -119,6 +119,9 @@
     </Component>
     <Component class="javax.swing.JRadioButton" name="maunalRadioButton">
       <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Tahoma" size="16" style="1"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Manual"/>
       </Properties>
       <Events>
@@ -174,6 +177,9 @@
     </Component>
     <Component class="javax.swing.JRadioButton" name="RandomRadioButton">
       <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Tahoma" size="16" style="1"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Random"/>
       </Properties>
       <Events>

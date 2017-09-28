@@ -65,6 +65,7 @@ public class frameAddTarget extends javax.swing.JFrame {
         setName("frameAddtarget"); // NOI18N
         setResizable(false);
 
+        maunalRadioButton.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
         maunalRadioButton.setText("Manual");
         maunalRadioButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -99,6 +100,7 @@ public class frameAddTarget extends javax.swing.JFrame {
 
         manualNumberTargetLabel.setText("Number Target : ");
 
+        RandomRadioButton.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
         RandomRadioButton.setText("Random");
         RandomRadioButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -189,7 +191,7 @@ public class frameAddTarget extends javax.swing.JFrame {
                     .addComponent(jLabel3)
                     .addComponent(RandomNumberTargetTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(RandomTargetButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                 .addComponent(DoneAddTargetButton)
                 .addGap(25, 25, 25))
         );

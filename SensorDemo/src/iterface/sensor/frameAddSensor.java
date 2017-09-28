@@ -77,6 +77,7 @@ public class frameAddSensor extends javax.swing.JFrame {
             }
         });
 
+        maunalRadioButton.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
         maunalRadioButton.setText("Manual");
         maunalRadioButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -118,6 +119,7 @@ public class frameAddSensor extends javax.swing.JFrame {
 
         manualNumberSensorLabel.setText("Number Sensor : ");
 
+        RandomRadioButton.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
         RandomRadioButton.setText("Random");
         RandomRadioButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -187,7 +189,7 @@ public class frameAddSensor extends javax.swing.JFrame {
                     .addComponent(jLabel3)
                     .addComponent(RandomNumberSensorTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(RandomSensorButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                 .addComponent(DoneAddSensorButton)
                 .addGap(25, 25, 25))
         );

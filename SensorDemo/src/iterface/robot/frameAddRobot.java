@@ -4,6 +4,19 @@
  * and open the template in the editor.
  */
 package iterface.robot;
+import common.SensorUtility;
+import static common.SensorUtility.mListRobotNodes;
+import iterface.frameMain;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import javax.swing.JOptionPane;
+import javax.swing.JSpinner;
+import javax.swing.JSpinner.DefaultEditor;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import model.NodeItem;
 
 /**
  *
@@ -14,8 +27,49 @@ public class frameAddRobot extends javax.swing.JFrame {
     /**
      * Creates new form frameAddRobot
      */
+    public int positionX = 0;
+    public int positionY = 0;
+    public int manualNumberCycle = 0;
+    public int randomNumberCycle = 0;
+    public int randomNumberRobotPerCycle = 0;
+    SpinnerNumberModel numberSpinerModel;
+    public  List<List<NodeItem>> mListTempRobotNodes = new ArrayList<>();
+    
+    ChangeListener mChangeListener = new ChangeListener() {
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            // Update list
+            int index = (int)CycleSpinner.getValue();
+            if (mListTempRobotNodes.get(index) != null) {
+                manualNumberRobotLabel.setText("Number Robots : "+mListTempRobotNodes.get(index).size());
+            }
+        }
+    };
     public frameAddRobot() {
         initComponents();
+        initOtherComponents();
+        this.setTitle("Add new robots");
+    }
+    
+    
+    private void initOtherComponents() {
+        maunalRadioButton.setSelected(true);
+        manualCreatNumberCycleBtn.setEnabled(true);
+        manualNumberCycleTextField.setEnabled(true);
+        //Diable add manual cyclce before create number cycle
+        CycleSpinner.setEnabled(false);
+        manualPositionXTextField.setEnabled(false);
+        manualPositionYTextField.setEnabled(false);
+        AddNewRobotBtn.setEnabled(false);
+
+        //Diable Random option
+        RandomRadioButton.setSelected(false);
+        RandomNumberCycleTextField.setEnabled(false);
+        RandomRobotsTextField.setEnabled(false);
+        RandomRobotBtn.setEnabled(false);
+      //  updateNumberRobot(); 
+      
+        
     }
 
     /**
@@ -27,21 +81,400 @@ public class frameAddRobot extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel3 = new javax.swing.JLabel();
+        RandomNumberCycleTextField = new javax.swing.JTextField();
+        RandomRobotBtn = new javax.swing.JButton();
+        maunalRadioButton = new javax.swing.JRadioButton();
+        DoneAddRobotButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        manualPositionXTextField = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        manualPositionYTextField = new javax.swing.JTextField();
+        AddNewRobotBtn = new javax.swing.JButton();
+        manualNumberRobotLabel = new java.awt.Label();
+        RandomRadioButton = new javax.swing.JRadioButton();
+        jLabel4 = new javax.swing.JLabel();
+        manualNumberCycleTextField = new javax.swing.JTextField();
+        manualCreatNumberCycleBtn = new javax.swing.JButton();
+        CycleSpinner = new javax.swing.JSpinner();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        RandomRobotsTextField = new javax.swing.JTextField();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
+
+        jLabel3.setText("Number of Cycle");
+
+        RandomNumberCycleTextField.setText("0");
+        RandomNumberCycleTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                RandomNumberCycleTextField(evt);
+            }
+        });
+
+        RandomRobotBtn.setText("Random");
+        RandomRobotBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RandomRobotBtnActionPerformed(evt);
+            }
+        });
+
+        maunalRadioButton.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
+        maunalRadioButton.setText("Manual");
+        maunalRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                maunalRadioButtonActionPerformed(evt);
+            }
+        });
+
+        DoneAddRobotButton.setText("Done");
+        DoneAddRobotButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DoneAddRobotButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Position X");
+
+        manualPositionXTextField.setText("0");
+        manualPositionXTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                manualPositionXTextField(evt);
+            }
+        });
+
+        jLabel2.setText("Position Y");
+
+        manualPositionYTextField.setText("0");
+        manualPositionYTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                manualPositionYTextField(evt);
+            }
+        });
+
+        AddNewRobotBtn.setText("Add");
+        AddNewRobotBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddNewRobotBtnActionPerformed(evt);
+            }
+        });
+
+        manualNumberRobotLabel.setText("Number Robots : 0");
+
+        RandomRadioButton.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
+        RandomRadioButton.setText("Random");
+        RandomRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RandomRadioButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("Number of Cycle :");
+
+        manualNumberCycleTextField.setText("0");
+        manualNumberCycleTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                numberCycleKeyReleased(evt);
+            }
+        });
+
+        manualCreatNumberCycleBtn.setText("Create");
+        manualCreatNumberCycleBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                manualCreatNumberCycleBtnActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setText("CYCLE :");
+
+        jLabel6.setText("Robots per Cycle");
+
+        RandomRobotsTextField.setText("0");
+        RandomRobotsTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                RandomRobotsKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(18, 18, 18)
+                                .addComponent(RandomNumberCycleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(41, 41, 41)
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(RandomRobotsTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(RandomRadioButton)
+                            .addComponent(manualNumberRobotLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel4)
+                                        .addGap(29, 29, 29)
+                                        .addComponent(manualNumberCycleTextField))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel1)
+                                            .addComponent(jLabel5))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(CycleSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(manualPositionXTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(35, 35, 35)
+                                                .addComponent(jLabel2)))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(manualPositionYTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(RandomRobotBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE)
+                            .addComponent(AddNewRobotBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(manualCreatNumberCycleBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(41, 41, 41))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(maunalRadioButton)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(244, 244, 244)
+                .addComponent(DoneAddRobotButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addComponent(maunalRadioButton)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(8, 8, 8)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(manualNumberCycleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(manualCreatNumberCycleBtn)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(29, 29, 29)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(CycleSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(manualPositionXTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(manualPositionYTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(AddNewRobotBtn))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(manualNumberRobotLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(23, 23, 23)
+                .addComponent(RandomRadioButton)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(RandomNumberCycleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(RandomRobotBtn)
+                    .addComponent(jLabel6)
+                    .addComponent(RandomRobotsTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                .addComponent(DoneAddRobotButton)
+                .addGap(29, 29, 29))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void RandomNumberCycleTextField(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_RandomNumberCycleTextField
+        // TODO add your handling code here:
+        try {
+            randomNumberCycle = Integer.parseInt(RandomNumberCycleTextField.getText());
+        } catch (NumberFormatException nfe) {
+            RandomNumberCycleTextField.setText("");
+        }
+    }//GEN-LAST:event_RandomNumberCycleTextField
+
+    private void RandomRobotBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RandomRobotBtnActionPerformed
+        // TODO add your handling code here:
+        if (RandomNumberCycleTextField.getText().equals("") || RandomRobotsTextField.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Please insert Valid Number Only");
+        } else {
+            Random random = new Random();
+            mListTempRobotNodes.clear();
+            for (int i = 0;i < randomNumberCycle;i++) {
+                mListTempRobotNodes.add(new ArrayList<>());
+                for (int j = 0; j < randomNumberRobotPerCycle; j++) {
+                    int x = random.nextInt(SensorUtility.numberRow - 1);
+                    int y = random.nextInt(SensorUtility.numberColum - 1);
+                    mListTempRobotNodes.get(i).add(new NodeItem(x, y, 1, i));
+                }
+            }
+            JOptionPane.showMessageDialog(null, "Create new targets success !");
+
+        }
+    }//GEN-LAST:event_RandomRobotBtnActionPerformed
+
+    private void maunalRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_maunalRadioButtonActionPerformed
+        // TODO add your handling code here:
+        maunalRadioButton.setSelected(true);
+        if (RandomRadioButton.isSelected()) {
+            manualCreatNumberCycleBtn.setEnabled(true);
+            manualNumberCycleTextField.setEnabled(true);
+            //Diable add manual cyclce before create number cycle
+            CycleSpinner.setEnabled(false);
+            manualPositionXTextField.setEnabled(false);
+            manualPositionYTextField.setEnabled(false);
+            AddNewRobotBtn.setEnabled(false);
+            manualNumberRobotLabel.setText("Number Robots : 0");
+
+            //Diable Random option
+            RandomRadioButton.setSelected(false);
+            RandomNumberCycleTextField.setEnabled(false);
+            RandomRobotsTextField.setEnabled(false);
+            RandomRobotBtn.setEnabled(false);
+        }
+    }//GEN-LAST:event_maunalRadioButtonActionPerformed
+
+    private void DoneAddRobotButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DoneAddRobotButtonActionPerformed
+        // TODO add your handling code here:
+        //Check Value cycle null
+        for (int i = 0;i < mListTempRobotNodes.size();i++) {
+            if (mListTempRobotNodes.get(i).size() == 0) {
+                JOptionPane.showMessageDialog(null, "Some cycle don't have any robot !.Please insert it");
+                return;
+            }
+        }
+        
+        //Coppy mListTempRobotNodes to mLisRobotNode
+        mListRobotNodes.clear();
+        for (int i = 0;i < mListTempRobotNodes.size();i++) {
+            List<NodeItem> temp = mListTempRobotNodes.get(i);
+            mListRobotNodes.add(new ArrayList<>());
+            for (int j = 0; j < temp.size(); j++) {
+                mListRobotNodes.get(i).add(new NodeItem(temp.get(j).getX(), temp.get(j).getY(), 1, temp.get(j).getGroup()));
+            }
+        }
+        
+        try {
+            frameMain.coordinatePanel.refresh();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+        this.dispose();
+    }//GEN-LAST:event_DoneAddRobotButtonActionPerformed
+
+    private void manualPositionXTextField(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_manualPositionXTextField
+        // TODO add your handling code here:
+        try {
+            positionX = Integer.parseInt(manualPositionXTextField.getText());
+        } catch (NumberFormatException nfe) {
+            manualPositionXTextField.setText("");
+        }
+    }//GEN-LAST:event_manualPositionXTextField
+
+    private void manualPositionYTextField(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_manualPositionYTextField
+        // TODO add your handling code here:
+        try {
+            positionY = Integer.parseInt(manualPositionYTextField.getText());
+        } catch (NumberFormatException nfe) {
+            manualPositionYTextField.setText("");
+        }
+    }//GEN-LAST:event_manualPositionYTextField
+
+    private void AddNewRobotBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddNewRobotBtnActionPerformed
+        // TODO add your handling code here:
+        if (manualPositionXTextField.getText().equals("") || manualPositionYTextField.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Please insert Valid Number Only");
+        } else if (positionX >= SensorUtility.numberRow || positionY >= SensorUtility.numberColum){
+            int maxX = SensorUtility.numberRow-1;
+            int maxY = SensorUtility.numberColum-1;
+            JOptionPane.showMessageDialog(null, "Maximum positon X =" + maxX +" and Maximum positon Y =" +maxY);
+        } else {
+            mListTempRobotNodes.get((int)CycleSpinner.getValue()).add(new NodeItem(positionX, positionY, 1, (int)CycleSpinner.getValue()));
+            //Update number robot
+            manualNumberRobotLabel.setText("Number Robots : "+mListTempRobotNodes.get((int)CycleSpinner.getValue()).size());    
+        }
+    }//GEN-LAST:event_AddNewRobotBtnActionPerformed
+
+    private void RandomRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RandomRadioButtonActionPerformed
+        // TODO add your handling code here:
+        RandomRadioButton.setSelected(true);
+        if (maunalRadioButton.isSelected()) {
+            maunalRadioButton.setSelected(false);
+            manualCreatNumberCycleBtn.setEnabled(false);
+            manualNumberCycleTextField.setEnabled(false);
+            //Diable add manual cyclce before create number cycle
+            CycleSpinner.setEnabled(false);
+            manualPositionXTextField.setEnabled(false);
+            manualPositionYTextField.setEnabled(false);
+            AddNewRobotBtn.setEnabled(false);
+
+            //Enable Random option
+            RandomNumberCycleTextField.setEnabled(true);
+            RandomRobotsTextField.setEnabled(true);
+            RandomRobotBtn.setEnabled(true);
+
+        }
+    }//GEN-LAST:event_RandomRadioButtonActionPerformed
+
+    private void numberCycleKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_numberCycleKeyReleased
+        // TODO add your handling code here:
+        try {
+            manualNumberCycle = Integer.parseInt(manualNumberCycleTextField.getText());
+        } catch (NumberFormatException nfe) {
+            manualNumberCycleTextField.setText("");
+        }
+    }//GEN-LAST:event_numberCycleKeyReleased
+
+    private void manualCreatNumberCycleBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manualCreatNumberCycleBtnActionPerformed
+        // TODO add your handling code here:\
+        // Khoi tao so chu trinh cua Robot
+        if (manualNumberCycleTextField.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Please insert Valid Number Only");
+        } else if (manualNumberCycle > 0) {
+            int confirmed = JOptionPane.showConfirmDialog(null,
+                    "Are you sure you want to create new number cycle of robots.It will be delete all old robots", "Warning",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (confirmed == JOptionPane.YES_OPTION) {
+                mListTempRobotNodes.clear();
+                for (int i =0;i<manualNumberCycle;i++) {
+                    mListTempRobotNodes.add(new ArrayList<>());
+                }
+                manualNumberCycleTextField.setEnabled(false);
+                manualCreatNumberCycleBtn.setEnabled(false);
+                //Create new Spiner
+                numberSpinerModel = new SpinnerNumberModel(0, 0, manualNumberCycle-1, 1);
+                CycleSpinner.setModel(numberSpinerModel);
+                ((DefaultEditor)CycleSpinner.getEditor()).getTextField().setEditable(false);
+                
+                //Enable Create manual robot
+                CycleSpinner.setEnabled(true);
+                CycleSpinner.addChangeListener(mChangeListener);
+                manualPositionXTextField.setEnabled(true);
+                manualPositionYTextField.setEnabled(true);
+                AddNewRobotBtn.setEnabled(true);
+            }
+           // updateNumberTarget();
+        }
+    }//GEN-LAST:event_manualCreatNumberCycleBtnActionPerformed
+
+    private void RandomRobotsKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_RandomRobotsKeyReleased
+        // TODO add your handling code here:
+        try {
+            randomNumberRobotPerCycle = Integer.parseInt(RandomRobotsTextField.getText());
+        } catch (NumberFormatException nfe) {
+            RandomRobotsTextField.setText("");
+        }
+    }//GEN-LAST:event_RandomRobotsKeyReleased
 
     /**
      * @param args the command line arguments
@@ -79,5 +512,24 @@ public class frameAddRobot extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton AddNewRobotBtn;
+    private javax.swing.JSpinner CycleSpinner;
+    private javax.swing.JButton DoneAddRobotButton;
+    private javax.swing.JTextField RandomNumberCycleTextField;
+    private javax.swing.JRadioButton RandomRadioButton;
+    private javax.swing.JButton RandomRobotBtn;
+    private javax.swing.JTextField RandomRobotsTextField;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JButton manualCreatNumberCycleBtn;
+    private javax.swing.JTextField manualNumberCycleTextField;
+    private java.awt.Label manualNumberRobotLabel;
+    private javax.swing.JTextField manualPositionXTextField;
+    private javax.swing.JTextField manualPositionYTextField;
+    private javax.swing.JRadioButton maunalRadioButton;
     // End of variables declaration//GEN-END:variables
 }

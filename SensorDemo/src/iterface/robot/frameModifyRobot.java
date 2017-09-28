@@ -5,6 +5,9 @@
  */
 package iterface.robot;
 
+import iterface.frameMain;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author sev_user
@@ -27,21 +30,239 @@ public class frameModifyRobot extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        mListCycleLabel = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        mChangeBtn = new javax.swing.JButton();
+        mDeleteRobotBtn = new javax.swing.JButton();
+        listCycleRobotScrollPane = new javax.swing.JScrollPane();
+        mDoneBtn = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        positonXTextField = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        postionYTextField = new javax.swing.JTextField();
+        ListRobotScrollPane = new javax.swing.JScrollPane();
+        mListRobotsLabel = new javax.swing.JLabel();
+        mDeleteCycleBtn = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
+
+        mListCycleLabel.setText("List Cycle : 0");
+
+        jLabel2.setText("Detail Robot");
+
+        mChangeBtn.setText("Change");
+        mChangeBtn.setToolTipText("");
+        mChangeBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mChangeBtnActionPerformed(evt);
+            }
+        });
+
+        mDeleteRobotBtn.setText("Delete Robots");
+        mDeleteRobotBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mDeleteRobotBtnActionPerformed(evt);
+            }
+        });
+
+        mDoneBtn.setText("Done");
+        mDoneBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mDoneBtnActionPerformed(evt);
+            }
+        });
+
+        jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+
+        jLabel3.setText("Cycle of Robot :");
+
+        jLabel4.setText("Position X");
+
+        positonXTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                positonXTextField(evt);
+            }
+        });
+
+        jLabel5.setText("Position Y");
+
+        postionYTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                postionYTextField(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(32, 32, 32)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(positonXTextField)
+                    .addComponent(postionYTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE))
+                .addContainerGap(35, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(positonXTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(postionYTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(66, Short.MAX_VALUE))
+        );
+
+        mListRobotsLabel.setText("List Robots : 0");
+
+        mDeleteCycleBtn.setText("Delete Cycle");
+        mDeleteCycleBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mDeleteCycleBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(34, 34, 34)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(mListCycleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(65, 65, 65)
+                        .addComponent(mListRobotsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(105, 105, 105)
+                        .addComponent(jLabel2)
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(listCycleRobotScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(68, 68, 68))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(mDeleteCycleBtn)
+                                .addGap(44, 44, 44)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(ListRobotScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(26, 26, 26)
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(61, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(13, 13, 13)
+                                .addComponent(mDeleteRobotBtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(mChangeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(38, 38, 38)
+                                .addComponent(mDoneBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(51, 51, 51))))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(mListCycleLabel)
+                    .addComponent(jLabel2)
+                    .addComponent(mListRobotsLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(ListRobotScrollPane)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(listCycleRobotScrollPane))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(mDeleteCycleBtn)
+                    .addComponent(mDeleteRobotBtn)
+                    .addComponent(mChangeBtn)
+                    .addComponent(mDoneBtn))
+                .addGap(33, 33, 33))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void mChangeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mChangeBtnActionPerformed
+        // TODO add your handling code here:
+//        if (positonXTextField.getText().equals("") || postionYTextField.getText().equals("")) {
+//            JOptionPane.showMessageDialog(null, "Please insert Valid Number Only");
+//        } else if (mNewPostionX >= SensorUtility.numberRow || mNewPostionY >= SensorUtility.numberColum){
+//            int maxX = SensorUtility.numberRow-1;
+//            int maxY = SensorUtility.numberColum-1;
+//            JOptionPane.showMessageDialog(null, "Maximum positon X =" + maxX +" and Maximum positon Y =" +maxY);
+//        } else if (mNewPostionX == mOldPostionX && mNewPostionY == mOldPostionY) {
+//            JOptionPane.showMessageDialog(null, "There are no change ^_^" );
+//        } else if (mIndex >= 0 && mIndex < mListTargetNodes.size()){
+//            mJListTarget.removeListSelectionListener(mListSelectionListener);
+//
+//            mListTargetNodes.get(mIndex).setX(mNewPostionX);
+//            mListTargetNodes.get(mIndex).setY(mNewPostionY);
+//
+//            updateListTagest();
+//            mJListTarget.addListSelectionListener(mListSelectionListener);
+//            mJListTarget.setSelectedIndex(mIndex);
+//        }
+    }//GEN-LAST:event_mChangeBtnActionPerformed
+
+    private void mDeleteRobotBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mDeleteRobotBtnActionPerformed
+        // TODO add your handling code here:
+//        if (mIndex >= 0 && mIndex < mListTargetNodes.size()) {
+//            mJListTarget.removeListSelectionListener(mListSelectionListener);
+//            mJListTarget.clearSelection();
+//            mListTargetNodes.remove(mIndex);
+//            mIndex = -1;
+//
+//            updateListTagest();
+//            mJListTarget.addListSelectionListener(mListSelectionListener);
+//        }
+
+    }//GEN-LAST:event_mDeleteRobotBtnActionPerformed
+
+    private void mDoneBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mDoneBtnActionPerformed
+        // TODO add your handling code here:
+        try {
+            frameMain.coordinatePanel.refresh();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+        this.dispose();
+    }//GEN-LAST:event_mDoneBtnActionPerformed
+
+    private void positonXTextField(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_positonXTextField
+        // TODO add your handling code here:
+//        try {
+//            mNewPostionX = Integer.parseInt(positonXTextField.getText());
+//        } catch (NumberFormatException nfe) {
+//            positonXTextField.setText("");
+//        }
+    }//GEN-LAST:event_positonXTextField
+
+    private void postionYTextField(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_postionYTextField
+        // TODO add your handling code here:
+//        try {
+//            mNewPostionY = Integer.parseInt(postionYTextField.getText());
+//        } catch (NumberFormatException nfe) {
+//            postionYTextField.setText("");
+//        }
+    }//GEN-LAST:event_postionYTextField
+
+    private void mDeleteCycleBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mDeleteCycleBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_mDeleteCycleBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -79,5 +300,20 @@ public class frameModifyRobot extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane ListRobotScrollPane;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane listCycleRobotScrollPane;
+    private javax.swing.JButton mChangeBtn;
+    private javax.swing.JButton mDeleteCycleBtn;
+    private javax.swing.JButton mDeleteRobotBtn;
+    private javax.swing.JButton mDoneBtn;
+    private javax.swing.JLabel mListCycleLabel;
+    private javax.swing.JLabel mListRobotsLabel;
+    private javax.swing.JTextField positonXTextField;
+    private javax.swing.JTextField postionYTextField;
     // End of variables declaration//GEN-END:variables
 }

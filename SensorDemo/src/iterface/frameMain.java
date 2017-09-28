@@ -6,6 +6,8 @@
 package iterface;
 
 import common.SensorUtility;
+import iterface.robot.frameAddRobot;
+import iterface.robot.frameModifyRobot;
 import iterface.sensor.frameAddSensor;
 import iterface.sensor.frameModifySensor;
 import iterface.setting.frameCalculateDistance;
@@ -226,9 +228,19 @@ public class frameMain extends javax.swing.JFrame {
         RobotMenu.setText("Robot");
 
         AddRobotMenuItem.setText("Add");
+        AddRobotMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddRobotMenuItemActionPerformed(evt);
+            }
+        });
         RobotMenu.add(AddRobotMenuItem);
 
         ModifyRobotMenuItem.setText("Modify");
+        ModifyRobotMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ModifyRobotMenuItemActionPerformed(evt);
+            }
+        });
         RobotMenu.add(ModifyRobotMenuItem);
 
         ShowRobotMenuItem.setSelected(true);
@@ -412,6 +424,20 @@ public class frameMain extends javax.swing.JFrame {
         SensorUtility.mListRobotNodes.clear();
         coordinatePanel.refresh();
     }//GEN-LAST:event_DeleteAllRobotMenuItemActionPerformed
+
+    private void AddRobotMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddRobotMenuItemActionPerformed
+        // TODO add your handling code here:
+        frameAddRobot mFrameAddRobot = new frameAddRobot();
+        mFrameAddRobot.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        mFrameAddRobot.setVisible(true);
+    }//GEN-LAST:event_AddRobotMenuItemActionPerformed
+
+    private void ModifyRobotMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ModifyRobotMenuItemActionPerformed
+        // TODO add your handling code here:
+        frameModifyRobot mFrameModifyRobot = new frameModifyRobot();
+        mFrameModifyRobot.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        mFrameModifyRobot.setVisible(true);
+    }//GEN-LAST:event_ModifyRobotMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
