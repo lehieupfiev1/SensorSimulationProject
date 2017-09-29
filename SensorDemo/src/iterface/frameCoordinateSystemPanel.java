@@ -92,15 +92,15 @@ public class frameCoordinateSystemPanel extends JPanel{
             } else if (next.getType() == 1) {
                 // Robot node
                 if (isShowRobot) {
-                    g.setColor(Color.BLUE);
+                    g.setColor(Color.RED);
                 } else {
                     g.setColor(new Color(0, 0, 0, 0));
                 }
-                g.fillOval(cellX, cellY, sizeRect, sizeRect);
+                g.drawOval(cellX, cellY, sizeRect, sizeRect);
             } else if (next.getType() == 2) {
                 // Sensor node
                 if (isShowSensor) {
-                    g.setColor(Color.RED);
+                    g.setColor(Color.BLUE);
                 } else {
                     g.setColor(new Color(0, 0, 0, 0));
                 }

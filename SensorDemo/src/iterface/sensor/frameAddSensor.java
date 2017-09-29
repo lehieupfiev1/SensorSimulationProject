@@ -117,6 +117,7 @@ public class frameAddSensor extends javax.swing.JFrame {
             }
         });
 
+        manualNumberSensorLabel.setForeground(new java.awt.Color(0, 0, 255));
         manualNumberSensorLabel.setText("Number Sensor : ");
 
         RandomRadioButton.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N

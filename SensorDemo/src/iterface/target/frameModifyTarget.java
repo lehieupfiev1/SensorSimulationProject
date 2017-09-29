@@ -42,7 +42,7 @@ public class frameModifyTarget extends javax.swing.JFrame {
         public void valueChanged(ListSelectionEvent e) {
                 if (!dataModel.isEmpty()) {
                     mIndex = mJListTarget.getSelectedIndex();
-                    if (mIndex < mListTargetNodes.size()) {
+                    if (mIndex >= 0 && mIndex < mListTargetNodes.size()) {
                         mOldPostionX = mListTargetNodes.get(mIndex).getX();
                         mOldPostionY = mListTargetNodes.get(mIndex).getY();
                         mNewPostionX = mOldPostionX;

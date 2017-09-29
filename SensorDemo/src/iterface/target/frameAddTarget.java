@@ -98,6 +98,7 @@ public class frameAddTarget extends javax.swing.JFrame {
             }
         });
 
+        manualNumberTargetLabel.setForeground(new java.awt.Color(0, 51, 255));
         manualNumberTargetLabel.setText("Number Target : ");
 
         RandomRadioButton.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N

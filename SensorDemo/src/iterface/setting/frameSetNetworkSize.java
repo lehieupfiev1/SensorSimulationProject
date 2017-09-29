@@ -26,6 +26,7 @@ public class frameSetNetworkSize extends javax.swing.JFrame {
     public frameSetNetworkSize() {
         initComponents();
         initOtherComponents();
+        this.setTitle("Calculate Distance");
     }
 
     private void initOtherComponents() {

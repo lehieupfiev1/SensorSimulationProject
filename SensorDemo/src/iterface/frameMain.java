@@ -16,8 +16,21 @@ import iterface.target.frameAddTarget;
 import iterface.target.frameModifyTarget;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
+import java.awt.Image;
 import java.awt.event.ItemEvent;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileFilter;
+
 
 /**
  *
@@ -31,6 +44,14 @@ public class frameMain extends javax.swing.JFrame {
     public frameMain() {
         initComponents();
         initOtherComponents();
+        Image image = null;
+        try {
+            image = ImageIO.read(getClass().getResource("/resource/Logo_wsn.png"));
+            this.setIconImage(image);
+        } catch (IOException ex) {
+            
+        }
+
     }
 
     public void initOtherComponents() {
@@ -64,7 +85,8 @@ public class frameMain extends javax.swing.JFrame {
         NetworkSizeMenuItem = new javax.swing.JMenuItem();
         CalculateDistanceMenuItem = new javax.swing.JMenuItem();
         ShowGridMenuItem = new javax.swing.JCheckBoxMenuItem();
-        saveAsMenuItem = new javax.swing.JMenuItem();
+        SaveFileMenuItem = new javax.swing.JMenuItem();
+        importFileMenuItem = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
         SensorMenu = new javax.swing.JMenu();
         AddSensorMenuItem = new javax.swing.JMenuItem();
@@ -121,10 +143,23 @@ public class frameMain extends javax.swing.JFrame {
         });
         inputDataMenu.add(ShowGridMenuItem);
 
-        saveAsMenuItem.setMnemonic('a');
-        saveAsMenuItem.setText("Import File Input Data");
-        saveAsMenuItem.setActionCommand("Import Input Data File");
-        inputDataMenu.add(saveAsMenuItem);
+        SaveFileMenuItem.setText("Save Input Data File");
+        SaveFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SaveFileMenuItemActionPerformed(evt);
+            }
+        });
+        inputDataMenu.add(SaveFileMenuItem);
+
+        importFileMenuItem.setMnemonic('a');
+        importFileMenuItem.setText("Import Input Data File");
+        importFileMenuItem.setActionCommand("Import Input Data File");
+        importFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                importFileMenuItemActionPerformed(evt);
+            }
+        });
+        inputDataMenu.add(importFileMenuItem);
 
         exitMenuItem.setMnemonic('x');
         exitMenuItem.setText("Exit");
@@ -299,9 +334,8 @@ public class frameMain extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 813, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 13, Short.MAX_VALUE))
         );
 
         pack();
@@ -439,6 +473,100 @@ public class frameMain extends javax.swing.JFrame {
         mFrameModifyRobot.setVisible(true);
     }//GEN-LAST:event_ModifyRobotMenuItemActionPerformed
 
+    private void importFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importFileMenuItemActionPerformed
+
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new java.io.File("."));
+        FileFilter filter = new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                if (f.isDirectory()) {
+                    return true;
+                } else if (f.getName().endsWith(".INP")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            @Override
+            public String getDescription() {
+                return "Sensor Input files";
+            }
+        };
+        chooser.setDialogTitle("Open File");
+        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        chooser.addChoosableFileFilter(filter);
+
+        chooser.setAcceptAllFileFilterUsed(true);
+
+
+        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            System.out.println("getCurrentDirectory(): " + chooser.getCurrentDirectory());
+            System.out.println("getSelectedFile() : " + chooser.getSelectedFile());
+            try {
+                SensorUtility.readFile(chooser.getSelectedFile()+"");
+            } catch (Exception ex) {
+                Logger.getLogger(frameMain.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println(" Le Hieu IOException");
+                JOptionPane.showMessageDialog(null, "Error open file !");
+                SensorUtility.resetSetting();
+            } finally {
+                coordinatePanel.setCoordinateSize(SensorUtility.numberRow,SensorUtility.numberColum);
+                coordinatePanel.refresh();
+            }
+
+        } else {
+            System.out.println("No Selection ");
+        }
+    }//GEN-LAST:event_importFileMenuItemActionPerformed
+
+    private void SaveFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveFileMenuItemActionPerformed
+        // TODO add your handling code here:
+        saveFile();
+    }//GEN-LAST:event_SaveFileMenuItemActionPerformed
+
+    public void saveFile() {
+                JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new java.io.File("."));
+        FileFilter filter = new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                if (f.isDirectory()) {
+                    return true;
+                } else if (f.getName().endsWith(".INP")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            @Override
+            public String getDescription() {
+                return "Sensor Input files";
+            }
+        };
+        chooser.setDialogTitle("Save File");
+        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        chooser.addChoosableFileFilter(filter);
+
+        chooser.setAcceptAllFileFilterUsed(true);
+
+
+        if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+            System.out.println("getCurrentDirectory(): " + chooser.getCurrentDirectory());
+            System.out.println("getSelectedFile() : " + chooser.getSelectedFile());
+            try {
+                SensorUtility.writeFile(chooser.getSelectedFile()+".INP");
+            } catch (IOException ex) {
+                Logger.getLogger(frameMain.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            System.out.println("No Selection ");
+        }
+    }
+    
+    
     /**
      * @param args the command line arguments
      */
@@ -475,6 +603,7 @@ public class frameMain extends javax.swing.JFrame {
 //                GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();  
 //                mFrameMain.setMaximizedBounds(env.getMaximumWindowBounds());  
                 mFrameMain.setVisible(true);
+                
                 mFrameMain.setTitle("Sensor Simulation");
                 
                 coordinatePanel.fillCell(199, 199, 0);
@@ -502,6 +631,7 @@ public class frameMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem MyAlgorithmMenuItem;
     private javax.swing.JMenuItem NetworkSizeMenuItem;
     private javax.swing.JMenu RobotMenu;
+    private javax.swing.JMenuItem SaveFileMenuItem;
     private javax.swing.JMenu SensorMenu;
     private javax.swing.JCheckBoxMenuItem ShowGridMenuItem;
     private javax.swing.JCheckBoxMenuItem ShowRobotMenuItem;
@@ -512,10 +642,10 @@ public class frameMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem contentsMenuItem;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu helpMenu;
+    private javax.swing.JMenuItem importFileMenuItem;
     private javax.swing.JMenu inputDataMenu;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JMenuBar menuBar;
-    private javax.swing.JMenuItem saveAsMenuItem;
     // End of variables declaration//GEN-END:variables
     public static frameCoordinateSystemPanel coordinatePanel;
 }

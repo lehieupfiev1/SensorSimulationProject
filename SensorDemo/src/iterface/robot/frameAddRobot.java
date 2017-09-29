@@ -41,7 +41,7 @@ public class frameAddRobot extends javax.swing.JFrame {
             // Update list
             int index = (int)CycleSpinner.getValue();
             if (mListTempRobotNodes.get(index) != null) {
-                manualNumberRobotLabel.setText("Number Robots : "+mListTempRobotNodes.get(index).size());
+                manualNumberRobotLabel.setText("Number Robots of Cycle : "+mListTempRobotNodes.get(index).size());
             }
         }
     };
@@ -160,7 +160,8 @@ public class frameAddRobot extends javax.swing.JFrame {
             }
         });
 
-        manualNumberRobotLabel.setText("Number Robots : 0");
+        manualNumberRobotLabel.setForeground(new java.awt.Color(0, 51, 255));
+        manualNumberRobotLabel.setText("Number Robots of Cycle : 0");
 
         RandomRadioButton.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
         RandomRadioButton.setText("Random");
@@ -317,7 +318,7 @@ public class frameAddRobot extends javax.swing.JFrame {
                     mListTempRobotNodes.get(i).add(new NodeItem(x, y, 1, i));
                 }
             }
-            JOptionPane.showMessageDialog(null, "Create new targets success !");
+            JOptionPane.showMessageDialog(null, "Create new robots success !");
 
         }
     }//GEN-LAST:event_RandomRobotBtnActionPerformed
@@ -333,7 +334,7 @@ public class frameAddRobot extends javax.swing.JFrame {
             manualPositionXTextField.setEnabled(false);
             manualPositionYTextField.setEnabled(false);
             AddNewRobotBtn.setEnabled(false);
-            manualNumberRobotLabel.setText("Number Robots : 0");
+            manualNumberRobotLabel.setText("Number Robots of Cycle : 0");
 
             //Diable Random option
             RandomRadioButton.setSelected(false);
@@ -400,7 +401,7 @@ public class frameAddRobot extends javax.swing.JFrame {
         } else {
             mListTempRobotNodes.get((int)CycleSpinner.getValue()).add(new NodeItem(positionX, positionY, 1, (int)CycleSpinner.getValue()));
             //Update number robot
-            manualNumberRobotLabel.setText("Number Robots : "+mListTempRobotNodes.get((int)CycleSpinner.getValue()).size());    
+            manualNumberRobotLabel.setText("Number Robots of Cycle : "+mListTempRobotNodes.get((int)CycleSpinner.getValue()).size());    
         }
     }//GEN-LAST:event_AddNewRobotBtnActionPerformed
 
