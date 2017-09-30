@@ -313,8 +313,8 @@ public class frameAddRobot extends javax.swing.JFrame {
             for (int i = 0;i < randomNumberCycle;i++) {
                 mListTempRobotNodes.add(new ArrayList<>());
                 for (int j = 0; j < randomNumberRobotPerCycle; j++) {
-                    int x = random.nextInt(SensorUtility.numberRow - 1);
-                    int y = random.nextInt(SensorUtility.numberColum - 1);
+                    int x = random.nextInt(SensorUtility.numberRow);
+                    int y = random.nextInt(SensorUtility.numberColum);
                     mListTempRobotNodes.get(i).add(new NodeItem(x, y, 1, i));
                 }
             }

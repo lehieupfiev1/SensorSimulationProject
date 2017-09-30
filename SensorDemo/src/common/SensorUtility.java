@@ -5,6 +5,8 @@
  */
 package common;
 
+import java.awt.Component;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -14,6 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import javax.imageio.ImageIO;
 import model.NodeItem;
 
 /**
@@ -30,6 +33,7 @@ public final class SensorUtility {
     public static List<NodeItem> mListSensorNodes = new ArrayList<>(300000);
     public static List<NodeItem> mListTargetNodes = new ArrayList<>(30000);
     public static List<List<NodeItem>> mListRobotNodes = new ArrayList<List<NodeItem>>(3000);
+    
     
     public static void writeFile(String filename) throws IOException {
         File file = new File(filename);
@@ -116,6 +120,20 @@ public final class SensorUtility {
             mListSensorNodes.add(new NodeItem(x, y, 2));
         }
     }
+    public static void captureScreen(Component component,String filename) throws IOException {
+        BufferedImage img = getScreenShot(component);
+        // write the captured image as a PNG
+        ImageIO.write(img, "png", new File(filename));
+    }
+
+    public static BufferedImage getScreenShot(Component component) {
+
+        BufferedImage image = new BufferedImage(component.getWidth(), component.getHeight(), BufferedImage.TYPE_INT_RGB);
+        // paints into image's Graphics
+        component.paint(image.getGraphics());
+        return image;
+    }
+
     public static void resetSetting() {
         numberColum =200;
         numberRow = 200;

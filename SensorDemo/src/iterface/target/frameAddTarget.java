@@ -239,8 +239,8 @@ public class frameAddTarget extends javax.swing.JFrame {
         } else {
             Random random = new Random();
             for (int i = 0;i < numberTarget;i++) {
-               int x = random.nextInt(SensorUtility.numberRow-1);
-               int y = random.nextInt(SensorUtility.numberColum-1);
+               int x = random.nextInt(SensorUtility.numberRow);
+               int y = random.nextInt(SensorUtility.numberColum);
                SensorUtility.mListTargetNodes.add(new NodeItem(x, y, 0));
             }
             JOptionPane.showMessageDialog(null, "Create new targets success !");

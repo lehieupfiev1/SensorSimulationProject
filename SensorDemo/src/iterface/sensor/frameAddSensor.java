@@ -214,8 +214,8 @@ public class frameAddSensor extends javax.swing.JFrame {
         } else {
             Random random = new Random();
             for (int i = 0;i < numberSensor;i++) {
-                int x = random.nextInt(SensorUtility.numberRow-1);
-                int y = random.nextInt(SensorUtility.numberColum-1);
+                int x = random.nextInt(SensorUtility.numberRow);
+                int y = random.nextInt(SensorUtility.numberColum);
                 SensorUtility.mListSensorNodes.add(new NodeItem(x, y, 2));
             }
             JOptionPane.showMessageDialog(null, "Create new sensors success !");

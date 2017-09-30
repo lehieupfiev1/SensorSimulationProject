@@ -87,6 +87,7 @@ public class frameMain extends javax.swing.JFrame {
         ShowGridMenuItem = new javax.swing.JCheckBoxMenuItem();
         SaveFileMenuItem = new javax.swing.JMenuItem();
         importFileMenuItem = new javax.swing.JMenuItem();
+        captureScreenMenuItem = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
         SensorMenu = new javax.swing.JMenu();
         AddSensorMenuItem = new javax.swing.JMenuItem();
@@ -153,13 +154,21 @@ public class frameMain extends javax.swing.JFrame {
 
         importFileMenuItem.setMnemonic('a');
         importFileMenuItem.setText("Import Input Data File");
-        importFileMenuItem.setActionCommand("Import Input Data File");
         importFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 importFileMenuItemActionPerformed(evt);
             }
         });
         inputDataMenu.add(importFileMenuItem);
+
+        captureScreenMenuItem.setText("Capture Screen");
+        captureScreenMenuItem.setActionCommand("Capture Screen");
+        captureScreenMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                captureScreenMenuItemActionPerformed(evt);
+            }
+        });
+        inputDataMenu.add(captureScreenMenuItem);
 
         exitMenuItem.setMnemonic('x');
         exitMenuItem.setText("Exit");
@@ -177,6 +186,7 @@ public class frameMain extends javax.swing.JFrame {
 
         AddSensorMenuItem.setMnemonic('t');
         AddSensorMenuItem.setText("Add");
+        AddSensorMenuItem.setHideActionText(true);
         AddSensorMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 AddSensorMenuItemActionPerformed(evt);
@@ -186,6 +196,7 @@ public class frameMain extends javax.swing.JFrame {
 
         ModifiySensorMenuItem.setMnemonic('y');
         ModifiySensorMenuItem.setText("Modify");
+        ModifiySensorMenuItem.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/roundicon_1.png"))); // NOI18N
         ModifiySensorMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ModifiySensorMenuItemActionPerformed(evt);
@@ -526,8 +537,49 @@ public class frameMain extends javax.swing.JFrame {
         saveFile();
     }//GEN-LAST:event_SaveFileMenuItemActionPerformed
 
+    private void captureScreenMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_captureScreenMenuItemActionPerformed
+        // TODO add your handling code here:
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new java.io.File("."));
+        FileFilter filter = new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                if (f.isDirectory()) {
+                    return true;
+                } else if (f.getName().endsWith(".png")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            @Override
+            public String getDescription() {
+                return "Image files";
+            }
+        };
+        chooser.setDialogTitle("Save screen image");
+        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        chooser.addChoosableFileFilter(filter);
+
+        chooser.setAcceptAllFileFilterUsed(true);
+
+
+        if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+            System.out.println("getCurrentDirectory(): " + chooser.getCurrentDirectory());
+            System.out.println("getSelectedFile() : " + chooser.getSelectedFile());
+            try {
+                SensorUtility.captureScreen(coordinatePanel ,chooser.getSelectedFile()+".png");
+            } catch (IOException ex) {
+                Logger.getLogger(frameMain.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            System.out.println("No Selection ");
+        }
+    }//GEN-LAST:event_captureScreenMenuItemActionPerformed
+
     public void saveFile() {
-                JFileChooser chooser = new JFileChooser();
+        JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new java.io.File("."));
         FileFilter filter = new FileFilter() {
             @Override
@@ -639,6 +691,7 @@ public class frameMain extends javax.swing.JFrame {
     private javax.swing.JCheckBoxMenuItem ShowTargetMenuItem;
     private javax.swing.JMenu TargetMenu;
     private javax.swing.JMenuItem aboutMenuItem;
+    private javax.swing.JMenuItem captureScreenMenuItem;
     private javax.swing.JMenuItem contentsMenuItem;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu helpMenu;
