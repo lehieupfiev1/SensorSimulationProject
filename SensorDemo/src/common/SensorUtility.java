@@ -120,15 +120,22 @@ public final class SensorUtility {
             mListSensorNodes.add(new NodeItem(x, y, 2));
         }
     }
+    
+    public static void captureScreen(Component component,int width, int height,String filename) throws IOException {
+        BufferedImage img = getScreenShot(component,width,height);
+        // write the captured image as a PNG
+        ImageIO.write(img, "png", new File(filename));
+    }
+    
     public static void captureScreen(Component component,String filename) throws IOException {
-        BufferedImage img = getScreenShot(component);
+        BufferedImage img = getScreenShot(component,component.getWidth(),component.getHeight());
         // write the captured image as a PNG
         ImageIO.write(img, "png", new File(filename));
     }
 
-    public static BufferedImage getScreenShot(Component component) {
+    public static BufferedImage getScreenShot(Component component ,int width, int height) {
 
-        BufferedImage image = new BufferedImage(component.getWidth(), component.getHeight(), BufferedImage.TYPE_INT_RGB);
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         // paints into image's Graphics
         component.paint(image.getGraphics());
         return image;

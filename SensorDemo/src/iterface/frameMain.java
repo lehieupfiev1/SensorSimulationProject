@@ -569,7 +569,7 @@ public class frameMain extends javax.swing.JFrame {
             System.out.println("getCurrentDirectory(): " + chooser.getCurrentDirectory());
             System.out.println("getSelectedFile() : " + chooser.getSelectedFile());
             try {
-                SensorUtility.captureScreen(coordinatePanel ,chooser.getSelectedFile()+".png");
+                SensorUtility.captureScreen(coordinatePanel ,coordinatePanel.sizeWidthCoordinater+2*coordinatePanel.sizeRect,coordinatePanel.sizeWidthCoordinater+2*coordinatePanel.sizeRect,chooser.getSelectedFile()+".png");
             } catch (IOException ex) {
                 Logger.getLogger(frameMain.class.getName()).log(Level.SEVERE, null, ex);
             }
