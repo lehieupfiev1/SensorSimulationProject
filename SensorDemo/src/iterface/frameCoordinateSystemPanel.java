@@ -40,15 +40,15 @@ public class frameCoordinateSystemPanel extends JPanel{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     public frameCoordinateSystemPanel(int withScreen, int heightScreen) {
-       sizeWidthPanel = withScreen;
-       sizeHeightPanel = heightScreen -100;
+       sizeWidthPanel = withScreen-SensorUtility.marginPanel*2;
+       sizeHeightPanel = heightScreen -SensorUtility.marginPanel*2;
        setCoordinateSize(SensorUtility.numberRow,SensorUtility.numberColum);
        this.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                int x = e.getX();
-                int y = e.getY();
-                int cellX = x / sizeRect - 1;
-                int cellY = y / sizeRect - 1;
+                int x = e.getX()-SensorUtility.marginPanel;
+                int y = e.getY()-SensorUtility.marginPanel;
+                int cellX = x / sizeRect;
+                int cellY = y / sizeRect;
                 if (cellX < SensorUtility.numberRow && cellX >= 0 && cellY < SensorUtility.numberColum && cellY >=0 )
                    JOptionPane.showMessageDialog(null, "X ="+cellX +" Y =" +cellY );
                 //System.out.println("Clicked! X=" +cellX +" Y =" +cellY);
@@ -56,16 +56,22 @@ public class frameCoordinateSystemPanel extends JPanel{
         });
     }
     
+    public void setPanelScreenReSize(int withScreen, int heightScreen,int row,int colum) {
+       sizeWidthPanel = withScreen-SensorUtility.marginPanel*2;
+       sizeHeightPanel = heightScreen -SensorUtility.marginPanel*2;
+       setCoordinateSize(row,colum);
+    }
+    
     public void setCoordinateSize(int  nRow,int nColum) {
         SensorUtility.numberColum = nColum;
         SensorUtility.numberRow = nRow;
-        if (sizeWidthPanel/(SensorUtility.numberRow+2) > sizeHeightPanel/(SensorUtility.numberColum+2)) {
-            sizeRect = (int) sizeHeightPanel/(SensorUtility.numberColum+2);
+        if (sizeWidthPanel/(SensorUtility.numberRow) > sizeHeightPanel/(SensorUtility.numberColum)) {
+            sizeRect = (int) sizeHeightPanel/(SensorUtility.numberColum);
         } else {
-            sizeRect = (int) sizeWidthPanel/(SensorUtility.numberRow+2);
+            sizeRect = (int) sizeWidthPanel/(SensorUtility.numberRow);
         }
-        sizeWidthCoordinater = (SensorUtility.numberRow)*sizeRect;
-        sizeHeightCoordianter = (SensorUtility.numberColum)*sizeRect;
+        sizeWidthCoordinater = (SensorUtility.numberRow)*sizeRect+SensorUtility.marginPanel;
+        sizeHeightCoordianter = (SensorUtility.numberColum)*sizeRect+SensorUtility.marginPanel;
         repaint();
     }
     
@@ -74,11 +80,12 @@ public class frameCoordinateSystemPanel extends JPanel{
         super.paintComponent(g); //To change body of generated methods, choose Tools | Templates.
 
         //Draw list nodes
+        System.err.println("with"+sizeWidthPanel +" height="+sizeHeightPanel + " sizeRect="+sizeRect+ " sizeWidthCoordinater="+sizeWidthCoordinater+"sizeHeightCoordianter ="+sizeHeightCoordianter);
         for (Iterator<NodeItem> iterator = mListNodes.iterator(); iterator.hasNext();) {
             //Draw node
             NodeItem next = iterator.next();
-            int cellX = sizeRect + (next.getX() * sizeRect);
-            int cellY = sizeRect + (next.getY() * sizeRect);
+            int cellX = SensorUtility.marginPanel + (next.getX() * sizeRect);
+            int cellY = SensorUtility.marginPanel + (next.getY() * sizeRect);
             if (next.getType() == 0) {
                 //target Node
                 if (isShowTarget) {
@@ -115,16 +122,16 @@ public class frameCoordinateSystemPanel extends JPanel{
             g.setColor(new Color(0, 0, 0, 0));
         }
 
-        for (int i = sizeRect; i <= sizeWidthCoordinater; i += sizeRect) {
-            g.drawLine(i, sizeRect, i, sizeHeightCoordianter + sizeRect);
+        for (int i = SensorUtility.marginPanel; i <= sizeWidthCoordinater; i += sizeRect) {
+            g.drawLine(i, SensorUtility.marginPanel, i, sizeHeightCoordianter);
         }
 
-        for (int i = sizeRect; i <= sizeHeightCoordianter; i += sizeRect) {
-            g.drawLine(sizeRect, i, sizeWidthCoordinater + sizeRect, i);
+        for (int i = SensorUtility.marginPanel; i <= sizeHeightCoordianter; i += sizeRect) {
+            g.drawLine(SensorUtility.marginPanel, i, sizeWidthCoordinater, i);
         }
         // Draw khung toa do
         g.setColor(Color.BLACK);
-        g.drawRect(sizeRect, sizeRect, sizeWidthCoordinater, sizeHeightCoordianter);
+        g.drawRect(SensorUtility.marginPanel, SensorUtility.marginPanel, sizeWidthCoordinater-SensorUtility.marginPanel, sizeHeightCoordianter-SensorUtility.marginPanel);
 
         
     }

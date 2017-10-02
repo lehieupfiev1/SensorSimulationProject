@@ -14,6 +14,8 @@ import iterface.setting.frameCalculateDistance;
 import iterface.setting.frameSetNetworkSize;
 import iterface.target.frameAddTarget;
 import iterface.target.frameModifyTarget;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
@@ -28,6 +30,7 @@ import javax.swing.JFileChooser;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 
@@ -55,16 +58,35 @@ public class frameMain extends javax.swing.JFrame {
     }
 
     public void initOtherComponents() {
-        coordinatePanel = new frameCoordinateSystemPanel(1200,1200);
+        JScrollPane jScrollPane1 = new JScrollPane();
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1500, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 826, Short.MAX_VALUE)
+        );
+        
+
+
+
+        //Add Coordinate Panel
+
+       // jScrollPane1.setPreferredSize(new Dimension(1500,1500));
+        coordinatePanel = new frameCoordinateSystemPanel(1240,1240);
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(coordinatePanel);
         coordinatePanel.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1200, Short.MAX_VALUE)
+            .addGap(0, 1640, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1200, Short.MAX_VALUE)
+            .addGap(0, 1640, Short.MAX_VALUE)
         );
 
         jScrollPane1.setViewportView(coordinatePanel);
@@ -79,12 +101,10 @@ public class frameMain extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
         menuBar = new javax.swing.JMenuBar();
         inputDataMenu = new javax.swing.JMenu();
         NetworkSizeMenuItem = new javax.swing.JMenuItem();
         CalculateDistanceMenuItem = new javax.swing.JMenuItem();
-        ShowGridMenuItem = new javax.swing.JCheckBoxMenuItem();
         SaveFileMenuItem = new javax.swing.JMenuItem();
         importFileMenuItem = new javax.swing.JMenuItem();
         captureScreenMenuItem = new javax.swing.JMenuItem();
@@ -92,18 +112,20 @@ public class frameMain extends javax.swing.JFrame {
         SensorMenu = new javax.swing.JMenu();
         AddSensorMenuItem = new javax.swing.JMenuItem();
         ModifiySensorMenuItem = new javax.swing.JMenuItem();
-        ShowSensorMenuItem = new javax.swing.JCheckBoxMenuItem();
         DeleteAllSenorMenuItem = new javax.swing.JMenuItem();
         TargetMenu = new javax.swing.JMenu();
         AddTargetMenuItem = new javax.swing.JMenuItem();
         ModifyTargetMenuItem = new javax.swing.JMenuItem();
-        ShowTargetMenuItem = new javax.swing.JCheckBoxMenuItem();
         DeleteAllTargetMenuItem = new javax.swing.JMenuItem();
         RobotMenu = new javax.swing.JMenu();
         AddRobotMenuItem = new javax.swing.JMenuItem();
         ModifyRobotMenuItem = new javax.swing.JMenuItem();
-        ShowRobotMenuItem = new javax.swing.JCheckBoxMenuItem();
         DeleteAllRobotMenuItem = new javax.swing.JMenuItem();
+        ViewMenu = new javax.swing.JMenu();
+        showGridMenuItem = new javax.swing.JCheckBoxMenuItem();
+        showSensorMenuItem = new javax.swing.JCheckBoxMenuItem();
+        showTargetMenuItem = new javax.swing.JCheckBoxMenuItem();
+        showRobotMenuItem = new javax.swing.JCheckBoxMenuItem();
         AlgorithmMenu = new javax.swing.JMenu();
         MyAlgorithmMenuItem = new javax.swing.JMenuItem();
         Algorithm1MenuItem = new javax.swing.JMenuItem();
@@ -117,6 +139,7 @@ public class frameMain extends javax.swing.JFrame {
         inputDataMenu.setMnemonic('f');
         inputDataMenu.setText("Setting");
 
+        NetworkSizeMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/change_icon.png"))); // NOI18N
         NetworkSizeMenuItem.setMnemonic('o');
         NetworkSizeMenuItem.setText("Network Size");
         NetworkSizeMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -126,6 +149,7 @@ public class frameMain extends javax.swing.JFrame {
         });
         inputDataMenu.add(NetworkSizeMenuItem);
 
+        CalculateDistanceMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/calculate_icon.png"))); // NOI18N
         CalculateDistanceMenuItem.setMnemonic('s');
         CalculateDistanceMenuItem.setText("Calculate Distance");
         CalculateDistanceMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -135,15 +159,7 @@ public class frameMain extends javax.swing.JFrame {
         });
         inputDataMenu.add(CalculateDistanceMenuItem);
 
-        ShowGridMenuItem.setSelected(true);
-        ShowGridMenuItem.setText("ShowGrid");
-        ShowGridMenuItem.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                ShowGridItemStateChangedListener(evt);
-            }
-        });
-        inputDataMenu.add(ShowGridMenuItem);
-
+        SaveFileMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/save_icon.png"))); // NOI18N
         SaveFileMenuItem.setText("Save Input Data File");
         SaveFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -152,6 +168,7 @@ public class frameMain extends javax.swing.JFrame {
         });
         inputDataMenu.add(SaveFileMenuItem);
 
+        importFileMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/import_icon.png"))); // NOI18N
         importFileMenuItem.setMnemonic('a');
         importFileMenuItem.setText("Import Input Data File");
         importFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -161,8 +178,8 @@ public class frameMain extends javax.swing.JFrame {
         });
         inputDataMenu.add(importFileMenuItem);
 
+        captureScreenMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/capture_icon.png"))); // NOI18N
         captureScreenMenuItem.setText("Capture Screen");
-        captureScreenMenuItem.setActionCommand("Capture Screen");
         captureScreenMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 captureScreenMenuItemActionPerformed(evt);
@@ -184,6 +201,7 @@ public class frameMain extends javax.swing.JFrame {
         SensorMenu.setMnemonic('e');
         SensorMenu.setText("Sensor");
 
+        AddSensorMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/triangle_icon.png"))); // NOI18N
         AddSensorMenuItem.setMnemonic('t');
         AddSensorMenuItem.setText("Add");
         AddSensorMenuItem.setHideActionText(true);
@@ -196,27 +214,12 @@ public class frameMain extends javax.swing.JFrame {
 
         ModifiySensorMenuItem.setMnemonic('y');
         ModifiySensorMenuItem.setText("Modify");
-        ModifiySensorMenuItem.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/roundicon_1.png"))); // NOI18N
         ModifiySensorMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ModifiySensorMenuItemActionPerformed(evt);
             }
         });
         SensorMenu.add(ModifiySensorMenuItem);
-
-        ShowSensorMenuItem.setSelected(true);
-        ShowSensorMenuItem.setText("View");
-        ShowSensorMenuItem.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                SensorItemStateChangedListener(evt);
-            }
-        });
-        ShowSensorMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ShowSensorMenuItemActionPerformed(evt);
-            }
-        });
-        SensorMenu.add(ShowSensorMenuItem);
 
         DeleteAllSenorMenuItem.setMnemonic('d');
         DeleteAllSenorMenuItem.setText("DeleteAll");
@@ -231,6 +234,7 @@ public class frameMain extends javax.swing.JFrame {
 
         TargetMenu.setText("Target");
 
+        AddTargetMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/square_icon.png"))); // NOI18N
         AddTargetMenuItem.setText("Add");
         AddTargetMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -247,20 +251,6 @@ public class frameMain extends javax.swing.JFrame {
         });
         TargetMenu.add(ModifyTargetMenuItem);
 
-        ShowTargetMenuItem.setSelected(true);
-        ShowTargetMenuItem.setText("View");
-        ShowTargetMenuItem.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                TargetItemStateChangedListener(evt);
-            }
-        });
-        ShowTargetMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ShowTargetMenuItemActionPerformed(evt);
-            }
-        });
-        TargetMenu.add(ShowTargetMenuItem);
-
         DeleteAllTargetMenuItem.setText("DeleteAll");
         DeleteAllTargetMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -273,6 +263,7 @@ public class frameMain extends javax.swing.JFrame {
 
         RobotMenu.setText("Robot");
 
+        AddRobotMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/round_icon.png"))); // NOI18N
         AddRobotMenuItem.setText("Add");
         AddRobotMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -289,15 +280,6 @@ public class frameMain extends javax.swing.JFrame {
         });
         RobotMenu.add(ModifyRobotMenuItem);
 
-        ShowRobotMenuItem.setSelected(true);
-        ShowRobotMenuItem.setText("View");
-        ShowRobotMenuItem.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                RobotItemStateChangedListener(evt);
-            }
-        });
-        RobotMenu.add(ShowRobotMenuItem);
-
         DeleteAllRobotMenuItem.setText("DeleteAll");
         DeleteAllRobotMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -307,6 +289,46 @@ public class frameMain extends javax.swing.JFrame {
         RobotMenu.add(DeleteAllRobotMenuItem);
 
         menuBar.add(RobotMenu);
+
+        ViewMenu.setText("View");
+
+        showGridMenuItem.setSelected(true);
+        showGridMenuItem.setText("Show Grid");
+        showGridMenuItem.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                showGridItemStateChangedListener(evt);
+            }
+        });
+        ViewMenu.add(showGridMenuItem);
+
+        showSensorMenuItem.setSelected(true);
+        showSensorMenuItem.setText("Show Sensor");
+        showSensorMenuItem.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                showSensorItemStateChangedListener(evt);
+            }
+        });
+        ViewMenu.add(showSensorMenuItem);
+
+        showTargetMenuItem.setSelected(true);
+        showTargetMenuItem.setText("Show Target");
+        showTargetMenuItem.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                showTargetItemStateChangedListener(evt);
+            }
+        });
+        ViewMenu.add(showTargetMenuItem);
+
+        showRobotMenuItem.setSelected(true);
+        showRobotMenuItem.setText("Show Robot");
+        showRobotMenuItem.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                showRobotItemStateChangedListener(evt);
+            }
+        });
+        ViewMenu.add(showRobotMenuItem);
+
+        menuBar.add(ViewMenu);
 
         AlgorithmMenu.setText("Algorithm");
 
@@ -340,13 +362,11 @@ public class frameMain extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1500, Short.MAX_VALUE)
+            .addGap(0, 1500, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 813, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 13, Short.MAX_VALUE))
+            .addGap(0, 826, Short.MAX_VALUE)
         );
 
         pack();
@@ -364,58 +384,6 @@ public class frameMain extends javax.swing.JFrame {
         frameNetworkSize.setVisible(true);
         //coordinatePanel.refresh();
     }//GEN-LAST:event_NetworkSizeMenuItemActionPerformed
-
-    private void ShowSensorMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ShowSensorMenuItemActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_ShowSensorMenuItemActionPerformed
-
-    private void ShowTargetMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ShowTargetMenuItemActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_ShowTargetMenuItemActionPerformed
-
-    private void SensorItemStateChangedListener(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_SensorItemStateChangedListener
-        // TODO add your handling code here:
-        int state = evt.getStateChange();
-        if (state == ItemEvent.SELECTED) {
-            coordinatePanel.setShowSensor(true);
-        } else {
-            coordinatePanel.setShowSensor(false);
-        }
-        coordinatePanel.refresh();
-    }//GEN-LAST:event_SensorItemStateChangedListener
-
-    private void TargetItemStateChangedListener(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_TargetItemStateChangedListener
-        // TODO add your handling code here:
-        int state = evt.getStateChange();
-        if (state == ItemEvent.SELECTED) {
-            coordinatePanel.setShowTarget(true);
-        } else {
-            coordinatePanel.setShowTarget(false);
-        }
-        coordinatePanel.refresh();
-    }//GEN-LAST:event_TargetItemStateChangedListener
-
-    private void RobotItemStateChangedListener(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_RobotItemStateChangedListener
-        // TODO add your handling code here:
-        int state = evt.getStateChange();
-        if (state == ItemEvent.SELECTED) {
-            coordinatePanel.setShowRobot(true);
-        } else {
-            coordinatePanel.setShowRobot(false);
-        }
-        coordinatePanel.refresh();
-    }//GEN-LAST:event_RobotItemStateChangedListener
-
-    private void ShowGridItemStateChangedListener(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_ShowGridItemStateChangedListener
-        // TODO add your handling code here:
-        int state = evt.getStateChange();
-        if (state == ItemEvent.SELECTED) {
-            coordinatePanel.setShowGrid(true);
-        } else {
-            coordinatePanel.setShowGrid(false);
-        }
-        coordinatePanel.refresh();
-    }//GEN-LAST:event_ShowGridItemStateChangedListener
 
     private void AddTargetMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddTargetMenuItemActionPerformed
         // TODO add your handling code here:
@@ -523,7 +491,25 @@ public class frameMain extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Error open file !");
                 SensorUtility.resetSetting();
             } finally {
-                coordinatePanel.setCoordinateSize(SensorUtility.numberRow,SensorUtility.numberColum);
+                if (SensorUtility.numberRow < 300 && SensorUtility.numberColum < 300) {
+                    coordinatePanel.setPanelScreenReSize(1240, 1240, SensorUtility.numberRow, SensorUtility.numberColum);
+                } else if (SensorUtility.numberRow <= 400 && SensorUtility.numberColum <= 400) {
+                    if (SensorUtility.numberRow > SensorUtility.numberColum) {
+                        int tempScreen = SensorUtility.numberRow * 4 + SensorUtility.marginPanel * 2;
+                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+                    } else {
+                        int tempScreen = SensorUtility.numberColum * 4 + SensorUtility.marginPanel * 2;
+                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+                    }
+                } else {
+                    if (SensorUtility.numberRow > SensorUtility.numberColum) {
+                        int tempScreen = SensorUtility.numberRow * 3 + SensorUtility.marginPanel * 2;
+                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+                    } else {
+                        int tempScreen = SensorUtility.numberColum * 3 + SensorUtility.marginPanel * 2;
+                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+                    }
+                }
                 coordinatePanel.refresh();
             }
 
@@ -569,7 +555,7 @@ public class frameMain extends javax.swing.JFrame {
             System.out.println("getCurrentDirectory(): " + chooser.getCurrentDirectory());
             System.out.println("getSelectedFile() : " + chooser.getSelectedFile());
             try {
-                SensorUtility.captureScreen(coordinatePanel ,coordinatePanel.sizeWidthCoordinater+2*coordinatePanel.sizeRect,coordinatePanel.sizeWidthCoordinater+2*coordinatePanel.sizeRect,chooser.getSelectedFile()+".png");
+                SensorUtility.captureScreen(coordinatePanel ,coordinatePanel.sizeWidthCoordinater+SensorUtility.marginPanel,coordinatePanel.sizeHeightCoordianter+SensorUtility.marginPanel,chooser.getSelectedFile()+".png");
             } catch (IOException ex) {
                 Logger.getLogger(frameMain.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -577,6 +563,50 @@ public class frameMain extends javax.swing.JFrame {
             System.out.println("No Selection ");
         }
     }//GEN-LAST:event_captureScreenMenuItemActionPerformed
+
+    private void showGridItemStateChangedListener(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showGridItemStateChangedListener
+        // TODO add your handling code here:
+        int state = evt.getStateChange();
+        if (state == ItemEvent.SELECTED) {
+            coordinatePanel.setShowGrid(true);
+        } else {
+            coordinatePanel.setShowGrid(false);
+        }
+        coordinatePanel.refresh();
+    }//GEN-LAST:event_showGridItemStateChangedListener
+
+    private void showSensorItemStateChangedListener(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showSensorItemStateChangedListener
+        // TODO add your handling code here:
+        int state = evt.getStateChange();
+        if (state == ItemEvent.SELECTED) {
+            coordinatePanel.setShowSensor(true);
+        } else {
+            coordinatePanel.setShowSensor(false);
+        }
+        coordinatePanel.refresh();
+    }//GEN-LAST:event_showSensorItemStateChangedListener
+
+    private void showTargetItemStateChangedListener(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showTargetItemStateChangedListener
+        // TODO add your handling code here:
+        int state = evt.getStateChange();
+        if (state == ItemEvent.SELECTED) {
+            coordinatePanel.setShowTarget(true);
+        } else {
+            coordinatePanel.setShowTarget(false);
+        }
+        coordinatePanel.refresh();
+    }//GEN-LAST:event_showTargetItemStateChangedListener
+
+    private void showRobotItemStateChangedListener(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showRobotItemStateChangedListener
+        // TODO add your handling code here:
+        int state = evt.getStateChange();
+        if (state == ItemEvent.SELECTED) {
+            coordinatePanel.setShowRobot(true);
+        } else {
+            coordinatePanel.setShowRobot(false);
+        }
+        coordinatePanel.refresh();
+    }//GEN-LAST:event_showRobotItemStateChangedListener
 
     public void saveFile() {
         JFileChooser chooser = new JFileChooser();
@@ -652,8 +682,7 @@ public class frameMain extends javax.swing.JFrame {
                 frameMain mFrameMain = new frameMain();
                // mFrameMain.setState(JFrame.MAXIMIZED_BOTH);
                 mFrameMain.setExtendedState(JFrame.MAXIMIZED_BOTH);
-//                GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();  
-//                mFrameMain.setMaximizedBounds(env.getMaximumWindowBounds());  
+
                 mFrameMain.setVisible(true);
                 
                 mFrameMain.setTitle("Sensor Simulation");
@@ -685,11 +714,8 @@ public class frameMain extends javax.swing.JFrame {
     private javax.swing.JMenu RobotMenu;
     private javax.swing.JMenuItem SaveFileMenuItem;
     private javax.swing.JMenu SensorMenu;
-    private javax.swing.JCheckBoxMenuItem ShowGridMenuItem;
-    private javax.swing.JCheckBoxMenuItem ShowRobotMenuItem;
-    private javax.swing.JCheckBoxMenuItem ShowSensorMenuItem;
-    private javax.swing.JCheckBoxMenuItem ShowTargetMenuItem;
     private javax.swing.JMenu TargetMenu;
+    private javax.swing.JMenu ViewMenu;
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenuItem captureScreenMenuItem;
     private javax.swing.JMenuItem contentsMenuItem;
@@ -697,8 +723,11 @@ public class frameMain extends javax.swing.JFrame {
     private javax.swing.JMenu helpMenu;
     private javax.swing.JMenuItem importFileMenuItem;
     private javax.swing.JMenu inputDataMenu;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JCheckBoxMenuItem showGridMenuItem;
+    private javax.swing.JCheckBoxMenuItem showRobotMenuItem;
+    private javax.swing.JCheckBoxMenuItem showSensorMenuItem;
+    private javax.swing.JCheckBoxMenuItem showTargetMenuItem;
     // End of variables declaration//GEN-END:variables
     public static frameCoordinateSystemPanel coordinatePanel;
 }

@@ -24,7 +24,10 @@ import model.NodeItem;
  * @author Hieu
  */
 public final class SensorUtility {
+    public static int MaxColum =500;
+    public static int MaxRow =500;
     public static int numberColum =200;
+    public static int marginPanel =20;
     public static int numberRow = 200;
     public static float mRsValue = 2.0f;
     public static float mRtValue = 3.0f;
@@ -33,6 +36,11 @@ public final class SensorUtility {
     public static List<NodeItem> mListSensorNodes = new ArrayList<>(300000);
     public static List<NodeItem> mListTargetNodes = new ArrayList<>(30000);
     public static List<List<NodeItem>> mListRobotNodes = new ArrayList<List<NodeItem>>(3000);
+    public static int MaxTargetNodes = 30000;
+    public static int MaxCycleRobots = 1000;
+    public static int MaxRobotNodesCycle = 1000;
+    public static float MAX_DISTANCE = 1000000000000.0f;
+    
     
     
     public static void writeFile(String filename) throws IOException {
