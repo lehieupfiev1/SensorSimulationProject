@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
  */
 public class SensorDemo {
 
+
     /**
      * @param args the command line arguments
      */

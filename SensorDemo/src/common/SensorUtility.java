@@ -5,6 +5,7 @@
  */
 package common;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -26,23 +27,24 @@ import model.NodeItem;
 public final class SensorUtility {
     public static int MaxColum =500;
     public static int MaxRow =500;
-    public static int numberColum =200;
+    public static int numberColum =100;
     public static int marginPanel =20;
-    public static int numberRow = 200;
+    public static int numberRow = 100;
     public static float mRsValue = 2.0f;
     public static float mRtValue = 3.0f;
     public static int mNumberRobotCycle = 0;
-    public static List<NodeItem> mListNodes = new ArrayList<>(300000);
-    public static List<NodeItem> mListSensorNodes = new ArrayList<>(300000);
-    public static List<NodeItem> mListTargetNodes = new ArrayList<>(30000);
-    public static List<List<NodeItem>> mListRobotNodes = new ArrayList<List<NodeItem>>(3000);
+    public static List<NodeItem> mListNodes = new ArrayList<>();
+    public static List<NodeItem> mListSensorNodes = new ArrayList<>();
+    public static List<NodeItem> mListTargetNodes = new ArrayList<>();
+    public static List<List<NodeItem>> mListRobotNodes = new ArrayList<List<NodeItem>>();
+    public static List<Color> mListColor = new ArrayList<>();
     public static int MaxTargetNodes = 30000;
     public static int MaxCycleRobots = 1000;
     public static int MaxRobotNodesCycle = 1000;
     public static float MAX_DISTANCE = 1000000000000.0f;
     
-    
-    
+
+       
     public static void writeFile(String filename) throws IOException {
         File file = new File(filename);
         if (!file.exists()) file.createNewFile();

@@ -5,6 +5,8 @@
  */
 package iterface;
 
+import algorithm.Algorithm1;
+import algorithm.MyAlgorithm;
 import common.SensorUtility;
 import iterface.robot.frameAddRobot;
 import iterface.robot.frameModifyRobot;
@@ -15,6 +17,7 @@ import iterface.setting.frameSetNetworkSize;
 import iterface.target.frameAddTarget;
 import iterface.target.frameModifyTarget;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
@@ -22,6 +25,7 @@ import java.awt.Image;
 import java.awt.event.ItemEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -44,7 +48,20 @@ public class frameMain extends javax.swing.JFrame {
     /**
      * Creates new form frameMain
      */
+    MyAlgorithm myAlgorithm;
+    Algorithm1 algorithm1;
+    
     public frameMain() {
+        //Init ListColor
+        Random rand = new Random();
+        for (int i = 0; i < 1000; i++) {
+            int r = rand.nextInt(255);
+            int g = rand.nextInt(255);
+            int b = rand.nextInt(255);
+            Color randomColor = new Color(r, g, b);
+            SensorUtility.mListColor.add(randomColor);
+        }
+        
         initComponents();
         initOtherComponents();
         Image image = null;
@@ -201,7 +218,7 @@ public class frameMain extends javax.swing.JFrame {
         SensorMenu.setMnemonic('e');
         SensorMenu.setText("Sensor");
 
-        AddSensorMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/triangle_icon.png"))); // NOI18N
+        AddSensorMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/circle_icon.png"))); // NOI18N
         AddSensorMenuItem.setMnemonic('t');
         AddSensorMenuItem.setText("Add");
         AddSensorMenuItem.setHideActionText(true);
@@ -263,7 +280,7 @@ public class frameMain extends javax.swing.JFrame {
 
         RobotMenu.setText("Robot");
 
-        AddRobotMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/round_icon.png"))); // NOI18N
+        AddRobotMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/triangle_icon.png"))); // NOI18N
         AddRobotMenuItem.setText("Add");
         AddRobotMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -333,9 +350,19 @@ public class frameMain extends javax.swing.JFrame {
         AlgorithmMenu.setText("Algorithm");
 
         MyAlgorithmMenuItem.setText("MyAlgorithm");
+        MyAlgorithmMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MyAlgorithmMenuItemActionPerformed(evt);
+            }
+        });
         AlgorithmMenu.add(MyAlgorithmMenuItem);
 
         Algorithm1MenuItem.setText("Algorithm 1");
+        Algorithm1MenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Algorithm1MenuItemActionPerformed(evt);
+            }
+        });
         AlgorithmMenu.add(Algorithm1MenuItem);
 
         Algorithm2MenuItem.setText("Algorithm 2");
@@ -607,6 +634,37 @@ public class frameMain extends javax.swing.JFrame {
         }
         coordinatePanel.refresh();
     }//GEN-LAST:event_showRobotItemStateChangedListener
+
+    private void MyAlgorithmMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MyAlgorithmMenuItemActionPerformed
+        // TODO add your handling code here:
+        if (SensorUtility.mListTargetNodes.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Insert target nodes");
+        } else if (SensorUtility.mListRobotNodes.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Insert robot node");
+        } else {
+            if (myAlgorithm == null) {
+                myAlgorithm = new MyAlgorithm();
+            }
+            myAlgorithm.run();
+            coordinatePanel.refresh();
+        }
+    }//GEN-LAST:event_MyAlgorithmMenuItemActionPerformed
+
+    private void Algorithm1MenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Algorithm1MenuItemActionPerformed
+        // TODO add your handling code here:
+        if (SensorUtility.mListTargetNodes.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Insert target nodes!");
+        } else if (SensorUtility.mListRobotNodes.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Insert Robot node !");
+        } else {
+            System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
+            if (algorithm1 == null) {
+                algorithm1 = new Algorithm1();
+            }
+            algorithm1.run();
+            coordinatePanel.refresh();
+        }
+    }//GEN-LAST:event_Algorithm1MenuItemActionPerformed
 
     public void saveFile() {
         JFileChooser chooser = new JFileChooser();

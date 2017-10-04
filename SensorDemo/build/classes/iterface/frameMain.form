@@ -88,7 +88,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="AddSensorMenuItem">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/resource/triangle_icon.png"/>
+                  <Image iconType="3" name="/resource/circle_icon.png"/>
                 </Property>
                 <Property name="mnemonic" type="int" value="116"/>
                 <Property name="text" type="java.lang.String" value="Add"/>
@@ -160,7 +160,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="AddRobotMenuItem">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/resource/round_icon.png"/>
+                  <Image iconType="3" name="/resource/triangle_icon.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Add"/>
               </Properties>
@@ -238,11 +238,17 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="MyAlgorithm"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="MyAlgorithmMenuItemActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="Algorithm1MenuItem">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Algorithm 1"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Algorithm1MenuItemActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="Algorithm2MenuItem">
               <Properties>

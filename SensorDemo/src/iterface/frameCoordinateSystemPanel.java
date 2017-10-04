@@ -80,7 +80,7 @@ public class frameCoordinateSystemPanel extends JPanel{
         super.paintComponent(g); //To change body of generated methods, choose Tools | Templates.
 
         //Draw list nodes
-        System.err.println("with"+sizeWidthPanel +" height="+sizeHeightPanel + " sizeRect="+sizeRect+ " sizeWidthCoordinater="+sizeWidthCoordinater+"sizeHeightCoordianter ="+sizeHeightCoordianter);
+        
         for (Iterator<NodeItem> iterator = mListNodes.iterator(); iterator.hasNext();) {
             //Draw node
             NodeItem next = iterator.next();
@@ -89,7 +89,7 @@ public class frameCoordinateSystemPanel extends JPanel{
             if (next.getType() == 0) {
                 //target Node
                 if (isShowTarget) {
-                    g.setColor(Color.ORANGE);
+                    g.setColor(Color.BLUE);
                 } else {
                     g.setColor(new Color(0, 0, 0, 0));
                 }
@@ -99,19 +99,20 @@ public class frameCoordinateSystemPanel extends JPanel{
             } else if (next.getType() == 1) {
                 // Robot node
                 if (isShowRobot) {
+                    g.setColor(SensorUtility.mListColor.get(next.getGroup()));
+                } else {
+                    g.setColor(new Color(0, 0, 0, 0));
+                }
+                g.fillArc(cellX - sizeRect, cellY - sizeRect, sizeRect * 3, sizeRect * 2, 244, 53);
+
+            } else if (next.getType() == 2) {
+                // Sensor node
+                if (isShowSensor) {
                     g.setColor(Color.RED);
                 } else {
                     g.setColor(new Color(0, 0, 0, 0));
                 }
                 g.drawOval(cellX, cellY, sizeRect, sizeRect);
-            } else if (next.getType() == 2) {
-                // Sensor node
-                if (isShowSensor) {
-                    g.setColor(Color.BLUE);
-                } else {
-                    g.setColor(new Color(0, 0, 0, 0));
-                }
-                g.fillArc(cellX - sizeRect, cellY - sizeRect, sizeRect * 3, sizeRect * 2, 244, 53);
             }
 
         }
