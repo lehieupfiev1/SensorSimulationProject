@@ -8,6 +8,8 @@ package iterface;
 import algorithm.Algorithm1;
 import algorithm.MyAlgorithm;
 import common.SensorUtility;
+import iterface.algorithm.frameAlgorithm1;
+import iterface.algorithm.frameMyAlgorithm;
 import iterface.robot.frameAddRobot;
 import iterface.robot.frameModifyRobot;
 import iterface.sensor.frameAddSensor;
@@ -24,6 +26,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.event.ItemEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Random;
 import java.util.logging.Level;
@@ -637,33 +640,52 @@ public class frameMain extends javax.swing.JFrame {
 
     private void MyAlgorithmMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MyAlgorithmMenuItemActionPerformed
         // TODO add your handling code here:
-        if (SensorUtility.mListTargetNodes.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Insert target nodes");
-        } else if (SensorUtility.mListRobotNodes.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Insert robot node");
-        } else {
-            if (myAlgorithm == null) {
-                myAlgorithm = new MyAlgorithm();
-            }
-            myAlgorithm.run();
-            coordinatePanel.refresh();
-        }
+//        if (SensorUtility.mListTargetNodes.isEmpty()) {
+//            JOptionPane.showMessageDialog(null, "Insert target nodes");
+//        } else if (SensorUtility.mListRobotNodes.isEmpty()) {
+//            JOptionPane.showMessageDialog(null, "Insert robot node");
+//        } else {
+//            if (myAlgorithm == null) {
+//                myAlgorithm = new MyAlgorithm();
+//            }
+//            Thread thread = new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    myAlgorithm.run();
+//                    coordinatePanel.refresh();
+//                }
+//            });
+//            thread.start();
+//        }
+        frameMyAlgorithm mFrameMyAlgorithm = new frameMyAlgorithm();
+        mFrameMyAlgorithm.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        mFrameMyAlgorithm.setVisible(true);
     }//GEN-LAST:event_MyAlgorithmMenuItemActionPerformed
 
     private void Algorithm1MenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Algorithm1MenuItemActionPerformed
         // TODO add your handling code here:
-        if (SensorUtility.mListTargetNodes.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Insert target nodes!");
-        } else if (SensorUtility.mListRobotNodes.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Insert Robot node !");
-        } else {
-            System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
-            if (algorithm1 == null) {
-                algorithm1 = new Algorithm1();
-            }
-            algorithm1.run();
-            coordinatePanel.refresh();
-        }
+//        if (SensorUtility.mListTargetNodes.isEmpty()) {
+//            JOptionPane.showMessageDialog(null, "Insert target nodes!");
+//        } else if (SensorUtility.mListRobotNodes.isEmpty()) {
+//            JOptionPane.showMessageDialog(null, "Insert Robot node !");
+//        } else {
+//            if (algorithm1 == null) {
+//                algorithm1 = new Algorithm1();
+//            }
+//
+//            Thread thread = new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    algorithm1.run();
+//                    coordinatePanel.refresh();
+//                }
+//            });
+//            thread.start();
+//   
+//        }
+        frameAlgorithm1 mFrameAlgorithm1 = new frameAlgorithm1();
+        mFrameAlgorithm1.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        mFrameAlgorithm1.setVisible(true);
     }//GEN-LAST:event_Algorithm1MenuItemActionPerformed
 
     public void saveFile() {

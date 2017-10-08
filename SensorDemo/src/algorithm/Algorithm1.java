@@ -45,7 +45,8 @@ public class Algorithm1 {
     
     public void run() {
 
-
+//      PrintStream out = new PrintStream(new FileOutputStream("output.txt"));
+//      System.setOut(out);
         //
         init();
         readData();
@@ -58,6 +59,8 @@ public class Algorithm1 {
         runAlgorithm();
 
         CoppyToListSensor();
+        
+        freeData();
     }
 
     public void init() {
@@ -243,16 +246,16 @@ public class Algorithm1 {
             parent[i] = -1;
         }
         
-        //Sort edges in increasing order on basis of cost
-        
+       //Sort edges in increasing order on basis of cost
         Collections.sort(nEdgeList, new Comparator<EdgeItem>() {
             @Override
             public int compare(EdgeItem o1, EdgeItem o2) {
                 float distance1 = o1.getDistance();
                 float distance2 = o2.getDistance();
-                if (distance1 > distance2) return 1;
-                if (distance1 == distance2) return 0;
-                return -1;
+                return  Float.compare(distance1, distance2);
+//                if (distance1 > distance2) return 1;
+//                if (distance1 == distance2) return 0;
+//                return -1 ;
             }
         });
         //
@@ -288,6 +291,9 @@ public class Algorithm1 {
         ListEdgeResult.add(edgeResult);
        
     }
+     ///-----------ENd KRUKAL Algorithm---------//
+    
+    
     void printList(int Di) {
         List<EdgeItem> edgeResult = ListEdgeResult.get(Di);
 	for (int i =0;i<N;i++) {
@@ -330,8 +336,8 @@ public class Algorithm1 {
         int k1 = 0;
         for (int i = 0; i < K; i++) {
             List<EdgeItem> edgeList = ListEdgeResult.get(i);
-            for (int j = 0; j < N; j++) {
-                if (!checkEdgeExit(edgeList.get(j).getStart(), edgeList.get(j).getEnd(), k1)) {
+            for (int j = 0; j < edgeList.size(); j++) {
+                if (!checkEdgeExit(edgeList.get(j).getStart(), edgeList.get(j).getEnd(), ListTotalResult.size()-1)) {
                     // Add Egde to List Total Result
                     EdgeItem edgeItem = new EdgeItem();
                     edgeItem.setStart(edgeList.get(j).getStart());
@@ -343,6 +349,8 @@ public class Algorithm1 {
                 }
             }
         }
+        System.out.println("Algorithm1 "+Total);
+        System.out.println("Number Edge = "+ListTotalResult.size());
         printLisEdgetResult();
         //Calculate Sensor
         CalculateSensor();
@@ -368,11 +376,11 @@ public class Algorithm1 {
     // Calculate nuber of sensor in a segment
     void addSensorInSegment(float x1, float y1, float x2, float y2) {
         float distance = calculateDistance(x1, y1, x2, y2);
-        if (distance <= 2 * Rt && distance > 0) {
+        if (distance <= 2 * Rt && distance > Rt) {
             float x = (x1 + x2) / 2;
             float y = (y1 + y2) / 2;
             ListSPoint.add(new Point((int) x, (int) y));
-        } else {
+        } else if (distance > 2*Rt){
             int k = (int) (distance / Rt);
             float tempx = x2 - x1;
             float tempy = y2 - y1;
@@ -400,8 +408,9 @@ public class Algorithm1 {
     public void printListSensor() {
         for (Iterator<Point> iterator = ListSPoint.iterator(); iterator.hasNext();) {
             Point next = iterator.next();
-            System.out.println("("+next.x+","+next.y+") ");
+            System.out.print("("+next.x+","+next.y+") ");
         }
+        System.out.println();
     }
     public void CoppyToListSensor() {
         mListSensorNodes.clear();
@@ -409,6 +418,20 @@ public class Algorithm1 {
             Point next = iterator.next();
             mListSensorNodes.add(new NodeItem(next.x, next.y, 2));
         }
+    }
+    
+    public void freeData() {
+        Distance = null;
+        Target = null;
+        D = null;
+        S = null;
+        P = null;
+        parent = null;
+        Matrix = null;
+        ListEdgeResult = null;
+        ListTotalResult = null;
+        nEdgeList = null;
+        ListSPoint = null;
     }
     
         public static void main(String[] args) {
@@ -434,12 +457,6 @@ public class Algorithm1 {
         
         Algorithm1 m = new Algorithm1();
         m.run();
-//        Thread thread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//               this
-//            }
-//        });
-//        thread.start();
+
     }
 }

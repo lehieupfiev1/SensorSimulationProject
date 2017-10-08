@@ -25,11 +25,11 @@ import model.NodeItem;
  * @author Hieu
  */
 public final class SensorUtility {
-    public static int MaxColum =500;
-    public static int MaxRow =500;
-    public static int numberColum =100;
+    public static int MaxColum =1000;
+    public static int MaxRow =1000;
+    public static int numberColum =200;
     public static int marginPanel =20;
-    public static int numberRow = 100;
+    public static int numberRow = 200;
     public static float mRsValue = 2.0f;
     public static float mRtValue = 3.0f;
     public static int mNumberRobotCycle = 0;
@@ -43,8 +43,13 @@ public final class SensorUtility {
     public static int MaxRobotNodesCycle = 1000;
     public static float MAX_DISTANCE = 1000000000000.0f;
     
-
-       
+//    public static float Distance[][] = new float[SensorUtility.MaxTargetNodes+SensorUtility.MaxCycleRobots*SensorUtility.MaxRobotNodesCycle+1][SensorUtility.MaxTargetNodes+SensorUtility.MaxCycleRobots*SensorUtility.MaxRobotNodesCycle+1];// matrix distance between two nodes
+//    public static float Target[][]= new float[SensorUtility.MaxTargetNodes][2];// Target nodes
+//    public static float P[][] =  new float[SensorUtility.MaxTargetNodes+SensorUtility.MaxCycleRobots*SensorUtility.MaxRobotNodesCycle+1][2];// Total nodes
+//    public static float D[][][] = new float[SensorUtility.MaxTargetNodes][SensorUtility.MaxRobotNodesCycle][2];;//Robots nodes
+    
+    
+    
     public static void writeFile(String filename) throws IOException {
         File file = new File(filename);
         if (!file.exists()) file.createNewFile();

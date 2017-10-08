@@ -47,7 +47,9 @@ public  class MyAlgorithm {
         
     }
     public void run() {
+        
         init();
+
         readData();
         //Step 1: Find target-covering Sensor
         FindTargetCoveringSensor();
@@ -327,6 +329,8 @@ public  class MyAlgorithm {
         
         //Add Prime Algorihm with mList Node
         float result = Prime(mList,N+K,0);
+        System.out.println("My Alogorthim "+result);
+        System.out.println("Number Edge = "+(N+K-1));
         printMST(N+K, mList);
         CalculateSensor(mList);
         System.out.println("Number Sensor = "+ListSPoint.size());
@@ -366,7 +370,7 @@ public  class MyAlgorithm {
         }
 
         //Start search
-        key[start] = 0;
+        key[0] = 0;
 
         for (i = 0; i < V; i++) {
             //Tim dinh co canh nho nhat
@@ -375,7 +379,7 @@ public  class MyAlgorithm {
 
             //Duyet tat ca ca nut
             for (int v = 0; v < V; v++) {
-                if (!visited[v] && Distance[List[u]][List[v]] != 0 && Distance[List[u]][List[v]] < key[v]) {
+                if (!visited[v] && u != v && Distance[List[u]][List[v]] < key[v]) {
                     //Luu lai nut cha va trong so moi
                     key[v] = Distance[List[u]][List[v]];
                     parent[v] = u;
@@ -386,17 +390,26 @@ public  class MyAlgorithm {
     }
     void printMST(int V, int list[]) {
 	for (int i = 1; i < V; i++) {
-            System.out.println(list[i]+ "-"+ list[parent[i]]+ " ");
+            System.out.print(list[i]+ "-"+ list[parent[i]]+ " ");
         }
+        System.out.println();
     }
     ///------------------------End Prime------------//
     
     
-    
+    boolean checkPointInSetS(int point, int list[]) {
+        for (int j=0;j< N;j++) {
+            if ((S[j][0] == P[list[point]][0]) && (S[j][1] == P[list[point]][1])){
+                System.out.println("true");
+                return true;
+            }
+        }
+        return false;
+    }
     public void CalculateSensor(int list[]) {
         // Add target corvering Sensor in ListSPoint
-        for(int i =0; i <N; i++) {
-            ListSPoint.add(new Point((int)S[i][0],(int)S[i][1]));
+        for(int j =0; j <N; j++) {
+            ListSPoint.add(new Point((int)S[j][0],(int)S[j][1]));
         }
         // Add point chung voi diem Di
         int count[] = new int[K+N];
@@ -408,9 +421,13 @@ public  class MyAlgorithm {
             count[parent[i]]++;
         }
         for (int i = N;i <N+K;i++) {
+           // System.out.println("59= "+S[59][0]+"-"+S[59][1]+", 2866= "+P[list[1003]][0]+"-"+P[list[1003]][1]+count[1003] );
             if (count[i] > 1) {
                 //Add to ListSPoint
-                ListSPoint.add(new Point((int)P[list[i]][0], (int)P[list[i]][1]));
+                // Check điểm i trùng với điểm S nào ko 
+                if (!checkPointInSetS(i,list)) {
+                   ListSPoint.add(new Point((int)P[list[i]][0], (int)P[list[i]][1]));
+                }
             }
         }
         
@@ -422,11 +439,11 @@ public  class MyAlgorithm {
     // Calculate nuber of sensor in a segment
     void addSensorInSegment(float x1, float y1, float x2, float y2) {
         float distance = calculateDistance(x1, y1, x2, y2);
-        if (distance <= 2 * Rt && distance > 0) {
+        if (distance <= 2 * Rt && distance > Rt) {
             float x = (x1 + x2) / 2;
             float y = (y1 + y2) / 2;
             ListSPoint.add(new Point((int) x, (int) y));
-        } else {
+        } else if (distance > 2*Rt) {
             int k = (int) (distance / Rt);
             float tempx = x2 - x1;
             float tempy = y2 - y1;
@@ -456,8 +473,9 @@ public  class MyAlgorithm {
     public void printListSensor() {
         for (Iterator<Point> iterator = ListSPoint.iterator(); iterator.hasNext();) {
             Point next = iterator.next();
-            System.out.println("("+next.x+","+next.y+") ");
+            System.out.print("("+next.x+","+next.y+") ");
         }
+        System.out.println();
     }
     
     public void CoppyToListSensor() {
@@ -475,6 +493,11 @@ public  class MyAlgorithm {
         S = null;
         P = null;
         HeapNodes = null;
+        parent = null;
+        key = null;
+        visited = null;
+        mList = null;
+        ListSPoint = null;
     }
     
     
