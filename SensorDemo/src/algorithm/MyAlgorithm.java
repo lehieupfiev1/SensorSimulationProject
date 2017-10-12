@@ -522,13 +522,6 @@ public  class MyAlgorithm {
         mListRobotNodes.add(node3);
         MyAlgorithm m = new MyAlgorithm();
         m.run();
-//        Thread thread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//               this
-//            }
-//        });
-//        thread.start();
     }
 
 }

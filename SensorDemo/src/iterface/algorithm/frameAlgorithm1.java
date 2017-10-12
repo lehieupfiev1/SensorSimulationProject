@@ -56,14 +56,18 @@ public class frameAlgorithm1 extends javax.swing.JFrame {
         NumberSensorLabel.setText("Number of Sensors: ");
     }
     public void updateResultListSensor() {
-        TimeRunLabel.setText("Time run : "+timeRun+ " mS");
-         dataModel.clear();
-         for (int i =0 ; i< SensorUtility.mListSensorNodes.size();i++) {
-             NodeItem next = SensorUtility.mListSensorNodes.get(i);
-             ((DefaultListModel)mJListSensor.getModel()).addElement(i+".( X = "+next.getX()+", Y= "+next.getY() +")");
-         }
-         NumberSensorLabel.setText("Number of Sensors: "+SensorUtility.mListSensorNodes.size());
-     }
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                TimeRunLabel.setText("Time run : " + timeRun + " mS");
+                dataModel.clear();
+                for (int i = 0; i < SensorUtility.mListSensorNodes.size(); i++) {
+                    NodeItem next = SensorUtility.mListSensorNodes.get(i);
+                    ((DefaultListModel) mJListSensor.getModel()).addElement(i + ".( X = " + next.getX() + ", Y= " + next.getY() + ")");
+                }
+                NumberSensorLabel.setText("Number of Sensors: " + SensorUtility.mListSensorNodes.size());
+            }
+        });
+    }
     void displayInput() {
         NumberTargetLabel.setText("Number target :"+SensorUtility.mListTargetNodes.size());
         NumberCycleLabel.setText("Number Cycle Robots : "+SensorUtility.mListRobotNodes.size());

@@ -8,10 +8,8 @@ package common;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,8 +23,8 @@ import model.NodeItem;
  * @author Hieu
  */
 public final class SensorUtility {
-    public static int MaxColum =1000;
-    public static int MaxRow =1000;
+    public static int MaxColum =500;
+    public static int MaxRow =500;
     public static int numberColum =200;
     public static int marginPanel =20;
     public static int numberRow = 200;
@@ -42,13 +40,7 @@ public final class SensorUtility {
     public static int MaxCycleRobots = 1000;
     public static int MaxRobotNodesCycle = 1000;
     public static float MAX_DISTANCE = 1000000000000.0f;
-    
-//    public static float Distance[][] = new float[SensorUtility.MaxTargetNodes+SensorUtility.MaxCycleRobots*SensorUtility.MaxRobotNodesCycle+1][SensorUtility.MaxTargetNodes+SensorUtility.MaxCycleRobots*SensorUtility.MaxRobotNodesCycle+1];// matrix distance between two nodes
-//    public static float Target[][]= new float[SensorUtility.MaxTargetNodes][2];// Target nodes
-//    public static float P[][] =  new float[SensorUtility.MaxTargetNodes+SensorUtility.MaxCycleRobots*SensorUtility.MaxRobotNodesCycle+1][2];// Total nodes
-//    public static float D[][][] = new float[SensorUtility.MaxTargetNodes][SensorUtility.MaxRobotNodesCycle][2];;//Robots nodes
-    
-    
+      
     
     public static void writeFile(String filename) throws IOException {
         File file = new File(filename);
@@ -92,10 +84,6 @@ public final class SensorUtility {
 
     }
     public static void readFile(String filename) throws IOException {
-//        FileReader fileReader = new FileReader(filename);
-//        BufferedReader inputReader = null;
-//        inputReader = new BufferedReader(fileReader);
-//        int width = inputReader.read();
         mListSensorNodes.clear();
         mListRobotNodes.clear();
         mListTargetNodes.clear();
