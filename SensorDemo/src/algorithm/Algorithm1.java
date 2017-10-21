@@ -6,6 +6,7 @@
 package algorithm;
 
 import common.SensorUtility;
+import static common.SensorUtility.castInt;
 import static common.SensorUtility.mListRobotNodes;
 import static common.SensorUtility.mListSensorNodes;
 import static common.SensorUtility.mListTargetNodes;
@@ -362,7 +363,7 @@ public class Algorithm1 {
     void CalculateSensor() {
         // Add target corvering Sensor in ListSPoint
         for (int i = 0; i < N; i++) {
-            ListSPoint.add(new Point((int) S[i][0], (int) S[i][1]));
+            ListSPoint.add(new Point(castInt(S[i][0]), castInt(S[i][1])));
         }
 
         // Add point between a segment
@@ -379,7 +380,7 @@ public class Algorithm1 {
         if (distance <= 2 * Rt && distance > Rt) {
             float x = (x1 + x2) / 2;
             float y = (y1 + y2) / 2;
-            ListSPoint.add(new Point((int) x, (int) y));
+            ListSPoint.add(new Point(castInt(x), castInt(y)));
         } else if (distance > 2*Rt){
             int k = (int) (distance / Rt);
             float tempx = x2 - x1;
@@ -394,12 +395,12 @@ public class Algorithm1 {
                     float temp3 = (distance - i * Rt) * (distance - i * Rt) - (i * Rt) * (i * Rt);
                     float x = -(2 * tempy * temp2 + tempx * temp1 + tempx * temp3) / (2 * tempx * tempx + 2 * tempy * tempy);
                     float y = tempy * x / tempx + temp2 / tempx;
-                    ListSPoint.add(new Point((int) x, (int) y));
+                    ListSPoint.add(new Point(castInt(x), castInt(y)));
                 } else {
                     float temp3 = (distance - i * Rt) * (distance - i * Rt) - (i * Rt) * (i * Rt);
                     float x = x1;
                     float y = -(temp1 + temp3) / (2 * tempy);
-                    ListSPoint.add(new Point((int) x, (int) y));
+                    ListSPoint.add(new Point( castInt(x), castInt(y)));
                 }
             }
 

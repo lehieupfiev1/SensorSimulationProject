@@ -12,12 +12,19 @@ import static common.SensorUtility.mListSensorNodes;
 import static common.SensorUtility.mListTargetNodes;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Iterator;
 import java.util.List;
+import javax.swing.ImageIcon;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 import model.NodeItem;
 
 /**
@@ -34,6 +41,11 @@ public class frameCoordinateSystemPanel extends JPanel{
     static boolean isShowSensor = true;
     static boolean isShowTarget = true;
     static boolean isShowRobot = true;
+    JPopupMenu popup;
+    JMenuItem deleteSensorItem;
+    JMenuItem deleteTargetItem;
+    int pointX;
+    int pointY;
 
 
     public frameCoordinateSystemPanel() {
@@ -43,8 +55,11 @@ public class frameCoordinateSystemPanel extends JPanel{
        sizeWidthPanel = withScreen-SensorUtility.marginPanel*2;
        sizeHeightPanel = heightScreen -SensorUtility.marginPanel*2;
        setCoordinateSize(SensorUtility.numberRow,SensorUtility.numberColum);
+       initPopupMenu();
        this.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
+           @Override
+           public void mouseClicked(MouseEvent e) {
+               if (SwingUtilities.isLeftMouseButton(e)) {
                 int x = e.getX()-SensorUtility.marginPanel;
                 int y = e.getY()-SensorUtility.marginPanel;
                 int cellX = x / sizeRect;
@@ -52,11 +67,174 @@ public class frameCoordinateSystemPanel extends JPanel{
                 if (cellX < SensorUtility.numberRow && cellX >= 0 && cellY < SensorUtility.numberColum && cellY >=0 )
                    JOptionPane.showMessageDialog(null, "X ="+cellX +" Y =" +cellY );
                 //System.out.println("Clicked! X=" +cellX +" Y =" +cellY);
+               }
+           }
+           
+           @Override
+           public void mousePressed(MouseEvent e) {
+               int x = e.getX() - SensorUtility.marginPanel;
+               int y = e.getY() - SensorUtility.marginPanel;
+               int cellX = x / sizeRect;
+               int cellY = y / sizeRect;
+               if (checkPointExit(cellX, cellY) == 3) {
+                   deleteSensorItem.setEnabled(true);
+                   deleteTargetItem.setEnabled(true);
+               } else if (checkPointExit(cellX, cellY) == 1) {
+                   deleteSensorItem.setEnabled(true);
+                   deleteTargetItem.setEnabled(false);
+               } else if (checkPointExit(cellX, cellY) == 2) {
+                   deleteSensorItem.setEnabled(false);
+                   deleteTargetItem.setEnabled(true);
+               } else {
+                   deleteSensorItem.setEnabled(false);
+                   deleteTargetItem.setEnabled(false);
+               }
+               showPopup(e);
+           }
+ 
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                showPopup(e);
+            }
+ 
+            private void showPopup(MouseEvent e) {
+                int x = e.getX()-SensorUtility.marginPanel;
+                int y = e.getY()-SensorUtility.marginPanel;
+                pointX = x / sizeRect;
+                pointY = y / sizeRect;
+                if (e.isPopupTrigger() && pointX < SensorUtility.numberRow && pointX >= 0 && pointY < SensorUtility.numberColum && pointY >=0 ) {
+                    popup.show(e.getComponent(),
+                            e.getX(), e.getY());
+                }
+            }
+       });
+//       this.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                int x = e.getX()-SensorUtility.marginPanel;
+//                int y = e.getY()-SensorUtility.marginPanel;
+//                int cellX = x / sizeRect;
+//                int cellY = y / sizeRect;
+//                if (cellX < SensorUtility.numberRow && cellX >= 0 && cellY < SensorUtility.numberColum && cellY >=0 )
+//                   JOptionPane.showMessageDialog(null, "X ="+cellX +" Y =" +cellY );
+//                //System.out.println("Clicked! X=" +cellX +" Y =" +cellY);
+//            }
+//        });
+    }
+     void initPopupMenu() {
+        popup = new JPopupMenu();
+        // New sensor
+        JMenuItem menuItem = new JMenuItem("Add sensor",
+                new ImageIcon(getClass().getResource("/resource/circle_icon.png")));
+        menuItem.setMnemonic(KeyEvent.VK_P);
+        menuItem.getAccessibleContext().setAccessibleDescription(
+                "New Sensor");
+        menuItem.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                //JOptionPane.showMessageDialog(frame, "New Project clicked!");
+                SensorUtility.mListSensorNodes.add(new NodeItem(pointX, pointY, 2));
+                refresh();
             }
         });
+        popup.add(menuItem);
+
+        // New target
+        menuItem = new JMenuItem("Add target",
+                new ImageIcon(getClass().getResource("/resource/square_icon.png")));
+        menuItem.setMnemonic(KeyEvent.VK_F);
+        menuItem.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                //JOptionPane.showMessageDialog(frame, "New File clicked!");
+                SensorUtility.mListTargetNodes.add(new NodeItem(pointX, pointY, 0));
+                refresh();
+            }
+        });
+        popup.add(menuItem);
+
+        //Refresg button
+        menuItem = new JMenuItem("Refresh");
+        menuItem.setMnemonic(KeyEvent.VK_F);
+        menuItem.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                //JOptionPane.showMessageDialog(frame, "New File clicked!");
+                refresh();
+            }
+        });
+        popup.add(menuItem);
+        
+        //DeleteSensor
+        deleteSensorItem = new JMenuItem("Delete Sensor");
+        deleteSensorItem.setMnemonic(KeyEvent.VK_F);
+        deleteSensorItem.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                //JOptionPane.showMessageDialog(frame, "New File clicked!");
+                for (int i =0; i< mListSensorNodes.size();) {
+                    NodeItem next = mListSensorNodes.get(i);
+                    if (next.getX() == pointX && next.getY() == pointY) {
+                        mListSensorNodes.remove(i);
+                        continue;
+                    }
+                    i++;
+                }
+
+                refresh();
+            }
+        });
+        popup.add(deleteSensorItem);
+        
+        //Delete Target
+        deleteTargetItem = new JMenuItem("Delete Target");
+        deleteTargetItem.setMnemonic(KeyEvent.VK_F);
+        deleteTargetItem.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                //JOptionPane.showMessageDialog(frame, "New File clicked!");
+                for (int i =0; i< mListTargetNodes.size();) {
+                    NodeItem next = mListTargetNodes.get(i);
+                    if (next.getX() == pointX && next.getY() == pointY) {
+                        mListTargetNodes.remove(i);
+                        continue;
+                    }
+                    i++;
+                }
+
+                refresh();
+            }
+        });
+        popup.add(deleteTargetItem);
     }
-    
-    public void setPanelScreenReSize(int withScreen, int heightScreen,int row,int colum) {
+   
+   int checkPointExit(int cellX, int cellY) {
+        boolean hasSensor = false;
+        boolean hasTarget = false;
+        for (Iterator<NodeItem> iterator = mListSensorNodes.iterator(); iterator.hasNext();) {
+            NodeItem next = iterator.next();
+            if (next.getX() == cellX && next.getY() == cellY) {
+                hasSensor = true;
+                break;
+            }
+        }
+        for (Iterator<NodeItem> iterator = mListTargetNodes.iterator(); iterator.hasNext();) {
+            NodeItem next = iterator.next();
+            if (next.getX() == cellX && next.getY() == cellY) {
+                hasTarget = true;
+                break;
+            }
+        }
+        if (hasSensor && hasTarget) {
+            return 3;
+        } else if (hasSensor) {
+            return 1;
+        } else if (hasTarget) {
+            return 2;
+        }
+        return 0;
+   }
+   public void setPanelScreenReSize(int withScreen, int heightScreen,int row,int colum) {
        sizeWidthPanel = withScreen-SensorUtility.marginPanel*2;
        sizeHeightPanel = heightScreen -SensorUtility.marginPanel*2;
        setCoordinateSize(row,colum);

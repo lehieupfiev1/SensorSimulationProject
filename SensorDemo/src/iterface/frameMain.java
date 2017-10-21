@@ -18,27 +18,19 @@ import iterface.setting.frameCalculateDistance;
 import iterface.setting.frameSetNetworkSize;
 import iterface.target.frameAddTarget;
 import iterface.target.frameModifyTarget;
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.event.ItemEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 
 

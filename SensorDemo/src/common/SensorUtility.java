@@ -45,7 +45,7 @@ public final class SensorUtility {
     public static void writeFile(String filename) throws IOException {
         File file = new File(filename);
         if (!file.exists()) file.createNewFile();
-        BufferedWriter outputWriter = null;
+        BufferedWriter outputWriter;
 
         outputWriter = new BufferedWriter(new FileWriter(file, false));
         //Write Width and height , Rs, Rt
@@ -143,7 +143,15 @@ public final class SensorUtility {
         component.paint(image.getGraphics());
         return image;
     }
-
+    
+    public static int castInt(float value) {
+        int result = (int)value;
+        if (result +0.5 < value ){
+           return result+1;   
+        }
+        return result;
+    }
+        
     public static void resetSetting() {
         numberColum =200;
         numberRow = 200;

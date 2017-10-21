@@ -6,6 +6,7 @@
 package algorithm;
 
 import common.SensorUtility;
+import static common.SensorUtility.castInt;
 
 import static common.SensorUtility.mListRobotNodes;
 import static common.SensorUtility.mListSensorNodes;
@@ -409,7 +410,7 @@ public  class MyAlgorithm {
     public void CalculateSensor(int list[]) {
         // Add target corvering Sensor in ListSPoint
         for(int j =0; j <N; j++) {
-            ListSPoint.add(new Point((int)S[j][0],(int)S[j][1]));
+            ListSPoint.add(new Point(castInt(S[j][0]),castInt(S[j][1])));
         }
         // Add point chung voi diem Di
         int count[] = new int[K+N];
@@ -426,7 +427,7 @@ public  class MyAlgorithm {
                 //Add to ListSPoint
                 // Check điểm i trùng với điểm S nào ko 
                 if (!checkPointInSetS(i,list)) {
-                   ListSPoint.add(new Point((int)P[list[i]][0], (int)P[list[i]][1]));
+                   ListSPoint.add(new Point(castInt(P[list[i]][0]), castInt(P[list[i]][1])));
                 }
             }
         }
@@ -442,7 +443,7 @@ public  class MyAlgorithm {
         if (distance <= 2 * Rt && distance > Rt) {
             float x = (x1 + x2) / 2;
             float y = (y1 + y2) / 2;
-            ListSPoint.add(new Point((int) x, (int) y));
+            ListSPoint.add(new Point(castInt(x), castInt(y)));
         } else if (distance > 2*Rt) {
             int k = (int) (distance / Rt);
             float tempx = x2 - x1;
@@ -457,12 +458,12 @@ public  class MyAlgorithm {
                     float temp3 = (distance - i * Rt) * (distance - i * Rt) - (i * Rt) * (i * Rt);
                     float x = -(2 * tempy * temp2 + tempx * temp1 + tempx * temp3) / (2 * tempx * tempx + 2 * tempy * tempy);
                     float y = tempy * x / tempx + temp2 / tempx;
-                    ListSPoint.add(new Point((int) x, (int) y));
+                    ListSPoint.add(new Point(castInt(x), castInt(y)));
                 } else {
                     float temp3 = (distance - i * Rt) * (distance - i * Rt) - (i * Rt) * (i * Rt);
                     float x = x1;
                     float y = -(temp1 + temp3) / (2 * tempy);
-                    ListSPoint.add(new Point((int) x, (int) y));
+                    ListSPoint.add(new Point(castInt(x), castInt(y)));
                 }
 
             }
