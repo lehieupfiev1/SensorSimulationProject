@@ -3,11 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/iterface/sensor/frameAddSensor.java</file>
-            <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/iterface/sensor/frameModifySensor.java</file>
+            <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/model/HeapNodeItem.java</file>
             <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/iterface/robot/frameModifyRobot.java</file>
-            <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/sensordemo/SensorDemo.java</file>
-            <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/iterface/target/frameModifyTarget.java</file>
+            <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/model/FloatPointItem.java</file>
             <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/model/NodeItem.java</file>
             <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/iterface/frameMain.java</file>
             <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/algorithm/Algorithm1.java</file>
@@ -16,10 +14,8 @@
             <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/iterface/algorithm/frameAlgorithm1.java</file>
             <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/iterface/algorithm/frameMyAlgorithm.java</file>
             <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/common/SensorUtility.java</file>
-            <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/iterface/target/frameAddTarget.java</file>
             <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/iterface/robot/frameAddRobot.java</file>
             <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/algorithm/MyAlgorithm.java</file>
-            <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/iterface/setting/frameCalculateDistance.java</file>
         </group>
     </open-files>
 </project-private>
