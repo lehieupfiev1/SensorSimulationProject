@@ -28,18 +28,24 @@ public final class SensorUtility {
     public static int numberColum =200;
     public static int marginPanel =20;
     public static int numberRow = 200;
-    public static float mRsValue = 2.0f;
+    public static float mRsValue = 1.0f;
     public static float mRtValue = 3.0f;
     public static int mNumberRobotCycle = 0;
     public static List<NodeItem> mListNodes = new ArrayList<>();
     public static List<NodeItem> mListSensorNodes = new ArrayList<>();
     public static List<NodeItem> mListTargetNodes = new ArrayList<>();
     public static List<List<NodeItem>> mListRobotNodes = new ArrayList<List<NodeItem>>();
+    public static List<List<NodeItem>> mListofListSensor = new ArrayList<List<NodeItem>>();
+    public static List<Double> mListofListTime = new ArrayList<>();
     public static List<Color> mListColor = new ArrayList<>();
     public static int MaxTargetNodes = 30000;
     public static int MaxCycleRobots = 1000;
     public static int MaxRobotNodesCycle = 1000;
     public static float MAX_DISTANCE = 1000000000000.0f;
+    
+    public static int Lvalue = 2;
+    public static int LifeTimeOfSensor = 3000;
+    public static double mSaiso = 0.001d;
       
     
     public static void writeFile(String filename) throws IOException {

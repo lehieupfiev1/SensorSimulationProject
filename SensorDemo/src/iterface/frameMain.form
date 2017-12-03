@@ -250,10 +250,21 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Algorithm1MenuItemActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="Algorithm2MenuItem">
+            <MenuItem class="javax.swing.JMenuItem" name="MyAlgorithm2MenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Algorithm 2"/>
+                <Property name="text" type="java.lang.String" value="MyAlgorithm 2"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="MyAlgorithm2MenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="Algorithm2">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Algorithm2"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Algorithm2ActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>

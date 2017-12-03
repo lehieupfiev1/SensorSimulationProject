@@ -19,18 +19,36 @@ public class NodeItem {
     */
     int type;
     int group;
+    int status;
 
+    public NodeItem(int x, int y, int type, int group, int status) {
+        this.x = x;
+        this.y = y;
+        this.type = type;
+        this.group = group;
+        this.status = status;
+    }
     public NodeItem(int x, int y, int type, int group) {
         this.x = x;
         this.y = y;
         this.type = type;
         this.group = group;
+        this.status =0;
     }
     public NodeItem(int x, int y, int type) {
         this.x = x;
         this.y = y;
         this.type = type;
         this.group = 0;
+        this.status = 0;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
     public int getX() {
         return x;

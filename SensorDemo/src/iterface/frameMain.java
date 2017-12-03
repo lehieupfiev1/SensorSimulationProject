@@ -10,6 +10,7 @@ import algorithm.MyAlgorithm;
 import common.SensorUtility;
 import iterface.algorithm.frameAlgorithm1;
 import iterface.algorithm.frameMyAlgorithm;
+import iterface.algorithm.frameMyAlgorithm2;
 import iterface.robot.frameAddRobot;
 import iterface.robot.frameModifyRobot;
 import iterface.sensor.frameAddSensor;
@@ -141,7 +142,8 @@ public class frameMain extends javax.swing.JFrame {
         AlgorithmMenu = new javax.swing.JMenu();
         MyAlgorithmMenuItem = new javax.swing.JMenuItem();
         Algorithm1MenuItem = new javax.swing.JMenuItem();
-        Algorithm2MenuItem = new javax.swing.JMenuItem();
+        MyAlgorithm2MenuItem = new javax.swing.JMenuItem();
+        Algorithm2 = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         contentsMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
@@ -360,8 +362,21 @@ public class frameMain extends javax.swing.JFrame {
         });
         AlgorithmMenu.add(Algorithm1MenuItem);
 
-        Algorithm2MenuItem.setText("Algorithm 2");
-        AlgorithmMenu.add(Algorithm2MenuItem);
+        MyAlgorithm2MenuItem.setText("MyAlgorithm 2");
+        MyAlgorithm2MenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MyAlgorithm2MenuItemActionPerformed(evt);
+            }
+        });
+        AlgorithmMenu.add(MyAlgorithm2MenuItem);
+
+        Algorithm2.setText("Algorithm2");
+        Algorithm2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Algorithm2ActionPerformed(evt);
+            }
+        });
+        AlgorithmMenu.add(Algorithm2);
 
         menuBar.add(AlgorithmMenu);
 
@@ -680,6 +695,19 @@ public class frameMain extends javax.swing.JFrame {
         mFrameAlgorithm1.setVisible(true);
     }//GEN-LAST:event_Algorithm1MenuItemActionPerformed
 
+    private void MyAlgorithm2MenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MyAlgorithm2MenuItemActionPerformed
+        // TODO add your handling code here:
+        frameMyAlgorithm2 mFrameAlgorithm = new frameMyAlgorithm2();
+        mFrameAlgorithm.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        mFrameAlgorithm.setVisible(true);
+        
+    }//GEN-LAST:event_MyAlgorithm2MenuItemActionPerformed
+
+    private void Algorithm2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Algorithm2ActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_Algorithm2ActionPerformed
+
     public void saveFile() {
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new java.io.File("."));
@@ -772,7 +800,7 @@ public class frameMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem AddSensorMenuItem;
     private javax.swing.JMenuItem AddTargetMenuItem;
     private javax.swing.JMenuItem Algorithm1MenuItem;
-    private javax.swing.JMenuItem Algorithm2MenuItem;
+    private javax.swing.JMenuItem Algorithm2;
     private javax.swing.JMenu AlgorithmMenu;
     private javax.swing.JMenuItem CalculateDistanceMenuItem;
     private javax.swing.JMenuItem DeleteAllRobotMenuItem;
@@ -781,6 +809,7 @@ public class frameMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem ModifiySensorMenuItem;
     private javax.swing.JMenuItem ModifyRobotMenuItem;
     private javax.swing.JMenuItem ModifyTargetMenuItem;
+    private javax.swing.JMenuItem MyAlgorithm2MenuItem;
     private javax.swing.JMenuItem MyAlgorithmMenuItem;
     private javax.swing.JMenuItem NetworkSizeMenuItem;
     private javax.swing.JMenu RobotMenu;

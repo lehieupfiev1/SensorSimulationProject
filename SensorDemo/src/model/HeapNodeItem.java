@@ -17,12 +17,14 @@ public class HeapNodeItem {
 
     public HeapNodeItem() {
     }
+    
     public HeapNodeItem(int stNode, int desNode, float distance) {
         this.idSet = 0;
         this.stNode = stNode;
         this.desNode = desNode;
         this.distance = distance;
     }
+
     public HeapNodeItem(int idSet, int stNode, int desNode, float distance) {
         this.idSet = idSet;
         this.stNode = stNode;

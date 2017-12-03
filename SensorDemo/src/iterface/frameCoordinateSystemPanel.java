@@ -290,7 +290,12 @@ public class frameCoordinateSystemPanel extends JPanel{
                 } else {
                     g.setColor(new Color(0, 0, 0, 0));
                 }
-                g.drawOval(cellX, cellY, sizeRect, sizeRect);
+                if (next.getStatus() == 1) {
+                    //Sensor turn on
+                    g.fillOval(cellX, cellY, sizeRect, sizeRect);
+                } else {
+                    g.drawOval(cellX, cellY, sizeRect, sizeRect);
+                }
             }
 
         }

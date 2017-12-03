@@ -7,13 +7,14 @@ package model;
 
 /**
  *
- * @author Hieu
+ * @author sev_user
  */
 public class FloatPointItem {
-    float x; 
+    float x;
     float y;
-
+    
     public FloatPointItem() {
+        
     }
 
     public FloatPointItem(float x, float y) {
@@ -36,4 +37,10 @@ public class FloatPointItem {
     public void setY(float y) {
         this.y = y;
     }
+    
+    public void setXY(float x,float y) {
+        this.x = x;
+        this.y = y;
+    }
+    
 }
