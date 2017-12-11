@@ -41,6 +41,7 @@ public class frameCoordinateSystemPanel extends JPanel{
     static boolean isShowSensor = true;
     static boolean isShowTarget = true;
     static boolean isShowRobot = true;
+    static boolean isShowCorver = true;
     JPopupMenu popup;
     JMenuItem deleteSensorItem;
     JMenuItem deleteTargetItem;
@@ -293,6 +294,12 @@ public class frameCoordinateSystemPanel extends JPanel{
                 if (next.getStatus() == 1) {
                     //Sensor turn on
                     g.fillOval(cellX, cellY, sizeRect, sizeRect);
+                    if (isShowCorver) {
+                       g.setColor(Color.DARK_GRAY);
+                    } else {
+                       g.setColor(new Color(0, 0, 0, 0));
+                    }
+                     g.drawOval(cellX -(int)(sizeRect*(SensorUtility.mRsValue-0.5)), cellY-(int)(sizeRect*(SensorUtility.mRsValue-0.5)), (int)(2*sizeRect*SensorUtility.mRsValue),(int)(2*sizeRect*SensorUtility.mRsValue));
                 } else {
                     g.drawOval(cellX, cellY, sizeRect, sizeRect);
                 }
@@ -338,6 +345,11 @@ public class frameCoordinateSystemPanel extends JPanel{
     }
     public void setShowGrid(boolean view) {
         isShowGrid = view;
+        refresh();
+    }
+    
+    public void setShowCorver(boolean view) {
+        isShowCorver = view;
         refresh();
     }
     

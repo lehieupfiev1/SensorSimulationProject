@@ -139,6 +139,7 @@ public class frameMain extends javax.swing.JFrame {
         showSensorMenuItem = new javax.swing.JCheckBoxMenuItem();
         showTargetMenuItem = new javax.swing.JCheckBoxMenuItem();
         showRobotMenuItem = new javax.swing.JCheckBoxMenuItem();
+        showSensorCorverMenuItem = new javax.swing.JCheckBoxMenuItem();
         AlgorithmMenu = new javax.swing.JMenu();
         MyAlgorithmMenuItem = new javax.swing.JMenuItem();
         Algorithm1MenuItem = new javax.swing.JMenuItem();
@@ -341,6 +342,15 @@ public class frameMain extends javax.swing.JFrame {
             }
         });
         ViewMenu.add(showRobotMenuItem);
+
+        showSensorCorverMenuItem.setSelected(true);
+        showSensorCorverMenuItem.setText("Show Sensor Corver");
+        showSensorCorverMenuItem.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                showSensorCorverItemStateChanged(evt);
+            }
+        });
+        ViewMenu.add(showSensorCorverMenuItem);
 
         menuBar.add(ViewMenu);
 
@@ -708,6 +718,17 @@ public class frameMain extends javax.swing.JFrame {
         
     }//GEN-LAST:event_Algorithm2ActionPerformed
 
+    private void showSensorCorverItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showSensorCorverItemStateChanged
+        // TODO add your handling code here:
+        int state = evt.getStateChange();
+        if (state == ItemEvent.SELECTED) {
+            coordinatePanel.setShowCorver(true);
+        } else {
+            coordinatePanel.setShowCorver(false);
+        }
+        coordinatePanel.refresh();
+    }//GEN-LAST:event_showSensorCorverItemStateChanged
+
     public void saveFile() {
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new java.io.File("."));
@@ -827,6 +848,7 @@ public class frameMain extends javax.swing.JFrame {
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JCheckBoxMenuItem showGridMenuItem;
     private javax.swing.JCheckBoxMenuItem showRobotMenuItem;
+    private javax.swing.JCheckBoxMenuItem showSensorCorverMenuItem;
     private javax.swing.JCheckBoxMenuItem showSensorMenuItem;
     private javax.swing.JCheckBoxMenuItem showTargetMenuItem;
     // End of variables declaration//GEN-END:variables

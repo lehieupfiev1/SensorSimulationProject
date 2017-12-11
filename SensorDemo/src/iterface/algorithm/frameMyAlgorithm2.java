@@ -32,6 +32,7 @@ public class frameMyAlgorithm2 extends javax.swing.JFrame {
     public DefaultListModel dataSensorModel;
     public DefaultListModel dataListXModel;
     public int mListXIndex = -1;
+    float timeRun;
     public static List<NodeItem> ListSensor = new ArrayList<>();
     public ListSelectionListener mListXSelectionListener = new ListSelectionListener() {
         @Override
@@ -84,9 +85,20 @@ public class frameMyAlgorithm2 extends javax.swing.JFrame {
         dataSensorModel.clear();
         dataListXModel.clear();
         ListSensor.clear();
-        totalTimeOnLabel.setText("Total Time ON : ");
+        totalTimeOnLabel.setText("Total Time ON : 0");
+        listXLabel.setText("ListX(time) : 0");
     }
-    
+    void displayResult() {
+        TimeRunningLabel.setText("TimeRunning : "+timeRun);
+        double totalTime =0;
+        for (int i = 0; i < mListofListSensor.size(); i++) {
+            Double next = mListofListTime.get(i);
+            totalTime+=next;
+        }
+        totalTimeOnLabel.setText("Total Time ON : "+totalTime);
+
+     
+    }
     
     public void updateListSensor(int index) {
         dataSensorModel.clear();
@@ -324,18 +336,22 @@ public class frameMyAlgorithm2 extends javax.swing.JFrame {
         if (SensorUtility.mListSensorNodes.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Insert sensorr nodes");
         }  else {
+            clearData();
             MyAlgorithm2 mAlgorithm = new MyAlgorithm2();
             Thread thread;
             thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    long begin = System.currentTimeMillis();
                     mAlgorithm.run();
+                    long end = System.currentTimeMillis();
+                    timeRun = end-begin;
                     updateListX();
+                    displayResult();
                 }
             });
             thread.start();
         }
-        updateListX();
     }//GEN-LAST:event_RunButtonActionPerformed
 
     private void showViewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showViewBtnActionPerformed
@@ -364,7 +380,9 @@ public class frameMyAlgorithm2 extends javax.swing.JFrame {
         coordinatePanel.refresh();
         this.dispose();
     }//GEN-LAST:event_DoneBtnActionPerformed
-
+    
+    
+    
     /**
      * @param args the command line arguments
      */

@@ -3,17 +3,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/model/SetItem.java</file>
-            <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/iterface/algorithm/frameMyAlgorithm2.java</file>
-            <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/iterface/algorithm/frameAlgorithm1.java</file>
-            <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/iterface/frameCoordinateSystemPanel.java</file>
-            <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/iterface/algorithm/frameMyAlgorithm.java</file>
-            <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/common/SensorUtility.java</file>
-            <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/algorithm/MyAlgorithm.java</file>
-            <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/model/NodeItem.java</file>
-            <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/iterface/frameMain.java</file>
-            <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/iterface/algorithm/frameAlgorithm2.java</file>
-            <file>file:/E:/HIEU/CAO%20HOC/SensorSimulationProject/SensorDemo/src/algorithm/MyAlgorithm2.java</file>
+            <file>file:/D:/Le-Hieu/HOC%20TAP/CAO%20HOC/He%20Thong/SensorSimulationProject-master/SensorDemo/src/iterface/frameCoordinateSystemPanel.java</file>
+            <file>file:/D:/Le-Hieu/HOC%20TAP/CAO%20HOC/He%20Thong/SensorSimulationProject-master/SensorDemo/src/iterface/frameMain.java</file>
+            <file>file:/D:/Le-Hieu/HOC%20TAP/CAO%20HOC/He%20Thong/SensorSimulationProject-master/SensorDemo/src/algorithm/Algorithm1.java</file>
+            <file>file:/D:/Le-Hieu/HOC%20TAP/CAO%20HOC/He%20Thong/SensorSimulationProject-master/SensorDemo/src/algorithm/MyAlgorithm2.java</file>
+            <file>file:/D:/Le-Hieu/HOC%20TAP/CAO%20HOC/He%20Thong/SensorSimulationProject-master/SensorDemo/src/common/SensorUtility.java</file>
+            <file>file:/D:/Le-Hieu/HOC%20TAP/CAO%20HOC/He%20Thong/SensorSimulationProject-master/SensorDemo/src/iterface/target/frameAddTarget.java</file>
+            <file>file:/D:/Le-Hieu/HOC%20TAP/CAO%20HOC/He%20Thong/SensorSimulationProject-master/SensorDemo/src/algorithm/MyAlgorithm.java</file>
+            <file>file:/D:/Le-Hieu/HOC%20TAP/CAO%20HOC/He%20Thong/SensorSimulationProject-master/SensorDemo/src/iterface/algorithm/frameMyAlgorithm2.java</file>
+            <file>file:/D:/Le-Hieu/HOC%20TAP/CAO%20HOC/He%20Thong/SensorSimulationProject-master/SensorDemo/src/model/EdgeItem.java</file>
         </group>
     </open-files>
 </project-private>
