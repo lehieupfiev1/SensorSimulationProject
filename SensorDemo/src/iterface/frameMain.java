@@ -9,6 +9,7 @@ import algorithm.Algorithm1;
 import algorithm.MyAlgorithm;
 import common.SensorUtility;
 import iterface.algorithm.frameAlgorithm1;
+import iterface.algorithm.frameAlgorithm2;
 import iterface.algorithm.frameMyAlgorithm;
 import iterface.algorithm.frameMyAlgorithm2;
 import iterface.robot.frameAddRobot;
@@ -715,7 +716,9 @@ public class frameMain extends javax.swing.JFrame {
 
     private void Algorithm2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Algorithm2ActionPerformed
         // TODO add your handling code here:
-        
+        frameAlgorithm2 mFrameAlgorithm = new frameAlgorithm2();
+        mFrameAlgorithm.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        mFrameAlgorithm.setVisible(true);
     }//GEN-LAST:event_Algorithm2ActionPerformed
 
     private void showSensorCorverItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showSensorCorverItemStateChanged

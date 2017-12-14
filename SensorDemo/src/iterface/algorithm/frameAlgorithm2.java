@@ -5,18 +5,20 @@
  */
 package iterface.algorithm;
 
+import algorithm.Algorithm2;
 import common.SensorUtility;
 import static common.SensorUtility.LifeTimeOfSensor;
 import static common.SensorUtility.Lvalue;
 import static common.SensorUtility.mListSensorNodes;
 import static common.SensorUtility.mListofListSensor;
 import static common.SensorUtility.mListofListTime;
-import static iterface.algorithm.frameMyAlgorithm2.ListSensor;
+
 import static iterface.frameMain.coordinatePanel;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -33,7 +35,8 @@ public class frameAlgorithm2 extends javax.swing.JFrame {
      */
     public DefaultListModel dataSensorModel;
     public DefaultListModel dataListXModel;
-    public int mListXIndex ;
+    public int mListXIndex = -1;
+    float timeRun;
     public static List<NodeItem> ListSensor = new ArrayList<>();
     public ListSelectionListener mListXSelectionListener = new ListSelectionListener() {
         @Override
@@ -78,12 +81,23 @@ public void initOtherComponent() {
         TimeSensorTextField.setText(""+LifeTimeOfSensor);
      
     }
+    void displayResult() {
+        TimeRunningLabel.setText("TimeRunning : "+timeRun);
+        double totalTime =0;
+        for (int i = 0; i < mListofListSensor.size(); i++) {
+            Double next = mListofListTime.get(i);
+            totalTime+=next;
+        }
+        totalTimeOnLabel.setText("Total Time ON : "+totalTime);
+
+     
+    }
     void clearData(){
         TimeRunningLabel.setText("TimeRunning : 0 ");
         dataSensorModel.clear();
         dataListXModel.clear();
         ListSensor.clear();
-        totalTimeOnLabel.setText("Total Time ON : ");
+        totalTimeOnLabel.setText("Total Time ON : 0");
     }
     
     
@@ -311,7 +325,25 @@ public void initOtherComponent() {
 
     private void RunButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RunButtonActionPerformed
         // TODO add your handling code here:
-        updateListX();
+        if (SensorUtility.mListSensorNodes.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Insert sensorr nodes");
+        }  else {
+            clearData();
+            Algorithm2 mAlgorithm = new Algorithm2();
+            Thread thread;
+            thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    long begin = System.currentTimeMillis();
+                    mAlgorithm.run();
+                    long end = System.currentTimeMillis();
+                    timeRun = end-begin;
+                    updateListX();
+                    displayResult();
+                }
+            });
+            thread.start();
+        }
     }//GEN-LAST:event_RunButtonActionPerformed
 
     private void showViewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showViewBtnActionPerformed
