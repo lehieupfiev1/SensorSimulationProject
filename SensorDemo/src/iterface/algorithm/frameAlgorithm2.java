@@ -81,17 +81,7 @@ public void initOtherComponent() {
         TimeSensorTextField.setText(""+LifeTimeOfSensor);
      
     }
-    void displayResult() {
-        TimeRunningLabel.setText("TimeRunning : "+timeRun);
-        double totalTime =0;
-        for (int i = 0; i < mListofListSensor.size(); i++) {
-            Double next = mListofListTime.get(i);
-            totalTime+=next;
-        }
-        totalTimeOnLabel.setText("Total Time ON : "+totalTime);
-
-     
-    }
+    
     void clearData(){
         TimeRunningLabel.setText("TimeRunning : 0 ");
         dataSensorModel.clear();
@@ -100,6 +90,15 @@ public void initOtherComponent() {
         totalTimeOnLabel.setText("Total Time ON : 0");
     }
     
+    void displayResult() {
+        TimeRunningLabel.setText("TimeRunning : "+timeRun);
+        double totalTime =0;
+        for (int i = 0; i < mListofListSensor.size(); i++) {
+            Double next = mListofListTime.get(i);
+            totalTime+=next;
+        }
+        totalTimeOnLabel.setText("Total Time ON : "+totalTime);
+    }
     
     public void updateListSensor(int index) {
         dataSensorModel.clear();
@@ -348,6 +347,23 @@ public void initOtherComponent() {
 
     private void showViewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showViewBtnActionPerformed
         // TODO add your handling code here:
+        //Clear data
+        for (int j = 0; j < mListSensorNodes.size(); j++) {
+            mListSensorNodes.get(j).setStatus(0);
+        }
+        if (mListXIndex >= 0 && mListXIndex < mListofListSensor.size()) {
+            ListSensor = mListofListSensor.get(mListXIndex);
+            for (int i =0;i<ListSensor.size();i++) {
+                //Change Value On foreach Sensor
+                for(int j =0;j<mListSensorNodes.size();j++){
+                    if (ListSensor.get(i).getX()== mListSensorNodes.get(j).getX() && ListSensor.get(i).getY()== mListSensorNodes.get(j).getY()) {
+                        mListSensorNodes.get(j).setStatus(1);
+                        break;
+                    }
+                }
+            }
+        }
+        coordinatePanel.refresh();
         coordinatePanel.refresh();
     }//GEN-LAST:event_showViewBtnActionPerformed
 

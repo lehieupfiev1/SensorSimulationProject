@@ -45,7 +45,7 @@ public final class SensorUtility {
     
     public static int Lvalue = 2;
     public static int LifeTimeOfSensor = 3000;
-    public static double mSaiso = 0.001d;
+    public static float mSaiso = 0.001f;
       
     
     public static void writeFile(String filename) throws IOException {

@@ -66,9 +66,24 @@ public class Algorithm2 {
     }
      public void runAlgorithm() {
          //Code in here
-         
-         
-         
+                 List<Integer> x1 = new ArrayList<>();
+        x1.add(22);
+        x1.add(21);
+        x1.add(23);
+        List<Integer> x2 = new ArrayList<>();
+        x2.add(20);
+        x2.add(22);
+        x2.add(23);
+        List<Integer> x3 = new ArrayList<>();
+        x3.add(26);
+        x3.add(20);
+        x3.add(24);
+        resultListX.add(x1);
+        resultListX.add(x2);
+        resultListX.add(x3);
+        resultListT.add(300d);
+        resultListT.add(400d);
+        resultListT.add(500d);   
          
      }
      
