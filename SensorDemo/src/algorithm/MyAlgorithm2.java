@@ -288,83 +288,83 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
     int m = listX.size();
     int n = listSenSor.size();
     //Test
-    if (m == 1) {
-        time.add(valueT);
-    } else if (m == 2) {
-        time.add(valueT);
-        time.add(valueT);
-    } else {
-        time.add(valueT);
-        time.add(valueT);
-        time.add(valueT);
-    }
-//        int[][] a = new int[n][m];
-//
-//        //Check Input
-//        for (int i = 0; i < n; i++) {
-//            int sensor = listSenSor.get(i);
-//            for (int j = 0; j < m; j++) {
-//                a[i][j] = 0;
-//                List<Integer> Xj = listX.get(j);
-//                for (int k = 0; k < Xj.size(); k++) {
-//                    if (sensor == Xj.get(k)) {
-//                        a[i][j] = 1;
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-//
-//        try {
-//            //Define new model
-//            IloCplex cplex = new IloCplex();
-//
-//            //Variable
-//            IloNumVar[] T = new IloNumVar[m];
-//            for (int i = 0; i < m; i++) {
-//                T[i] = cplex.numVar(0, Double.MAX_VALUE);
-//            }
-//
-//            //Expression
-//            IloLinearNumExpr[] totalTimeOnExpr = new IloLinearNumExpr[n];
-//            for (int j = 0; j < n; j++) {
-//                totalTimeOnExpr[j] = cplex.linearNumExpr();
-//
-//                for (int i = 0; i < m; i++) {
-//                    totalTimeOnExpr[j].addTerm(a[j][i], T[i]);
-//                }
-//            }
-//
-//            IloLinearNumExpr objective = cplex.linearNumExpr();
-//            for (int i = 0; i < m; i++) {
-//                objective.addTerm(1, T[i]);
-//            }
-//
-//            //Define Objective
-//            cplex.addMaximize(objective);
-//
-//            //Constraints
-//            for (int i = 0; i < n; i++) {
-//                cplex.addLe(totalTimeOnExpr[i], valueT);
-//            }
-//
-//            cplex.setParam(IloCplex.Param.Simplex.Display, 0);
-//            //Resolve Model
-//            if (cplex.solve()) {
-//                for (int i = 0; i < m; i++) {
-//                    time.add(cplex.getValue(T[i]));
-//                    System.out.println("time: " + cplex.getValue(T[i]));
-//                }
-//                System.out.println("value: " + cplex.getObjValue());
-//            } else {
-//                System.out.println("Problem not solved");
-//            }
-//
-//            cplex.end();
-//
-//        } catch (IloException ex) {
-//            Logger.getLogger("LeHieu").log(Level.SEVERE, null, ex);
-//        }
+//    if (m == 1) {
+//        time.add(valueT);
+//    } else if (m == 2) {
+//        time.add(valueT);
+//        time.add(valueT);
+//    } else {
+//        time.add(valueT);
+//        time.add(valueT);
+//        time.add(valueT);
+//    }
+        int[][] a = new int[n][m];
+
+        //Check Input
+        for (int i = 0; i < n; i++) {
+            int sensor = listSenSor.get(i);
+            for (int j = 0; j < m; j++) {
+                a[i][j] = 0;
+                List<Integer> Xj = listX.get(j);
+                for (int k = 0; k < Xj.size(); k++) {
+                    if (sensor == Xj.get(k)) {
+                        a[i][j] = 1;
+                        break;
+                    }
+                }
+            }
+        }
+
+        try {
+            //Define new model
+            IloCplex cplex = new IloCplex();
+
+            //Variable
+            IloNumVar[] T = new IloNumVar[m];
+            for (int i = 0; i < m; i++) {
+                T[i] = cplex.numVar(0, Double.MAX_VALUE);
+            }
+
+            //Expression
+            IloLinearNumExpr[] totalTimeOnExpr = new IloLinearNumExpr[n];
+            for (int j = 0; j < n; j++) {
+                totalTimeOnExpr[j] = cplex.linearNumExpr();
+
+                for (int i = 0; i < m; i++) {
+                    totalTimeOnExpr[j].addTerm(a[j][i], T[i]);
+                }
+            }
+
+            IloLinearNumExpr objective = cplex.linearNumExpr();
+            for (int i = 0; i < m; i++) {
+                objective.addTerm(1, T[i]);
+            }
+
+            //Define Objective
+            cplex.addMaximize(objective);
+
+            //Constraints
+            for (int i = 0; i < n; i++) {
+                cplex.addLe(totalTimeOnExpr[i], valueT);
+            }
+
+            cplex.setParam(IloCplex.Param.Simplex.Display, 0);
+            //Resolve Model
+            if (cplex.solve()) {
+                for (int i = 0; i < m; i++) {
+                    time.add(cplex.getValue(T[i]));
+                    System.out.println("time: " + cplex.getValue(T[i]));
+                }
+                System.out.println("value: " + cplex.getObjValue());
+            } else {
+                System.out.println("Problem not solved");
+            }
+
+            cplex.end();
+
+        } catch (IloException ex) {
+            Logger.getLogger("LeHieu").log(Level.SEVERE, null, ex);
+        }
         return time;
     }
     
@@ -399,6 +399,17 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
         //Cach 2 :
         List<List<Integer>> retuListX = new ArrayList<>();
         FindSet(listSensor,UpLeftCornerPoint,DownRightCornerPoint,returListX);
+        Collections.sort(returListX, new Comparator<List<Integer>>(){
+            @Override
+               public int compare(List<Integer> o1, List<Integer> o2) {
+                   int size1 = o1.size();
+                   int size2 = o2.size();
+                   
+                   return Integer.compare(size1, size2);
+               }
+            
+        });
+        int a=2;
     }
 
     //=========-Suw dung cach 2====================================
@@ -409,16 +420,18 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
         mListSet.clear();
         List<Integer> X0 = new ArrayList<>();
         List<Integer> Y0 = new ArrayList<>();
+        List<Integer> C0 = new ArrayList<>();
         for (int i =0;i<listSensor.size();i++) {
             X0.add(listSensor.get(i));
         }
-        ListSetItem headSetItem = new ListSetItem(X0, Y0);
+        ListSetItem headSetItem = new ListSetItem(X0, Y0, C0);
         mListSet.add(headSetItem);
         //
         while(!mListSet.isEmpty()){
             ListSetItem headItem = mListSet.get(0);
             List<Integer> tempXi = headItem.getXi();
             List<Integer> tempYi = headItem.getYi();
+            List<Integer> tempCi = headItem.getCi();
             
             //Test
             showViewTest(tempXi);
@@ -426,7 +439,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
             int count =0;
             for (int i =0;i <tempXi.size();i++) {
                 //Check tinh phu khi loai bo cac phan tu i 
-                if (CheckPointCorveringBySet(tempXi, tempXi.get(i), P1, P4)) {
+                if (!CheckPointExitInCi(tempCi,tempXi.get(i)) && CheckPointCorveringBySet(tempXi, tempXi.get(i), P1, P4)) {
                     status[i] = true;
                     count++;
                 }
@@ -447,6 +460,10 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
                         setItem.setYi(tempYi,tempXi.get(j));
                         //Nen Kiem tra xem da ton tai chua
                        if(!CheckExitSet(mListSet,setItem)) {
+                           setItem.setCi(tempCi);
+                           for (int k =0;k<tempXi.size();k++) {
+                               if (!status[k]) setItem.addCi(tempXi.get(k));
+                           }
                            mListSet.add(setItem);
                         }
                     }
@@ -456,7 +473,14 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
         }
     }
     
-    
+    boolean CheckPointExitInCi(List<Integer> listSensorCi, int point){
+        for (int i = 0; i < listSensorCi.size(); i++) {
+            if (listSensorCi.get(i)== point) {
+                return true;
+            }
+        }
+        return false;
+    }
     boolean CheckPointCorveringBySet(List<Integer> listSensor, int exception, FloatPointItem P1, FloatPointItem P4) {
         FloatPointItem P2 = new FloatPointItem(P1.getX(), P4.getY());
         FloatPointItem P3 = new FloatPointItem(P4.getX(), P1.getY());
@@ -570,7 +594,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
 //                }
 //            }
            //---------------------------------------///
-           //point cat
+           //point giao nhau
            List<FloatPointItem> Edge = new ArrayList<>();
            boolean[] intersect = new boolean[5];
            //Canh tren
@@ -647,7 +671,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
     }
     //Check Point in duong tron tam (Ix,Iy) ban kinh r
     boolean CheckPoint_InCircle(FloatPointItem point,float Ix, float Iy, float R) {
-        if (point.getX() <0  || point.getX() <0) return false;
+        if (point.getX() <0  || point.getY() <0) return false;
         if (calculateDistance(Ix, Iy, point.getX(), point.getY()) < R) {
             return true;
         }
@@ -1148,6 +1172,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
             }
         }
     }
+    
 
     //Dua ra vi tri corver segment cua list
     int getPostionOfList(List<Double> listT, double starTime, double endTime) {

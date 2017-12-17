@@ -66,7 +66,23 @@ public class Algorithm2 {
     }
      public void runAlgorithm() {
          //Code in here
-                 List<Integer> x1 = new ArrayList<>();
+         //Input : Rs Value, TimeLife , Num ( Soluong sensor) , mListSensorNodes : List cac node sensor (NodeItem)
+         // Output : resultListX ( List ket qua cac Xi thong qua position cua mListSensorNodes)
+         //          resultListT (Thoi gian on của tap hop Xi) 
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         // Code test
+        List<Integer> x1 = new ArrayList<>();
         x1.add(22);
         x1.add(21);
         x1.add(23);
@@ -145,9 +161,6 @@ public class Algorithm2 {
         childsensor.add(35);
         childsensor.add(33);
         childsensor.add(34);
-
-        //List<Double> a = LinearProAlgorithm(lisX, sensor, 5);
-//        
         MyAlgorithm2 m = new MyAlgorithm2();
 
     }

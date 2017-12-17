@@ -16,13 +16,20 @@ import java.util.logging.Logger;
 public class ListSetItem {
     List<Integer> Xi;
     List<Integer> Yi;
+    List<Integer> Ci;// Luu cac node da check khong the loai bo
 
     public ListSetItem() {
         Xi = new ArrayList<>();
         Yi = new ArrayList<>();
+        Ci = new ArrayList<>();
+    }
+
+    public ListSetItem(List<Integer> Xi, List<Integer> Yi, List<Integer> Ci) {
+        this.Xi = Xi;
+        this.Yi = Yi;
+        this.Ci = Ci;
     }
     
-
     public ListSetItem(List<Integer> Xi, List<Integer> Yi) {
         this.Xi = Xi;
         this.Yi = Yi;
@@ -57,6 +64,20 @@ public class ListSetItem {
            this.Yi.add(Yi.get(i));
         }
         this.Yi.add(added);
+    }
+
+    public List<Integer> getCi() {
+        return Ci;
+    }
+
+    public void setCi(List<Integer> Ci) {
+        for (int i = 0; i < Ci.size(); i++) {
+           this.Ci.add(Ci.get(i));
+        }
+    }
+    
+    public void addCi(int added) {
+        this.Ci.add(added);
     }
     
 }

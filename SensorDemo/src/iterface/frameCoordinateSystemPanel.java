@@ -260,49 +260,49 @@ public class frameCoordinateSystemPanel extends JPanel{
 
         //Draw list nodes
         
-        for (Iterator<NodeItem> iterator = mListNodes.iterator(); iterator.hasNext();) {
+       // for (Iterator<NodeItem> iterator = mListNodes.iterator(); iterator.hasNext();) {
+        for (int i =0; i< mListNodes.size();i++) {
             //Draw node
-            NodeItem next = iterator.next();
+            NodeItem next = mListNodes.get(i);
             int cellX = SensorUtility.marginPanel + (next.getX() * sizeRect);
             int cellY = SensorUtility.marginPanel + (next.getY() * sizeRect);
-            if (next.getType() == 0) {
-                //target Node
-                if (isShowTarget) {
-                    g.setColor(Color.BLUE);
-                } else {
-                    g.setColor(new Color(0, 0, 0, 0));
-                }
-                
-                g.fillRect(cellX, cellY, sizeRect, sizeRect);
-
-            } else if (next.getType() == 1) {
-                // Robot node
-                if (isShowRobot) {
-                    g.setColor(SensorUtility.mListColor.get(next.getGroup()));
-                } else {
-                    g.setColor(new Color(0, 0, 0, 0));
-                }
-                g.fillArc(cellX - sizeRect, cellY - sizeRect, sizeRect * 3, sizeRect * 2, 244, 53);
-
-            } else if (next.getType() == 2) {
-                // Sensor node
-                if (isShowSensor) {
-                    g.setColor(Color.RED);
-                } else {
-                    g.setColor(new Color(0, 0, 0, 0));
-                }
-                if (next.getStatus() == 1) {
-                    //Sensor turn on
-                    g.fillOval(cellX, cellY, sizeRect, sizeRect);
-                    if (isShowCorver) {
-                       g.setColor(Color.DARK_GRAY);
+            switch (next.getType()) {
+                case 0:
+                    //target Node
+                    if (isShowTarget) {
+                        g.setColor(Color.BLUE);
                     } else {
-                       g.setColor(new Color(0, 0, 0, 0));
-                    }
-                     g.drawOval(cellX -(int)(sizeRect*(SensorUtility.mRsValue-0.5)), cellY-(int)(sizeRect*(SensorUtility.mRsValue-0.5)), (int)(2*sizeRect*SensorUtility.mRsValue),(int)(2*sizeRect*SensorUtility.mRsValue));
-                } else {
-                    g.drawOval(cellX, cellY, sizeRect, sizeRect);
-                }
+                        g.setColor(new Color(0, 0, 0, 0));
+                    }   g.fillRect(cellX, cellY, sizeRect, sizeRect);
+                    break;
+                case 1:
+                    // Robot node
+                    if (isShowRobot) {
+                        g.setColor(SensorUtility.mListColor.get(next.getGroup()));
+                    } else {
+                        g.setColor(new Color(0, 0, 0, 0));
+                    }   g.fillArc(cellX - sizeRect, cellY - sizeRect, sizeRect * 3, sizeRect * 2, 244, 53);
+                    break;
+                case 2:
+                    // Sensor node
+                    if (isShowSensor) {
+                        g.setColor(Color.RED);
+                    } else {
+                        g.setColor(new Color(0, 0, 0, 0));
+                    }   if (next.getStatus() == 1) {
+                        //Sensor turn on
+                        g.fillOval(cellX, cellY, sizeRect, sizeRect);
+                        if (isShowCorver) {
+                            g.setColor(Color.DARK_GRAY);
+                        } else {
+                            g.setColor(new Color(0, 0, 0, 0));
+                        }
+                        g.drawOval(cellX -(int)(sizeRect*(SensorUtility.mRsValue-0.5)), cellY-(int)(sizeRect*(SensorUtility.mRsValue-0.5)), (int)(2*sizeRect*SensorUtility.mRsValue),(int)(2*sizeRect*SensorUtility.mRsValue));
+                    } else {
+                        g.drawOval(cellX, cellY, sizeRect, sizeRect);
+                    }   break;
+                default:
+                    break;
             }
 
         }

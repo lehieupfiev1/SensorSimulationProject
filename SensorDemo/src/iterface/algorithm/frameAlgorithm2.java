@@ -101,29 +101,37 @@ public void initOtherComponent() {
     }
     
     public void updateListSensor(int index) {
-        dataSensorModel.clear();
-        listSenSorLabel.setText("List robots : 0");
-        if (index >= 0 && index < mListofListSensor.size()) {
-            ListSensor = mListofListSensor.get(index);
-            for (int i = 0; i < ListSensor.size(); i++) {
-                NodeItem next = ListSensor.get(i);
-                ((DefaultListModel) mJListSensor.getModel()).addElement(i + ".( X = " + next.getX() + ", Y= " + next.getY() + ")");
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                dataSensorModel.clear();
+                listSenSorLabel.setText("List robots : 0");
+                if (index >= 0 && index < mListofListSensor.size()) {
+                    ListSensor = mListofListSensor.get(index);
+                    for (int i = 0; i < ListSensor.size(); i++) {
+                        NodeItem next = ListSensor.get(i);
+                        ((DefaultListModel) mJListSensor.getModel()).addElement(i + ".( X = " + next.getX() + ", Y= " + next.getY() + ")");
+                    }
+                    listSenSorLabel.setText("List sensor : " + ListSensor.size());
+                }
             }
-            listSenSorLabel.setText("List sensor : " + ListSensor.size());
-        }
+        });
     }
     
     public void updateListX() {
-        dataListXModel.clear();
-        for (int i = 0; i < mListofListSensor.size(); i++) {
-            Double next = mListofListTime.get(i);
-            if (mListofListSensor.get(i).size()>0) {
-              ((DefaultListModel) mJListX.getModel()).addElement(i + ". id = " + i +"(Time: "+next+")");
-            } else {
-              ((DefaultListModel) mJListX.getModel()).addElement(i + ". id = null");
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                dataListXModel.clear();
+                for (int i = 0; i < mListofListSensor.size(); i++) {
+                    Double next = mListofListTime.get(i);
+                    if (mListofListSensor.get(i).size() > 0) {
+                        ((DefaultListModel) mJListX.getModel()).addElement(i + ". id = " + i + "(Time: " + next + ")");
+                    } else {
+                        ((DefaultListModel) mJListX.getModel()).addElement(i + ". id = null");
+                    }
+                }
+                listXLabel.setText("ListX(time) : " + mListofListSensor.size());
             }
-        }
-        listXLabel.setText("ListX(time) : " + mListofListSensor.size());
+        });
 
     }
     /**
@@ -363,7 +371,6 @@ public void initOtherComponent() {
                 }
             }
         }
-        coordinatePanel.refresh();
         coordinatePanel.refresh();
     }//GEN-LAST:event_showViewBtnActionPerformed
 
