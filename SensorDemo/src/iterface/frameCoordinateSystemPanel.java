@@ -109,18 +109,7 @@ public class frameCoordinateSystemPanel extends JPanel{
                 }
             }
        });
-//       this.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                int x = e.getX()-SensorUtility.marginPanel;
-//                int y = e.getY()-SensorUtility.marginPanel;
-//                int cellX = x / sizeRect;
-//                int cellY = y / sizeRect;
-//                if (cellX < SensorUtility.numberRow && cellX >= 0 && cellY < SensorUtility.numberColum && cellY >=0 )
-//                   JOptionPane.showMessageDialog(null, "X ="+cellX +" Y =" +cellY );
-//                //System.out.println("Clicked! X=" +cellX +" Y =" +cellY);
-//            }
-//        });
+
     }
      void initPopupMenu() {
         popup = new JPopupMenu();

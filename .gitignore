@@ -1,3 +1,2 @@
-/SensorDemo/dist/
-/SensorDemo/build/
-/SensorDemo/nbproject/
+
+*.class

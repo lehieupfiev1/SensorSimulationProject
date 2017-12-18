@@ -640,7 +640,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
                 }
                 
                 //Giao voi canh trai
-                    if (intersect[3]) {
+                if (intersect[3]) {
                     nearByEdge.clear();
                     Find_Interaction_SecondEdge(mListSensorNodes.get(nearByList.get(i)), P1, P2, nearByEdge);
                     for (int j = 0; j < nearByEdge.size(); j++) {
@@ -1086,7 +1086,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
         for (int i = 0; i < K; i++) {
             List<Double> SortListT = new ArrayList<>();
             List<Double> ListT = ListOfListT.get(i);
-            if (ListT.size() == 0) {
+            if (ListT.isEmpty()) {
                 System.out.println("ListX is null id:"+i);
                 return;
             }
