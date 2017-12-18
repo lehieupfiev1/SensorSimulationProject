@@ -12,6 +12,7 @@ import static common.SensorUtility.mListofListTime;
 import java.util.ArrayList;
 import java.util.List;
 import model.NodeItem;
+import model.PCLItem;
 
 /**
  *
@@ -22,6 +23,7 @@ public class TempAlgorithm {
     float Rs, Rt;// Rs and Rt value
     List<List<Integer>> resultListX;
     List<Double> resultListT;
+    List<PCLItem> mListPCLSensor;
     public float Distance[][];
     int Num;// Number sensor
     public TempAlgorithm() {
@@ -60,6 +62,8 @@ public class TempAlgorithm {
                 }
             }
         }
+        
+        
     }
     public  float calculateDistance(float x1, float y1, float x2, float y2) {
         return (float) Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
