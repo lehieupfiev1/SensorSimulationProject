@@ -9,13 +9,10 @@ import common.SensorUtility;
 import static common.SensorUtility.*;
 import ilog.concert.*;
 import ilog.cplex.*;
-import static iterface.algorithm.frameMyAlgorithm2.ListSensor;
 import static iterface.frameMain.coordinatePanel;
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -53,11 +50,11 @@ public class MyAlgorithm2 {
         //Step 2: 
 //        createMatrixDistance();
 //        
-        countA =0;
+
         runAlgorithm();
         
         CoppyToListSensor();
-        System.out.println("Count "+countA);
+
        //freeData();
     }
     

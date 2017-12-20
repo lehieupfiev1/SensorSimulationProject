@@ -6,6 +6,7 @@
 package iterface.algorithm;
 
 import algorithm.Algorithm2;
+import algorithm.TempAlgorithm;
 import common.SensorUtility;
 import static common.SensorUtility.LifeTimeOfSensor;
 import static common.SensorUtility.Lvalue;
@@ -337,6 +338,7 @@ public void initOtherComponent() {
         }  else {
             clearData();
             Algorithm2 mAlgorithm = new Algorithm2();
+            //TempAlgorithm mAlgorithm = new TempAlgorithm();
             Thread thread;
             thread = new Thread(new Runnable() {
                 @Override
