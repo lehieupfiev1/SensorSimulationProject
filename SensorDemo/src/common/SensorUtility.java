@@ -23,8 +23,8 @@ import model.NodeItem;
  * @author Hieu
  */
 public final class SensorUtility {
-    public static int MaxColum =500;
-    public static int MaxRow =500;
+    public static int MaxColum =1001;
+    public static int MaxRow =1001;
     public static int numberColum =200;
     public static int marginPanel =20;
     public static int numberRow = 200;
@@ -169,5 +169,22 @@ public final class SensorUtility {
         mListRobotNodes.clear();
         mListTargetNodes.clear();
     }
+    
+    public static int giaithua(int N) {
+        int result = 1;
+        for (int i = 1;i <= N; i++) {
+            result = result*i;
+        }
+        return result;
+    }
+    
+    public static int tohop(int N, int K) {
+        if (K == 0 || K == N) {
+            return 1;
+        } else {
+            return (giaithua(N)/(giaithua(N-K)*giaithua(K)));
+        }
+    }
+
 
 }

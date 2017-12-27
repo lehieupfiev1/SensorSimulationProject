@@ -337,8 +337,8 @@ public void initOtherComponent() {
             JOptionPane.showMessageDialog(null, "Insert sensorr nodes");
         }  else {
             clearData();
-            Algorithm2 mAlgorithm = new Algorithm2();
-            //TempAlgorithm mAlgorithm = new TempAlgorithm();
+            //Algorithm2 mAlgorithm = new Algorithm2();
+            TempAlgorithm mAlgorithm = new TempAlgorithm();
             Thread thread;
             thread = new Thread(new Runnable() {
                 @Override

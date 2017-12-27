@@ -548,7 +548,7 @@ public class TempAlgorithm {
              resultListT.add(mTimeLife);
          }
 
-         
+       
      }
      
      

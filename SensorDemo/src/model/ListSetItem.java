@@ -17,11 +17,19 @@ public class ListSetItem {
     List<Integer> Xi;
     List<Integer> Yi;
     List<Integer> Ci;// Luu cac node da check khong the loai bo
+    int K;
 
     public ListSetItem() {
         Xi = new ArrayList<>();
         Yi = new ArrayList<>();
         Ci = new ArrayList<>();
+    }
+
+    public ListSetItem(List<Integer> Xi, List<Integer> Yi, List<Integer> Ci, int K) {
+        this.Xi = Xi;
+        this.Yi = Yi;
+        this.Ci = Ci;
+        this.K = K;
     }
 
     public ListSetItem(List<Integer> Xi, List<Integer> Yi, List<Integer> Ci) {
@@ -62,8 +70,19 @@ public class ListSetItem {
     public void setYi(List<Integer> Yi, int added) {
         for (int i = 0; i < Yi.size(); i++) {
            this.Yi.add(Yi.get(i));
+
         }
         this.Yi.add(added);
+    }
+    public void setListYi(List<Integer> Yi, List<Integer> Listadd) {
+        for (int i = 0; i < Yi.size(); i++) {
+           this.Yi.add(Yi.get(i));
+
+        }
+        for (int i = 0; i < Listadd.size(); i++) {
+           this.Yi.add(Listadd.get(i));
+
+        }
     }
 
     public List<Integer> getCi() {
@@ -78,6 +97,14 @@ public class ListSetItem {
     
     public void addCi(int added) {
         this.Ci.add(added);
+    }
+
+    public int getK() {
+        return K;
+    }
+
+    public void setK(int K) {
+        this.K = K;
     }
     
 }

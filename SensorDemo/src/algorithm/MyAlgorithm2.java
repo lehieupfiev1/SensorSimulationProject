@@ -17,7 +17,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.CountItem;
 import model.FloatPointItem;
+import model.IntersectItem;
 import model.ListSetItem;
 import model.NodeItem;
 
@@ -36,6 +38,7 @@ public class MyAlgorithm2 {
     public float Distance[][];
     int Num;// Number sensor
     List<List<Integer>> ListNearBy;
+    IntersectItem Intersect[][];
     public MyAlgorithm2() {
     }
     
@@ -54,7 +57,7 @@ public class MyAlgorithm2 {
         runAlgorithm();
         
         CoppyToListSensor();
-
+        
        //freeData();
     }
     
@@ -72,6 +75,7 @@ public class MyAlgorithm2 {
         mTimeLife = SensorUtility.LifeTimeOfSensor;
         Num = mListSensorNodes.size();
         Distance = new float[Num+1][Num+1];
+        Intersect = new IntersectItem[Num+1][Num+1];
         
         for (int i =0;i<Num;i++) {
             for (int j =0;j<=i;j++) {
@@ -93,6 +97,25 @@ public class MyAlgorithm2 {
                 }
             }
             ListNearBy.add(tempNearBy);
+        }
+        
+        //Tim giao diem
+        for (int i = 0;i<Num;i++) {
+            for (int j =0;j<=i;j++) {
+                if (i != j && Distance[i][j] < 2*Rs) {
+                    FloatPointItem n1 = new FloatPointItem();
+                    FloatPointItem n2 = new FloatPointItem();
+                    findIntersection_TwoCircle(i, j, n1, n2);
+                    IntersectItem intersectItem = new IntersectItem(n1, n2);
+                    Intersect[i][j] = intersectItem;
+                    Intersect[j][i] = intersectItem;
+                } else {
+                    IntersectItem intersectItem = new IntersectItem();
+                    Intersect[i][j] = intersectItem;
+                    Intersect[j][i] = intersectItem;
+                }
+            }
+
         }
     }
     
@@ -259,7 +282,9 @@ public class MyAlgorithm2 {
         
         //Free Data
         tempListOfListX = null;
-        tempListOfListT = null;        
+        tempListOfListT = null;
+        tempListX = null; 
+        tempListT = null;
         upPoint = null;
         downPoint = null;
     }
@@ -385,6 +410,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
         int minSensor = (int) (SA / Str) + 1 ;
         returListX.clear();
         int MaxSet = 0;
+        System.out.println("numberSize"+listSensor.size() + " - minsensor "+minSensor);
 
         //Cach 1: Dung to hop
 //        for (int i = minSensor; i <= listSensor.size(); i++) {
@@ -395,7 +421,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
 //        }
         //Cach 2 :
         List<List<Integer>> retuListX = new ArrayList<>();
-        FindSet(listSensor,UpLeftCornerPoint,DownRightCornerPoint,returListX);
+        FindSetV2(listSensor,UpLeftCornerPoint,DownRightCornerPoint,returListX);
         Collections.sort(returListX, new Comparator<List<Integer>>(){
             @Override
                public int compare(List<Integer> o1, List<Integer> o2) {
@@ -406,7 +432,6 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
                }
             
         });
-        int a=2;
     }
 
     //=========-Suw dung cach 2====================================
@@ -443,8 +468,10 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
             }
             if(count==0) {
                 //Khong the loai bo phan tu nao
-               
-                returListX.add(tempXi);
+                int pos = 0;
+                if (!CheckExitListX(returListX,tempXi,pos)) {
+                   returListX.add(tempXi);
+                }
                 mListSet.remove(0);
                 
             } else {
@@ -462,6 +489,8 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
                                if (!status[k]) setItem.addCi(tempXi.get(k));
                            }
                            mListSet.add(setItem);
+                        } else {
+                           setItem = null;
                         }
                     }
                 } 
@@ -469,6 +498,152 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
             }
         }
     }
+    //Code tinnh to hop---------------------
+    
+    void FindSetV2(List<Integer> listSensor,FloatPointItem P1, FloatPointItem P4, List<List<Integer>> returListX ) {
+        //Init data
+        int N = listSensor.size();
+        mListSet.clear();
+        List<Integer> X0 = new ArrayList<>();
+        List<Integer> Y0 = new ArrayList<>();
+        List<Integer> C0 = new ArrayList<>();
+        
+        for (int i =0;i<listSensor.size();i++) {
+            X0.add(listSensor.get(i));
+        }
+        ListSetItem headSetItem = new ListSetItem(X0, Y0, C0,1);
+        mListSet.add(headSetItem);
+        //
+        while(!mListSet.isEmpty()){
+            ListSetItem headItem = mListSet.get(0);
+            List<Integer> tempXi = headItem.getXi();
+            List<Integer> tempYi = headItem.getYi();
+            List<Integer> tempCi = headItem.getCi();
+            int K = headItem.getK();
+            int pos =0;
+            if (CheckExitListX(returListX,tempXi,pos)) {
+                mListSet.remove(0);
+            }
+            //Test
+            showViewTest(tempXi);
+            boolean[] status = new boolean[tempXi.size()];
+            CountItem count = new CountItem(0);
+            if (K > 1) {
+                Combi(tempXi, tempYi,tempCi, tempXi.size(), K, P1, P4, count);
+            } else if (K==1) {
+                for (int i = 0; i < tempXi.size(); i++) {
+                    //Check tinh phu khi loai bo cac phan tu i 
+                    if (!CheckPointExitInCi(tempCi, tempXi.get(i)) && CheckPointCorveringBySet(tempXi, tempXi.get(i), P1, P4)) {
+                        status[i] = true;
+                        count.increse(1);
+                    }
+                }
+            }
+            if(count.getCount()==0 && K == 1) {
+                //Khong the loai bo phan tu nao
+                
+                returListX.add(tempXi);
+                mListSet.remove(0);
+
+            } else if (K == 1 && count.getCount() != 0) {
+                //Ton tai phan tu co the loai bo
+                for(int j =0;j <tempXi.size();j++) {
+                    if (status[j]) {
+                        //Add them phan tu vao List
+                        ListSetItem setItem = new ListSetItem();
+                        setItem.setXi(tempXi,j);
+                        setItem.setYi(tempYi,tempXi.get(j));
+                        //Nen Kiem tra xem da ton tai chua
+                       if(!CheckExitSet(mListSet,setItem)) {
+                           setItem.setCi(tempCi);
+                           for (int k =0;k<tempXi.size();k++) {
+                               if (!status[k]) setItem.addCi(tempXi.get(k));
+                           }
+
+                           setItem.setK(K+1);
+                           mListSet.add(setItem);
+                        } else {
+                            //freedata
+                           setItem = null;
+                       }
+                    } 
+                } 
+                mListSet.remove(0);
+            } else if (count.getCount()==0 && K > 1) {
+                mListSet.get(0).setK(K-1);
+            } else {
+                mListSet.remove(0);
+            }
+            
+        }
+    }
+     public void Combi(List<Integer> listSensor,List<Integer> listYi,List<Integer> listCi, int N, int K, FloatPointItem P1, FloatPointItem P4,CountItem count) {
+        int a[] = new int[N + 1];
+        a[0] = 0;
+        int i = 1;
+        ComCallBack(listSensor,listYi,listCi, a, N, K, i, P1, P4,count);
+    }
+
+    void ComCallBack(List<Integer> listSensor,List<Integer> listYi,List<Integer> listCi, int a[], int N, int K, int i, FloatPointItem P1, FloatPointItem P4,CountItem count) {
+        for (int j = a[i - 1] + 1; j <= N - K + i; j++) {
+            a[i] = j;
+            if (i == K) {
+                //Print result
+                ResultCombi(listSensor,listYi,listCi, a, K, P1, P4,count);
+            } else {
+                ComCallBack(listSensor,listYi,listCi, a, N, K, i + 1, P1, P4, count);
+            }
+        }
+    }
+
+    void ResultCombi(List<Integer> listSensor,List<Integer> listYi,List<Integer> listCi, int a[], int K, FloatPointItem P1, FloatPointItem P4 ,CountItem count) {
+        List<Integer> listElement_Combination = new ArrayList<>();
+        for (int i = 1; i <= K; i++) {
+            listElement_Combination.add(listSensor.get(a[i] - 1));
+        }
+        // Thuc hien thuat toan
+        List<Integer> list = new ArrayList<>();
+        list.clear();
+        boolean found = false;
+        for (int i= 0;i<listSensor.size();i++) {
+            for (int j =0; j < listElement_Combination.size();j++) {
+                found = false;
+                if (listSensor.get(i) == listElement_Combination.get(j)) {
+                    found = true;
+                    break;
+                }
+
+            }
+            if (!found) list.add(listSensor.get(i));
+        }
+        //Kiem tra co phu khong
+        for (int i =0;i<listElement_Combination.size();i++) {
+            if (!CheckPointCorveringBySet(list, listElement_Combination.get(i), P1, P4)) {
+                
+                return;
+            }
+                
+        }
+        
+        ///Add ket qua
+        count.increse(1);
+        ListSetItem setItem = new ListSetItem();
+        setItem.setXi(list);
+        setItem.setListYi(listYi, listElement_Combination);
+
+        //Check Exit
+        if(!CheckExitSet(mListSet,setItem)) {
+            
+            setItem.setK(K);
+            setItem.setCi(listCi);
+            mListSet.add(setItem);
+        } else {
+            //freedata
+            setItem = null;
+        }
+
+    }
+    //------------------------------------
     
     boolean CheckPointExitInCi(List<Integer> listSensorCi, int point){
         for (int i = 0; i < listSensorCi.size(); i++) {
@@ -478,6 +653,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
         }
         return false;
     }
+
     boolean CheckPointCorveringBySet(List<Integer> listSensor, int exception, FloatPointItem P1, FloatPointItem P4) {
         FloatPointItem P2 = new FloatPointItem(P1.getX(), P4.getY());
         FloatPointItem P3 = new FloatPointItem(P4.getX(), P1.getY());
@@ -505,9 +681,11 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
                 for (int j =0;j<i;j++) {
                     if (i != j ) {
                         if (Distance[nearByList.get(i)][nearByList.get(j)] < 2*Rs) {
-                             FloatPointItem n1 = new FloatPointItem();
-                             FloatPointItem n2 = new FloatPointItem();
-                             findIntersection_TwoCircle(nearByList.get(j), nearByList.get(i), n1, n2);
+//                             FloatPointItem n1 = new FloatPointItem();
+//                             FloatPointItem n2 = new FloatPointItem();
+//                             findIntersection_TwoCircle(nearByList.get(j), nearByList.get(i), n1, n2);
+                             FloatPointItem n1 = Intersect[nearByList.get(i)][nearByList.get(j)].getN1();
+                             FloatPointItem n2 = Intersect[nearByList.get(i)][nearByList.get(j)].getN2();
                              if (CheckPoint_InCircle(n1,mListSensorNodes.get(exception).getX(), mListSensorNodes.get(exception).getY(),Rs)) {
                                  listY.add(n1);
                              }
@@ -521,8 +699,11 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
             
             //Check cac giao diem co phu khong
             for (int i =0;i<listY.size();i++) {
-                if (!CheckPoint_Corvering_bySetX(listY.get(i),nearByList)) {
-                   return false; 
+                if (!CheckPoint_Corvering_bySetX(listY.get(i), nearByList)) {
+                    listY = null;
+                    nearByList = null;
+                    list = null;
+                    return false;
                 }
             }
             
@@ -551,9 +732,11 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
                 for (int j =0;j<i;j++) {
                     if (i != j ) {
                         if (Distance[nearByList.get(i)][nearByList.get(j)] < 2*Rs) {
-                             FloatPointItem n1 = new FloatPointItem();
-                             FloatPointItem n2 = new FloatPointItem();
-                             findIntersection_TwoCircle(nearByList.get(j), nearByList.get(i), n1, n2);
+//                             FloatPointItem n1 = new FloatPointItem();
+//                             FloatPointItem n2 = new FloatPointItem();
+//                             findIntersection_TwoCircle(nearByList.get(j), nearByList.get(i), n1, n2);
+                             FloatPointItem n1 = Intersect[nearByList.get(i)][nearByList.get(j)].getN1();
+                             FloatPointItem n2 = Intersect[nearByList.get(i)][nearByList.get(j)].getN2();
                              if (CheckPoint_InCircle(n1,mListSensorNodes.get(exception).getX(), mListSensorNodes.get(exception).getY(),Rs) && CheckPoint_InRectange(n1,P1.getX(),P1.getY(),P4.getX(),P4.getY())) {
                                  listY.add(n1);
                              }
@@ -567,6 +750,9 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
            //Check cac giao diem lan can co phu khong
             for (int i =0;i<listY.size();i++) {
                 if (!CheckPoint_Corvering_bySetX(listY.get(i),nearByList)) {
+                   listY = null;
+                   nearByList = null;
+                   list = null;
                    return false; 
                 }
             }
@@ -605,6 +791,10 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
             // Check tinh phu cua truong tron va cac canh
             for (int i =0;i<Edge.size();i++) {
                 if (!CheckPoint_Corvering_bySetX(Edge.get(i),nearByList)) {
+                    //Free data
+                   Edge = null;
+                   nearByList = null;
+                   list = null;
                    return false; 
                 }
             }
@@ -620,6 +810,11 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
                     for (int j = 0; j < nearByEdge.size(); j++) {
                         tempPoint = nearByEdge.get(j);
                         if (CheckPoint_InCircle(tempPoint,mListSensorNodes.get(exception).getX(), mListSensorNodes.get(exception).getY(),Rs) && !CheckPoint_Corvering_bySetX(tempPoint, nearByList)) {
+                            //Free data
+                            intersect = null;
+                            nearByList = null;
+                            list = null;
+                            nearByEdge = null;
                             return false;
                         }
                     }
@@ -631,6 +826,11 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
                     for (int j = 0; j < nearByEdge.size(); j++) {
                         tempPoint = nearByEdge.get(j);
                         if (CheckPoint_InCircle(tempPoint,mListSensorNodes.get(exception).getX(), mListSensorNodes.get(exception).getY(),Rs) && !CheckPoint_Corvering_bySetX(tempPoint, nearByList)) {
+                            //Free data
+                            intersect = null;
+                            nearByList = null;
+                            list = null;
+                            nearByEdge = null;
                             return false;
                         }
                     }
@@ -643,6 +843,11 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
                     for (int j = 0; j < nearByEdge.size(); j++) {
                         tempPoint = nearByEdge.get(j);
                         if (CheckPoint_InCircle(tempPoint,mListSensorNodes.get(exception).getX(), mListSensorNodes.get(exception).getY(),Rs) && !CheckPoint_Corvering_bySetX(tempPoint, nearByList)) {
+                            //Free data
+                            intersect = null;
+                            nearByList = null;
+                            list = null;
+                            nearByEdge = null;
                             return false;
                         }
                     }
@@ -654,6 +859,11 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
                     for (int j = 0; j < nearByEdge.size(); j++) {
                         tempPoint = nearByEdge.get(j);
                         if (CheckPoint_InCircle(tempPoint,mListSensorNodes.get(exception).getX(), mListSensorNodes.get(exception).getY(),Rs) && !CheckPoint_Corvering_bySetX(tempPoint, nearByList)) {
+                            //Free data
+                            intersect = null;
+                            nearByList = null;
+                            list = null;
+                            nearByEdge = null;
                             return false;
                         }
                     }
@@ -689,9 +899,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
                 }
                 if (count == Set.getYi().size()) return true;
                 
-            } else if (tempList.getYi().size() > Set.getYi().size()) {
-                return false;
-            }
+            } 
         }
         return false;
     }
@@ -731,11 +939,12 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
                     //Add Xi vao List and check TH tap hop cha
 
                     returListX.add(listElement_Combination);
-                    showViewTest(listElement_Combination);
+                    //showViewTest(listElement_Combination);
                     int s = 2;
                 }
             }
         }
+        listElement_Combination = null;
     }
     
     boolean CheckExitSubSet(List<List<Integer>> childList, List<Integer> checkListX, int Max) {
@@ -747,7 +956,8 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
         }
         return false;
     }
-     boolean CheckIsSubSet(List<Integer> childX, List<Integer> parentX ) {
+
+    boolean CheckIsSubSet(List<Integer> childX, List<Integer> parentX ) {
          if (parentX.size() < childX.size()) return false;
          Collections.sort(parentX);
          Collections.sort(childX);
@@ -811,13 +1021,15 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
         FloatPointItem p3 = new FloatPointItem(x1, y2);
         FloatPointItem p4 = new FloatPointItem(x2, y2);
         if (!CheckInteractionPoint_Corvering_bySetX(p1, p4, SetX))  return false;  
-        
+
         //Check 4 canh nam ben trong 
 //        if (CheckPoint_Corvering_bySetX(p1,SetX) && CheckPoint_Corvering_bySetX(p2,SetX) && CheckPoint_Corvering_bySetX(p3,SetX)&&CheckPoint_Corvering_bySetX(p4,SetX)) {
 //            return true;
 //        }
 
-
+ 
+        //Free Data 
+        SetI = null;
         return true;
     }
     
