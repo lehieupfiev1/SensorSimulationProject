@@ -16,12 +16,24 @@ public class NodeItem {
      type  0 : Target
      type  1 : Robot
      type  2 : Sensor
+     type  3: Sink
     */
+    int id;
     int type;
     int group;
     int status;
 
+    public NodeItem( int id, int x, int y, int type, int group, int status) {
+        this.id = id;
+        this.x = x;
+        this.y = y;
+        this.type = type;
+        this.group = group;
+        this.status = status;
+    }
+
     public NodeItem(int x, int y, int type, int group, int status) {
+        this.id = 0;
         this.x = x;
         this.y = y;
         this.type = type;
@@ -29,13 +41,16 @@ public class NodeItem {
         this.status = status;
     }
     public NodeItem(int x, int y, int type, int group) {
+        this.id = 0;
         this.x = x;
         this.y = y;
         this.type = type;
         this.group = group;
         this.status =0;
     }
+    
     public NodeItem(int x, int y, int type) {
+        this.id = 0;
         this.x = x;
         this.y = y;
         this.type = type;
@@ -80,6 +95,14 @@ public class NodeItem {
 
     public void setGroup(int group) {
         this.group = group;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override

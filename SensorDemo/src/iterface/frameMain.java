@@ -141,6 +141,7 @@ public class frameMain extends javax.swing.JFrame {
         showTargetMenuItem = new javax.swing.JCheckBoxMenuItem();
         showRobotMenuItem = new javax.swing.JCheckBoxMenuItem();
         showSensorCorverMenuItem = new javax.swing.JCheckBoxMenuItem();
+        jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
         AlgorithmMenu = new javax.swing.JMenu();
         MyAlgorithmMenuItem = new javax.swing.JMenuItem();
         Algorithm1MenuItem = new javax.swing.JMenuItem();
@@ -352,6 +353,15 @@ public class frameMain extends javax.swing.JFrame {
             }
         });
         ViewMenu.add(showSensorCorverMenuItem);
+
+        jCheckBoxMenuItem1.setSelected(true);
+        jCheckBoxMenuItem1.setText("Show Sink");
+        jCheckBoxMenuItem1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                showSinkViewStateChanged(evt);
+            }
+        });
+        ViewMenu.add(jCheckBoxMenuItem1);
 
         menuBar.add(ViewMenu);
 
@@ -732,6 +742,17 @@ public class frameMain extends javax.swing.JFrame {
         coordinatePanel.refresh();
     }//GEN-LAST:event_showSensorCorverItemStateChanged
 
+    private void showSinkViewStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showSinkViewStateChanged
+        // TODO add your handling code here:
+        int state = evt.getStateChange();
+        if (state == ItemEvent.SELECTED) {
+            coordinatePanel.setShowSink(true);
+        } else {
+            coordinatePanel.setShowSink(false);
+        }
+        coordinatePanel.refresh();
+    }//GEN-LAST:event_showSinkViewStateChanged
+
     public void saveFile() {
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new java.io.File("."));
@@ -848,6 +869,7 @@ public class frameMain extends javax.swing.JFrame {
     private javax.swing.JMenu helpMenu;
     private javax.swing.JMenuItem importFileMenuItem;
     private javax.swing.JMenu inputDataMenu;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JCheckBoxMenuItem showGridMenuItem;
     private javax.swing.JCheckBoxMenuItem showRobotMenuItem;

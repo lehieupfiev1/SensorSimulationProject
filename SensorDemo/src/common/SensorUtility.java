@@ -28,12 +28,13 @@ public final class SensorUtility {
     public static int numberColum =200;
     public static int marginPanel =20;
     public static int numberRow = 200;
-    public static float mRsValue = 1.0f;
-    public static float mRtValue = 3.0f;
+    public static float mRsValue = 4.0f;
+    public static float mRtValue = 4.0f;
     public static int mNumberRobotCycle = 0;
     public static List<NodeItem> mListNodes = new ArrayList<>();
     public static List<NodeItem> mListSensorNodes = new ArrayList<>();
     public static List<NodeItem> mListTargetNodes = new ArrayList<>();
+    public static List<NodeItem> mListSinkNodes = new ArrayList<>();
     public static List<List<NodeItem>> mListRobotNodes = new ArrayList<List<NodeItem>>();
     public static List<List<NodeItem>> mListofListSensor = new ArrayList<List<NodeItem>>();
     public static List<Double> mListofListTime = new ArrayList<>();
@@ -58,7 +59,7 @@ public final class SensorUtility {
         outputWriter.write(numberColum + " "+ numberRow+" "+mRsValue+ " "+mRtValue);
         outputWriter.newLine();
         //Write number Target, number Robot Cycle, number Sensor
-        outputWriter.write(mListTargetNodes.size() + " "+ mListRobotNodes.size()+" "+mListSensorNodes.size());
+        outputWriter.write(mListTargetNodes.size() + " "+ mListRobotNodes.size()+" "+mListSensorNodes.size()+ " "+ mListSinkNodes.size());
         outputWriter.newLine();
         //Write List point Target
         for (int i = 0; i < mListTargetNodes.size(); i++) {
@@ -84,6 +85,13 @@ public final class SensorUtility {
         }
         outputWriter.newLine();
         
+        //Write List Sink 
+        for (int i = 0; i < mListSinkNodes.size(); i++) {
+            // Maybe:
+            outputWriter.write(mListSinkNodes.get(i).getX() + " " + mListSinkNodes.get(i).getY() + " ");
+        }
+        outputWriter.newLine();
+        
 
         outputWriter.flush();
         outputWriter.close();
@@ -100,10 +108,12 @@ public final class SensorUtility {
         numberRow = scanner.nextInt();
         mRsValue = scanner.nextFloat();
         mRtValue = scanner.nextFloat();
+
         ////Read number Target, number Robot Cycle, number Sensor
         int sizeTarget = scanner.nextInt();
         int sizeRobotCycle = scanner.nextInt();
         int sizeSensor = scanner.nextInt();
+        int sizeSink = scanner.nextInt();
         // Read Target
         for (int i = 0; i < sizeTarget; i++) {
             int x = scanner.nextInt();
@@ -128,6 +138,14 @@ public final class SensorUtility {
             int y = scanner.nextInt();
             mListSensorNodes.add(new NodeItem(x, y, 2));
         }
+        
+        //Read Sink
+        for (int i = 0; i < sizeSink; i++) {
+            int x = scanner.nextInt();
+            int y = scanner.nextInt();
+            mListSinkNodes.add(new NodeItem(x, y, 3));
+        }
+
     }
     
     public static void captureScreen(Component component,int width, int height,String filename) throws IOException {

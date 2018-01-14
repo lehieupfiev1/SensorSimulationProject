@@ -9,6 +9,7 @@ import common.SensorUtility;
 import static common.SensorUtility.mListNodes;
 import static common.SensorUtility.mListRobotNodes;
 import static common.SensorUtility.mListSensorNodes;
+import static common.SensorUtility.mListSinkNodes;
 import static common.SensorUtility.mListTargetNodes;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -42,9 +43,11 @@ public class frameCoordinateSystemPanel extends JPanel{
     static boolean isShowTarget = true;
     static boolean isShowRobot = true;
     static boolean isShowCorver = true;
+    static boolean isShowSink = true;
     JPopupMenu popup;
     JMenuItem deleteSensorItem;
     JMenuItem deleteTargetItem;
+    JMenuItem deleteSinkItem;
     int pointX;
     int pointY;
 
@@ -80,15 +83,23 @@ public class frameCoordinateSystemPanel extends JPanel{
                if (checkPointExit(cellX, cellY) == 3) {
                    deleteSensorItem.setEnabled(true);
                    deleteTargetItem.setEnabled(true);
+                   deleteSinkItem.setEnabled(false);
                } else if (checkPointExit(cellX, cellY) == 1) {
                    deleteSensorItem.setEnabled(true);
                    deleteTargetItem.setEnabled(false);
+                   deleteSinkItem.setEnabled(false);
                } else if (checkPointExit(cellX, cellY) == 2) {
                    deleteSensorItem.setEnabled(false);
                    deleteTargetItem.setEnabled(true);
+                   deleteSinkItem.setEnabled(false);
+               } else if (checkPointExit(cellX, cellY) == 4){
+                   deleteSensorItem.setEnabled(false);
+                   deleteTargetItem.setEnabled(false);
+                   deleteSinkItem.setEnabled(true);
                } else {
                    deleteSensorItem.setEnabled(false);
                    deleteTargetItem.setEnabled(false);
+                   deleteSinkItem.setEnabled(false);
                }
                showPopup(e);
            }
@@ -142,8 +153,22 @@ public class frameCoordinateSystemPanel extends JPanel{
             }
         });
         popup.add(menuItem);
+        
+        // New Sink
+        menuItem = new JMenuItem("Add Sink",
+                new ImageIcon(getClass().getResource("/resource/triange_icon.png")));
+        menuItem.setMnemonic(KeyEvent.VK_F);
+        menuItem.addActionListener(new ActionListener() {
 
-        //Refresg button
+            public void actionPerformed(ActionEvent e) {
+                //JOptionPane.showMessageDialog(frame, "New File clicked!");
+                SensorUtility.mListSinkNodes.add(new NodeItem(pointX, pointY, 3));
+                refresh();
+            }
+        });
+        popup.add(menuItem);
+
+        //Refresh button
         menuItem = new JMenuItem("Refresh");
         menuItem.setMnemonic(KeyEvent.VK_F);
         menuItem.addActionListener(new ActionListener() {
@@ -196,11 +221,33 @@ public class frameCoordinateSystemPanel extends JPanel{
             }
         });
         popup.add(deleteTargetItem);
+        
+        //Delete Sink
+        deleteSinkItem = new JMenuItem("Delete Sink");
+        deleteSinkItem.setMnemonic(KeyEvent.VK_F);
+        deleteSinkItem.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                //JOptionPane.showMessageDialog(frame, "New File clicked!");
+                for (int i =0; i< mListSinkNodes.size();) {
+                    NodeItem next = mListSinkNodes.get(i);
+                    if (next.getX() == pointX && next.getY() == pointY) {
+                        mListSinkNodes.remove(i);
+                        continue;
+                    }
+                    i++;
+                }
+
+                refresh();
+            }
+        });
+        popup.add(deleteSinkItem);
     }
    
    int checkPointExit(int cellX, int cellY) {
         boolean hasSensor = false;
         boolean hasTarget = false;
+        boolean hasSink = false;
         for (Iterator<NodeItem> iterator = mListSensorNodes.iterator(); iterator.hasNext();) {
             NodeItem next = iterator.next();
             if (next.getX() == cellX && next.getY() == cellY) {
@@ -215,7 +262,17 @@ public class frameCoordinateSystemPanel extends JPanel{
                 break;
             }
         }
-        if (hasSensor && hasTarget) {
+        
+        for (Iterator<NodeItem> iterator = mListSinkNodes.iterator(); iterator.hasNext();) {
+            NodeItem next = iterator.next();
+            if (next.getX() == cellX && next.getY() == cellY) {
+                hasSink = true;
+                break;
+            }
+        }
+        if (hasSink){
+            return 4;
+        } else if (hasSensor && hasTarget) {
             return 3;
         } else if (hasSensor) {
             return 1;
@@ -290,6 +347,17 @@ public class frameCoordinateSystemPanel extends JPanel{
                     } else {
                         g.drawOval(cellX, cellY, sizeRect, sizeRect);
                     }   break;
+                case 3:
+                    //Sink node
+                    if (isShowSink) {
+                        g.setColor(Color.BLACK);
+                    } else {
+                        g.setColor(new Color(0, 0, 0, 0));
+                    }   
+                    g.fillArc(cellX - sizeRect, cellY - sizeRect, sizeRect * 3, sizeRect * 2, 244, 53);
+                    break;
+                    
+                    
                 default:
                     break;
             }
@@ -342,6 +410,11 @@ public class frameCoordinateSystemPanel extends JPanel{
         refresh();
     }
     
+    public void setShowSink(boolean view) {
+        isShowSink = view;
+        refresh();
+    }
+    
     public void deleteArraryList(){
         mListNodes.clear();
         repaint();
@@ -363,6 +436,12 @@ public class frameCoordinateSystemPanel extends JPanel{
         
         //Add sensor nodes
         for (Iterator<NodeItem> iterator = mListSensorNodes.iterator(); iterator.hasNext();) {
+            NodeItem next = iterator.next();
+            mListNodes.add(next);
+        }
+        
+        //Add sink nodes
+        for (Iterator<NodeItem> iterator = mListSinkNodes.iterator(); iterator.hasNext();) {
             NodeItem next = iterator.next();
             mListNodes.add(next);
         }

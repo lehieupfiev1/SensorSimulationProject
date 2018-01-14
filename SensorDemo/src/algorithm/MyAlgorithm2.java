@@ -51,14 +51,14 @@ public class MyAlgorithm2 {
         //FindTargetCoveringSensor();
         
         //Step 2: 
-//        createMatrixDistance();
-//        
 
         runAlgorithm();
         
         CoppyToListSensor();
         
-       //freeData();
+        freeData();
+        
+        System.gc();
     }
     
     public void init() {
@@ -378,9 +378,9 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
                     System.out.println("time: " + cplex.getValue(T[i]));
                 }
                 System.out.println("value: " + cplex.getObjValue());
-            } else {
+    } else {
                 System.out.println("Problem not solved");
-            }
+    }
 
             cplex.end();
 
@@ -511,19 +511,24 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
         for (int i =0;i<listSensor.size();i++) {
             X0.add(listSensor.get(i));
         }
-        ListSetItem headSetItem = new ListSetItem(X0, Y0, C0,1);
+        ListSetItem headSetItem = new ListSetItem(X0, Y0, C0,2);
         mListSet.add(headSetItem);
         //
+        ListSetItem headItem;
+        List<Integer> tempXi;
+        List<Integer> tempYi;
+        List<Integer> tempCi;
         while(!mListSet.isEmpty()){
-            ListSetItem headItem = mListSet.get(0);
-            List<Integer> tempXi = headItem.getXi();
-            List<Integer> tempYi = headItem.getYi();
-            List<Integer> tempCi = headItem.getCi();
+             headItem = mListSet.get(0);
+             tempXi = headItem.getXi();
+             tempYi = headItem.getYi();
+             tempCi = headItem.getCi();
             int K = headItem.getK();
             int pos =0;
             if (CheckExitListX(returListX,tempXi,pos)) {
                 mListSet.remove(0);
             }
+            System.out.println("mlistSet Size" +mListSet.size());
             //Test
             showViewTest(tempXi);
             boolean[] status = new boolean[tempXi.size()];
@@ -541,7 +546,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
             }
             if(count.getCount()==0 && K == 1) {
                 //Khong the loai bo phan tu nao
-                
+                System.out.println("------------returListX Size" +returListX.size());
                 returListX.add(tempXi);
                 mListSet.remove(0);
 
@@ -574,7 +579,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
             } else {
                 mListSet.remove(0);
             }
-            
+
         }
     }
      public void Combi(List<Integer> listSensor,List<Integer> listYi,List<Integer> listCi, int N, int K, FloatPointItem P1, FloatPointItem P4,CountItem count) {
@@ -1452,6 +1457,11 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
              
         }
         return false;
+    }
+    
+    public void freeData() {
+        Distance = null;
+        Intersect = null;
     }
     
     public static void main(String[] args) {
