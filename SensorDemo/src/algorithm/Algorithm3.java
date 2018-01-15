@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import model.HeuristicItem;
 import model.NodeItem;
 
@@ -37,8 +38,9 @@ public class Algorithm3 {
     static List<Integer> ListNcs ;// Tap list sensing node
     static List<Integer> CurrentHopper;
     static List<Integer> ListNcr ; // Tap list relaying node
-    static List<Float> ListEnergySensor;
+    static float ListEnergySensor[];
     int MAX_INTERGER = 100000000;
+    int TimeStamp = 100;
     
     static float Es, Et,Er,Efs,Emp,Do, bit;
     static int cnt;
@@ -67,14 +69,14 @@ public class Algorithm3 {
     
     
     public  void init() {
-        EECCcnt = new ArrayList<>();
+
         NDEECCcnt = new ArrayList<List<Integer>>();
         Cov_Heuristic = new ArrayList<>();
         Connect_Heuristic = new ArrayList<>();
         ListNcs = new ArrayList<>();
         ListNcr = new ArrayList<>();
         CurrentHopper = new ArrayList<>();
-        ListEnergySensor = new ArrayList<>();
+        
         
     }
 
@@ -83,7 +85,7 @@ public class Algorithm3 {
         Rs = SensorUtility.mRsValue;
         Rt = SensorUtility.mRtValue;
         Rc = SensorUtility.mRtValue;
-        mTimeLife = SensorUtility.LifeTimeOfSensor;
+        mTimeLife = 0;
         MaxHopper = 3;
         
         //Read constance Energy : Es, Et,Er,Efs,Emp
@@ -93,6 +95,7 @@ public class Algorithm3 {
         Efs = 0.5F;
         Emp = 0.4f;
         Do = (float)Math.sqrt(Efs/Emp);
+        bit = 2;
         
         //Read Sensor , Sink, Target 
         N = SensorUtility.mListSensorNodes.size();
@@ -102,12 +105,13 @@ public class Algorithm3 {
         
         //Add to Total Point;
         Point = new float[TP+1][2];
+        ListEnergySensor = new float[N];
 
         for (int i =0; i < mListSensorNodes.size();i++) {
             Point[i][0] = mListSensorNodes.get(i).getX();
             Point[i][1] = mListSensorNodes.get(i).getY();
             //Add Energy for every node
-            ListEnergySensor.add(1000.0f);
+            ListEnergySensor[i] = 10000.0f;
         }
         
         for (int i =0; i < mListTargetNodes.size();i++) {
@@ -172,6 +176,7 @@ public class Algorithm3 {
             //Calculate EECCcnt set
             boolean isCorvering = false;
             int hasCover = 0;
+            EECCcnt = new ArrayList<>();
             do {
                 int maxSvalue = Cov_Heuristic.get(0).getId();
                 EECCcnt.add(maxSvalue);
@@ -266,10 +271,17 @@ public class Algorithm3 {
             if (isConectivity) {
                 //Calculate Eneergy
                 NDEECCcnt.add(EECCcnt);
-                //L = LifeCycle(EECCcnt);
+                //Create ListECRi : nang luong tieu hao
+                float listEcri[] = new float[N];
+                for (int i = 0;i <listEcri.length;i++ ) {
+                    listEcri[i] = 0.0f;
+                }
+                float L = LifeCycle(EECCcnt,ListEnergySensor,listEcri,ListNcs,listNearSink,listTarget,listSink);
                 
+                mTimeLife+= L*TimeStamp;
+                Update_Energy_Sensor(EECCcnt,ListEnergySensor,listEcri,listSensor,L);
                 
-                
+                int a = 2;
                 
                 
             } else {
@@ -281,12 +293,56 @@ public class Algorithm3 {
 
     }
     
-    // Check energy Sensor
-    public void LifeCycle (List<Integer> listEECCcnt) {
+    //Update energy
+    public void Update_Energy_Sensor(List<Integer> listEECCcnt,float listEnergySensor[], float listEcri[], List<Integer> listSensor , float L) {
+        
+        for(int i= 0 ; i < listEECCcnt.size();i++) {
+            listEnergySensor[listEECCcnt.get(i)] -= L*listEcri[listEECCcnt.get(i)];
+            //Check TH het nang luong
+            if (listEnergySensor[listEECCcnt.get(i)] < listEcri[listEECCcnt.get(i)]) {
+                 
+                for (int j = 0; j<listSensor.size();j++) {
+                    if (Objects.equals(listSensor.get(j), listEECCcnt.get(i))) {
+                        listSensor.remove(j);
+                        break;
+                    }
+                }
+                
+                
+            }
+        }
+        
         
     }
+    
+    // Check energy Sensor
+    public float LifeCycle (List<Integer> listEECCcnt, float listEnergySensor[], float listEcr[],List<Integer> listStart, List<Integer> listEnd,List<Integer> listTarget, List<Integer> listSink) {
+        //Tinh toan duong di ngan nhat toi sink
+        List<List<Integer>> ListPathSensor = new ArrayList<>();
+        Calculate_Path_ToSink(listStart,listEnd,listTarget,listEECCcnt,ListPathSensor);
+        
+        //Tinh toan nang luong tieu thu qua cac sensor;
+
+        Calculate_Energy_Consumption(listSink,ListPathSensor,listEcr);
+        
+        //Tinh nang luong tieu thu voi bit
+        for (int i =0;i < listEcr.length;i++) {
+            listEcr[i] *= bit;
+        }
+        
+        //Find gia tri nho nhat L
+        float L = 1000000.0f;
+        for (int i = 0;i < listEECCcnt.size();i++) {
+            int sensor = listEECCcnt.get(i);
+            if (L > (listEnergySensor[sensor]/listEcr[sensor])) {
+                L = (listEnergySensor[sensor]/listEcr[sensor]);
+            }
+        }
+        return L;
+
+    }
     // Tinh toan nang luong tieu hao
-    public void Calculate_Path_ToSink(List<Integer> listStart,List<Integer> listEnd, List<Integer> listEECCcnt, List<List> listSink, List<List<Integer>> listPathResult) {
+    public void Calculate_Path_ToSink(List<Integer> listStart,List<Integer> listEnd, List<Integer> listTarget, List<Integer> listEECCcnt, List<List<Integer>> listPathResult) {
        //Create matrix Distance from ListEECCcnt
        int N = listEECCcnt.size();
        int Matrix[][] = new int[N][N];
@@ -307,6 +363,24 @@ public class Algorithm3 {
         int weight[] = new int[N];//luu trong so
         List<Integer> path;
         listPathResult.clear();
+        int time[] = new int[listStart.size()];
+        for (int i =0; i< listStart.size();i++) {
+            time[i] = 0;
+        }
+        //Check node start duoc bao nhieu target di qua
+        for (int i = 0; i<listTarget.size();i++) {
+            float distance = Rs;
+            int pos = 0;
+            for (int j =0; j<listStart.size();j++) {
+                if (Distance[listStart.get(j)][N+listTarget.get(i)] <= distance) {
+                    distance = Distance[listStart.get(j)][N+listTarget.get(i)];
+                    pos = j;
+                }
+            }
+            time[pos]++;
+            
+        }
+        
         for (int i= 0;i < listStart.size();i++) {
             //Check TH start point is not cover
             int result;
@@ -325,11 +399,14 @@ public class Algorithm3 {
             }
             
             //Add to list
-            listPathResult.add(path);
+            for (int j =0 ;j <time[i];j++) {
+               listPathResult.add(path);
+            }
+            int a = 4;
         }
     }
     
-    //Calculate Energy Comsumpation
+//Calculate Energy Comsumpation
     public void Calculate_Energy_Consumption(List<Integer> listSink, List<List<Integer>> listPath, float ListEcr[]) {
         for (int i = 0; i < listPath.size(); i++) {
             List<Integer> path = listPath.get(i);
@@ -382,11 +459,11 @@ public class Algorithm3 {
         
         if (start == end) {
             listPath.add(listEECCcnt.get(end));
-            System.out.print(end+ "->");
+            System.out.print(end+ "-");
         } else {
-            printPath(start, back[end], back);
+            FindListPath(start, back[end], back,listEECCcnt,listPath);
             listPath.add(listEECCcnt.get(end));
-            System.out.print(end+ "->");
+            System.out.print(end+ "-");
         }
     }
     // Check ham xem 
