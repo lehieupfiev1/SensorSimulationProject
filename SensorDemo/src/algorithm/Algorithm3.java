@@ -9,6 +9,9 @@ import common.SensorUtility;
 import static common.SensorUtility.mListSensorNodes;
 import static common.SensorUtility.mListSinkNodes;
 import static common.SensorUtility.mListTargetNodes;
+import static common.SensorUtility.mListofListSensor;
+import static common.SensorUtility.mListofListTime;
+import static iterface.frameMain.coordinatePanel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -23,32 +26,33 @@ import model.NodeItem;
  */
 public class Algorithm3 {
 
-    public static float Distance[][];// Matrix distance between two nodes
-    public static float Target[][];// Target nodes
-    public static float Point[][];// Total nodes
-    public static float Sink[][];// Target covering sensors
+    public float Distance[][];// Matrix distance between two nodes
+    public float Target[][];// Target nodes
+    public float Point[][];// Total nodes
+    public float Sink[][];// Target covering sensors
     
-    static double mTimeLife;
-    static float Rs, Rt, Rc;// Rs and Rt value
-    static int MaxHopper;
-    static List<Integer> EECCcnt;   
-    static List<List<Integer>> NDEECCcnt;
-    static List<HeuristicItem> Cov_Heuristic;
-    static List<HeuristicItem> Connect_Heuristic;
-    static List<Integer> ListNcs ;// Tap list sensing node
-    static List<Integer> CurrentHopper;
-    static List<Integer> ListNcr ; // Tap list relaying node
-    static float ListEnergySensor[];
+    double mTimeLife;
+    float Rs, Rt, Rc;// Rs and Rt value
+    int MaxHopper;
+    List<Integer> EECCcnt;   
+    List<List<Integer>> NDEECCcnt;
+    List<Double> listTime;
+    List<HeuristicItem> Cov_Heuristic;
+    List<HeuristicItem> Connect_Heuristic;
+    List<Integer> ListNcs ;// Tap list sensing node
+    List<Integer> CurrentHopper;
+    List<Integer> ListNcr ; // Tap list relaying node
+    float ListEnergySensor[];
     int MAX_INTERGER = 100000000;
-    int TimeStamp = 100;
+    float TimeStamp ;
     
-    static float Es, Et,Er,Efs,Emp,Do, bit;
-    static int cnt;
+    float Es, Et,Er,Efs,Emp,Do, bit;
+    int cnt;
     
-    static int K;// Number Sink
-    static int N;//Number sensor
-    static int TP; // Total points (Contain Sensor , Sink, Target )
-    static int T;//Number of Tagert Nodes
+    int K;// Number Sink
+    int N;//Number sensor
+    int TP; // Total points (Contain Sensor , Sink, Target )
+    int T;//Number of Tagert Nodes
     
     
     public Algorithm3() {
@@ -76,11 +80,12 @@ public class Algorithm3 {
         ListNcs = new ArrayList<>();
         ListNcr = new ArrayList<>();
         CurrentHopper = new ArrayList<>();
+        listTime = new ArrayList<>();
         
         
     }
 
-    public static void readData() {
+    public  void readData() {
         // Read Rs, Rt
         Rs = SensorUtility.mRsValue;
         Rt = SensorUtility.mRtValue;
@@ -89,13 +94,14 @@ public class Algorithm3 {
         MaxHopper = 3;
         
         //Read constance Energy : Es, Et,Er,Efs,Emp
-        Es = 1;
-        Et = 2.0F;
-        Er = 2;
-        Efs = 0.5F;
-        Emp = 0.4f;
+        Es = SensorUtility.mEsValue;
+        Et = SensorUtility.mEtValue;
+        Er = SensorUtility.mErValue;
+        Efs = SensorUtility.mEfsValue;
+        Emp = SensorUtility.mEmpValue;
         Do = (float)Math.sqrt(Efs/Emp);
-        bit = 2;
+        bit = SensorUtility.mBitValue;
+        TimeStamp = SensorUtility.mTstamp;
         
         //Read Sensor , Sink, Target 
         N = SensorUtility.mListSensorNodes.size();
@@ -111,7 +117,7 @@ public class Algorithm3 {
             Point[i][0] = mListSensorNodes.get(i).getX();
             Point[i][1] = mListSensorNodes.get(i).getY();
             //Add Energy for every node
-            ListEnergySensor[i] = 10000.0f;
+            ListEnergySensor[i] = SensorUtility.mEoValue;
         }
         
         for (int i =0; i < mListTargetNodes.size();i++) {
@@ -138,7 +144,7 @@ public class Algorithm3 {
     }
     
     
-    public  static float calculateDistance(float x1, float y1, float x2, float y2) {
+    public  float calculateDistance(float x1, float y1, float x2, float y2) {
         return (float) Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
     }
     
@@ -204,9 +210,10 @@ public class Algorithm3 {
                 ListNcs.add(EECCcnt.get(i));
             }
 
+            showViewTest(ListNcs);
             //-----------------------Tinh list Sensor den cac sink--------------------------------------------
             Find_Current_Hoppers(listSensor, listSink, ListNcr, CurrentHopper);
-
+            showViewTest(CurrentHopper);
             // Vong lap tim Connect Node
             int numberOfIterations = 0;
             boolean isConectivity = false;
@@ -217,7 +224,7 @@ public class Algorithm3 {
             for (int j = 0; j < ListNcs.size();j++) IsCover[j] = false;
             
             while (!isConectivity && !ListNcr.isEmpty() && !CurrentHopper.isEmpty() && numberOfIterations < MaxHopper) {
-                Calculate_Connect_Heuristic(listSensor, listSink, CurrentHopper, ListNcs, Connect_Heuristic);
+                Calculate_Connect_Heuristic(listSensor, listSink, CurrentHopper, ListNcs, ListNcr,Connect_Heuristic);
 
                 //Sort Connect Heuristic
                 Collections.sort(Connect_Heuristic, new Comparator<HeuristicItem>() {
@@ -229,6 +236,13 @@ public class Algorithm3 {
                     }
                 });
 
+                //test
+                List<Integer> testSensor = new ArrayList<>();
+                for(int i = 0; i< Connect_Heuristic.size();i++) {
+                    testSensor.add(Connect_Heuristic.get(i).getId());
+                }
+                showViewTest(testSensor);
+                
                 //Lay tung phan tu cua Connect Heuristic 
                 while (!Connect_Heuristic.isEmpty()) {
                     int selected_sensor = Connect_Heuristic.get(0).getId();
@@ -262,6 +276,7 @@ public class Algorithm3 {
                         List<Integer> next_hopper = Hop_Finder(ListNcr, CurrentHopper);
 
                         CurrentHopper = next_hopper;
+                        showViewTest(CurrentHopper);
                         int a = 5;
                     }
                 }
@@ -279,6 +294,10 @@ public class Algorithm3 {
                 float L = LifeCycle(EECCcnt,ListEnergySensor,listEcri,ListNcs,listNearSink,listTarget,listSink);
                 
                 mTimeLife+= L*TimeStamp;
+                listTime.add((double)L*TimeStamp);
+                
+                
+                
                 Update_Energy_Sensor(EECCcnt,ListEnergySensor,listEcri,listSensor,L);
                 
                 int a = 2;
@@ -296,19 +315,24 @@ public class Algorithm3 {
     //Update energy
     public void Update_Energy_Sensor(List<Integer> listEECCcnt,float listEnergySensor[], float listEcri[], List<Integer> listSensor , float L) {
         
-        for(int i= 0 ; i < listEECCcnt.size();i++) {
-            listEnergySensor[listEECCcnt.get(i)] -= L*listEcri[listEECCcnt.get(i)];
-            //Check TH het nang luong
-            if (listEnergySensor[listEECCcnt.get(i)] < listEcri[listEECCcnt.get(i)]) {
-                 
-                for (int j = 0; j<listSensor.size();j++) {
-                    if (Objects.equals(listSensor.get(j), listEECCcnt.get(i))) {
-                        listSensor.remove(j);
-                        break;
+        for (int i = 0; i < listEECCcnt.size(); ) {
+            float energyUsing = L * listEcri[listEECCcnt.get(i)];
+            if (energyUsing == 0) {
+                listEECCcnt.remove(i);
+            } else {
+                listEnergySensor[listEECCcnt.get(i)] -= energyUsing;
+                //Check TH het nang luong
+                if (listEnergySensor[listEECCcnt.get(i)] < listEcri[listEECCcnt.get(i)]) {
+
+                    for (int j = 0; j < listSensor.size(); j++) {
+                        if (Objects.equals(listSensor.get(j), listEECCcnt.get(i))) {
+                            listSensor.remove(j);
+                            break;
+                        }
                     }
+
                 }
-                
-                
+                i++;
             }
         }
         
@@ -669,7 +693,7 @@ public class Algorithm3 {
      }
     
      // Calcualate Connect Heuristic 
-     public void Calculate_Connect_Heuristic(List<Integer> listSensor, List<Integer> listSink, List<Integer> listCurrentHopper, List<Integer> listNCS ,List<HeuristicItem> listConnectHeuristic) {
+     public void Calculate_Connect_Heuristic(List<Integer> listSensor, List<Integer> listSink, List<Integer> listCurrentHopper, List<Integer> listNCS, List<Integer> listNCR ,List<HeuristicItem> listConnectHeuristic) {
          List<Integer> listTotalCoverNCS = new ArrayList<>();
          listTotalCoverNCS.clear();
          for (int i = 0;i<listNCS.size();i++) {
@@ -705,11 +729,13 @@ public class Algorithm3 {
              listConnectHeuristic.add(heuristicItem);
          }
          
-         //Delete listConnectHeuristic == 0;
+//         //Delete listConnectHeuristic == 0;
          for (int i = 0; i < listConnectHeuristic.size();) {
              if (listConnectHeuristic.get(i).getValue() == 0.000000000f) {
                  listConnectHeuristic.remove(i);
+                 listNCR.add(listCurrentHopper.get(i));
                  listCurrentHopper.remove(i);
+                 
              } else i++;
 
          }
@@ -742,10 +768,32 @@ public class Algorithm3 {
     }
      
     public void CoppyToListSensor() {
-        //Coppy to display
-
+        mListofListSensor.clear();
+        for (int i =0;i<NDEECCcnt.size();i++ ) {
+            List<Integer> temp = NDEECCcnt.get(i);
+            List<NodeItem> tempNodeList = new ArrayList<>();
+            for (int j =0;j<temp.size();j++) {
+               tempNodeList.add(mListSensorNodes.get(temp.get(j)));
+            }
+            mListofListSensor.add(tempNodeList);
+        }
+        mListofListTime = listTime;
     }
     
+    public void showViewTest(List<Integer> listSensor) {                                            
+        // TODO add your handling code here:
+        //Clear data
+        for (int j = 0; j < mListSensorNodes.size(); j++) {
+            mListSensorNodes.get(j).setStatus(0);
+        }
+
+        for (int i =0;i<listSensor.size();i++) {
+           //Change Value On foreach Sensor   
+            mListSensorNodes.get(listSensor.get(i)).setStatus(1);
+            
+        }
+        coordinatePanel.refresh();
+    }    
     public static void main(String[] args) {
         mListSensorNodes.add(new NodeItem(10, 9, 2));
         mListSensorNodes.add(new NodeItem(8, 7, 2));

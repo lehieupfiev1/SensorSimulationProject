@@ -28,7 +28,7 @@ public final class SensorUtility {
     public static int numberColum =200;
     public static int marginPanel =20;
     public static int numberRow = 200;
-    public static float mRsValue = 4.0f;
+    public static float mRsValue = 20.0f;
     public static float mRtValue = 4.0f;
     public static int mNumberRobotCycle = 0;
     public static List<NodeItem> mListNodes = new ArrayList<>();
@@ -49,6 +49,19 @@ public final class SensorUtility {
     public static float mSaiso = 0.001f;
       
     
+    //Constant wuth sink
+    public static float mRcValue = 40f;
+    public static float mEsValue = 100.0f;
+    public static float mEtValue = 50.0f;
+    public static float mErValue = 100.0f;
+    public static float mEfsValue = 0.01f;
+    public static float mEmpValue = 0.0000013f;
+    public static float mBitValue = 2.0f;
+    public static float mTstamp = 1.0f;
+    public static int mMaxHopper = 5;
+    public static float mEoValue = 20000000000.0f;
+    
+    
     public static void writeFile(String filename) throws IOException {
         File file = new File(filename);
         if (!file.exists()) file.createNewFile();
@@ -57,6 +70,9 @@ public final class SensorUtility {
         outputWriter = new BufferedWriter(new FileWriter(file, false));
         //Write Width and height , Rs, Rt
         outputWriter.write(numberColum + " "+ numberRow+" "+mRsValue+ " "+mRtValue);
+        outputWriter.newLine();
+        //Write parameter of energy
+        outputWriter.write(mRcValue + " "+ mEsValue+" "+mEtValue+ " "+mErValue+ " "+mEfsValue+" "+mEmpValue+" "+mBitValue+ " "+mMaxHopper);
         outputWriter.newLine();
         //Write number Target, number Robot Cycle, number Sensor
         outputWriter.write(mListTargetNodes.size() + " "+ mListRobotNodes.size()+" "+mListSensorNodes.size()+ " "+ mListSinkNodes.size());
@@ -108,6 +124,16 @@ public final class SensorUtility {
         numberRow = scanner.nextInt();
         mRsValue = scanner.nextFloat();
         mRtValue = scanner.nextFloat();
+        
+        //Read parameter of energy
+        mRcValue = scanner.nextFloat();
+        mEsValue = scanner.nextFloat();
+        mEtValue = scanner.nextFloat();
+        mErValue = scanner.nextFloat();
+        mEfsValue = scanner.nextFloat();
+        mEmpValue = scanner.nextFloat();
+        mBitValue = scanner.nextFloat();
+        mMaxHopper = scanner.nextInt();
 
         ////Read number Target, number Robot Cycle, number Sensor
         int sizeTarget = scanner.nextInt();

@@ -10,6 +10,7 @@ import algorithm.MyAlgorithm;
 import common.SensorUtility;
 import iterface.algorithm.frameAlgorithm1;
 import iterface.algorithm.frameAlgorithm2;
+import iterface.algorithm.frameAlgorithm3;
 import iterface.algorithm.frameMyAlgorithm;
 import iterface.algorithm.frameMyAlgorithm2;
 import iterface.robot.frameAddRobot;
@@ -78,11 +79,11 @@ public class frameMain extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1500, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 3000, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 826, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 2500, Short.MAX_VALUE)
         );
         
 
@@ -96,11 +97,11 @@ public class frameMain extends javax.swing.JFrame {
         coordinatePanel.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1640, Short.MAX_VALUE)
+            .addGap(0, 2040, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1640, Short.MAX_VALUE)
+            .addGap(0, 2040, Short.MAX_VALUE)
         );
 
         jScrollPane1.setViewportView(coordinatePanel);
@@ -147,11 +148,13 @@ public class frameMain extends javax.swing.JFrame {
         Algorithm1MenuItem = new javax.swing.JMenuItem();
         MyAlgorithm2MenuItem = new javax.swing.JMenuItem();
         Algorithm2 = new javax.swing.JMenuItem();
+        Algoritm3MenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         contentsMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(2513, 2360));
 
         inputDataMenu.setMnemonic('f');
         inputDataMenu.setText("Setting");
@@ -399,6 +402,14 @@ public class frameMain extends javax.swing.JFrame {
         });
         AlgorithmMenu.add(Algorithm2);
 
+        Algoritm3MenuItem.setText("Algorithm3");
+        Algoritm3MenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Algoritm3MenuItemActionPerformed(evt);
+            }
+        });
+        AlgorithmMenu.add(Algoritm3MenuItem);
+
         menuBar.add(AlgorithmMenu);
 
         helpMenu.setMnemonic('h');
@@ -420,11 +431,11 @@ public class frameMain extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1500, Short.MAX_VALUE)
+            .addGap(0, 2178, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 826, Short.MAX_VALUE)
+            .addGap(0, 1576, Short.MAX_VALUE)
         );
 
         pack();
@@ -559,7 +570,7 @@ public class frameMain extends javax.swing.JFrame {
                         int tempScreen = SensorUtility.numberColum * 4 + SensorUtility.marginPanel * 2;
                         coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
                     }
-                } else {
+                } else if (SensorUtility.numberRow <= 700 && SensorUtility.numberColum <= 700){
                     if (SensorUtility.numberRow > SensorUtility.numberColum) {
                         int tempScreen = SensorUtility.numberRow * 3 + SensorUtility.marginPanel * 2;
                         coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
@@ -567,6 +578,14 @@ public class frameMain extends javax.swing.JFrame {
                         int tempScreen = SensorUtility.numberColum * 3 + SensorUtility.marginPanel * 2;
                         coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
                     }
+                } else {
+                    if (SensorUtility.numberRow > SensorUtility.numberColum) {
+                        int tempScreen = SensorUtility.numberRow * 2 + SensorUtility.marginPanel * 2;
+                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+                    } else {
+                        int tempScreen = SensorUtility.numberColum * 2 + SensorUtility.marginPanel * 2;
+                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+                    }    
                 }
                 coordinatePanel.refresh();
             }
@@ -753,6 +772,13 @@ public class frameMain extends javax.swing.JFrame {
         coordinatePanel.refresh();
     }//GEN-LAST:event_showSinkViewStateChanged
 
+    private void Algoritm3MenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Algoritm3MenuItemActionPerformed
+        // TODO add your handling code here:
+        frameAlgorithm3 mFrameAlgorithm = new frameAlgorithm3();
+        mFrameAlgorithm.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        mFrameAlgorithm.setVisible(true);
+    }//GEN-LAST:event_Algoritm3MenuItemActionPerformed
+
     public void saveFile() {
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new java.io.File("."));
@@ -847,6 +873,7 @@ public class frameMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem Algorithm1MenuItem;
     private javax.swing.JMenuItem Algorithm2;
     private javax.swing.JMenu AlgorithmMenu;
+    private javax.swing.JMenuItem Algoritm3MenuItem;
     private javax.swing.JMenuItem CalculateDistanceMenuItem;
     private javax.swing.JMenuItem DeleteAllRobotMenuItem;
     private javax.swing.JMenuItem DeleteAllSenorMenuItem;

@@ -319,7 +319,7 @@ public class frameCoordinateSystemPanel extends JPanel{
                         g.setColor(Color.BLUE);
                     } else {
                         g.setColor(new Color(0, 0, 0, 0));
-                    }   g.fillRect(cellX, cellY, sizeRect, sizeRect);
+                    }   g.fillRect(cellX-sizeRect, cellY-sizeRect, sizeRect*3, sizeRect*3);
                     break;
                 case 1:
                     // Robot node
@@ -354,7 +354,7 @@ public class frameCoordinateSystemPanel extends JPanel{
                     } else {
                         g.setColor(new Color(0, 0, 0, 0));
                     }   
-                    g.fillArc(cellX - sizeRect, cellY - sizeRect, sizeRect * 3, sizeRect * 2, 244, 53);
+                    g.fillArc(cellX - (int)(sizeRect*2.5), cellY - sizeRect*4, sizeRect * 6, sizeRect * 6, 244, 53);
                     break;
                     
                     
