@@ -32,7 +32,7 @@ public class Algorithm3 {
     public float Sink[][];// Target covering sensors
     
     double mTimeLife;
-    float Rs, Rt, Rc;// Rs and Rt value
+    float Rs, Rc;// Rs and Rt value
     int MaxHopper;
     List<Integer> EECCcnt;   
     List<List<Integer>> NDEECCcnt;
@@ -86,10 +86,9 @@ public class Algorithm3 {
     }
 
     public  void readData() {
-        // Read Rs, Rt
+        // Read Rs, Rc
         Rs = SensorUtility.mRsValue;
-        Rt = SensorUtility.mRtValue;
-        Rc = SensorUtility.mRtValue;
+        Rc = SensorUtility.mRcValue;
         mTimeLife = 0;
         MaxHopper = 3;
         
@@ -152,6 +151,7 @@ public class Algorithm3 {
     public void runAlgorithm() {
 
         // Calculate Covering Heuristic
+        List<Integer> listRelaySensor = new ArrayList<>();
         List<Integer> listSensor = new ArrayList<>();
         for (int i = 0; i < mListSensorNodes.size(); i++) {
             listSensor.add(i);
@@ -168,7 +168,12 @@ public class Algorithm3 {
         //Bat dau vong lap
         boolean isTerminal = false;
         do {
-            // ------------------Tinh list sensor cover Target---------------------------
+            //Update listRelaySensor
+            listRelaySensor.clear();
+            for (int i = 0; i < listSensor.size(); i++) {
+               listRelaySensor.add(listSensor.get(i));
+            }
+            // ------------------Tinh list sensor cover Target------------------------------------
             Calculate_Cov_Heuristic(listTarget, listSensor, Cov_Heuristic);
             Collections.sort(Cov_Heuristic, new Comparator<HeuristicItem>() {
                 @Override
@@ -204,83 +209,115 @@ public class Algorithm3 {
                 return;
             }
 
-            //Find ListNCS : listSensing Node // Can xem xet lai
-            ListNcs.clear();
+            
+            //Test 
+
+            List<Integer> listStart = new ArrayList<>();
             for (int i = 0; i < EECCcnt.size(); i++) {
-                ListNcs.add(EECCcnt.get(i));
+                listStart.add(EECCcnt.get(i));
+            }
+            showViewTest(listStart);
+            
+            ListNcs.clear();
+            int count;
+            for (int i = 0; i < EECCcnt.size(); i++) {
+                count = 0;
+                for (int j = 0; j < listSink.size(); j++) {
+                    if (Distance[EECCcnt.get(i)][N + T + listSink.get(j)] <= Rc) {
+                        break;
+                    } else {
+                        count++;
+                    }
+                }
+                if (count == listSink.size()) {
+                    ListNcs.add(EECCcnt.get(i));
+                }
+                
             }
 
             showViewTest(ListNcs);
             //-----------------------Tinh list Sensor den cac sink--------------------------------------------
-            Find_Current_Hoppers(listSensor, listSink, ListNcr, CurrentHopper);
-            showViewTest(CurrentHopper);
+
             // Vong lap tim Connect Node
-            int numberOfIterations = 0;
             boolean isConectivity = false;
             List<Integer> listNearSink = new ArrayList<>();
             listNearSink.clear();
-            //Tao list Check Covering LisNCS
-            boolean IsCover[] = new boolean[ListNcs.size()];
-            for (int j = 0; j < ListNcs.size();j++) IsCover[j] = false;
+
             
-            while (!isConectivity && !ListNcr.isEmpty() && !CurrentHopper.isEmpty() && numberOfIterations < MaxHopper) {
-                Calculate_Connect_Heuristic(listSensor, listSink, CurrentHopper, ListNcs, ListNcr,Connect_Heuristic);
+            boolean isFirstConectivity = false;
+            if (ListNcs.size() == 0) {
+                isConectivity = true;
+                isFirstConectivity = true;
+            } else {
 
-                //Sort Connect Heuristic
-                Collections.sort(Connect_Heuristic, new Comparator<HeuristicItem>() {
-                    @Override
-                    public int compare(HeuristicItem o1, HeuristicItem o2) {
-                        float distance1 = o1.getValue();
-                        float distance2 = o2.getValue();
-                        return Float.compare(distance2, distance1);
-                    }
-                });
-
-                //test
-                List<Integer> testSensor = new ArrayList<>();
-                for(int i = 0; i< Connect_Heuristic.size();i++) {
-                    testSensor.add(Connect_Heuristic.get(i).getId());
-                }
-                showViewTest(testSensor);
+                Find_Current_Hoppers(listRelaySensor, listSink, ListNcr, CurrentHopper);
+                showViewTest(CurrentHopper);
                 
-                //Lay tung phan tu cua Connect Heuristic 
-                while (!Connect_Heuristic.isEmpty()) {
-                    int selected_sensor = Connect_Heuristic.get(0).getId();
-                    if (!CheckNodeExit(EECCcnt, selected_sensor)) {
-                        EECCcnt.add(selected_sensor);
-                        if (numberOfIterations == 0) {
-                            listNearSink.add(selected_sensor);
-                        }
-                        //Add check
-                        if (CheckConectivity(ListNcs, IsCover, EECCcnt, listNearSink)) {
-                            isConectivity = true;
-                            break;
-                        } else {
-                            isConectivity = false;
-                        }
+                //Tao list Check Covering LisNCS
+                int numberOfIterations = 0;
+                boolean IsCover[] = new boolean[ListNcs.size()];
+                for (int j = 0; j < ListNcs.size();j++) IsCover[j] = false;
+                
+                
+                while (!isConectivity && !ListNcr.isEmpty() && !CurrentHopper.isEmpty() && numberOfIterations < MaxHopper) {
+                    Calculate_Connect_Heuristic(listRelaySensor, listSink, CurrentHopper, ListNcs, ListNcr, Connect_Heuristic);
 
+                    //Sort Connect Heuristic
+                    Collections.sort(Connect_Heuristic, new Comparator<HeuristicItem>() {
+                        @Override
+                        public int compare(HeuristicItem o1, HeuristicItem o2) {
+                            float distance1 = o1.getValue();
+                            float distance2 = o2.getValue();
+                            return Float.compare(distance2, distance1);
+                        }
+                    });
+
+                    //test
+                    List<Integer> testSensor = new ArrayList<>();
+                    for (int i = 0; i < Connect_Heuristic.size(); i++) {
+                        testSensor.add(Connect_Heuristic.get(i).getId());
                     }
-                    //Remove max heurius
-                    Connect_Heuristic.remove(0);
-                    int a = 5;
+                    showViewTest(testSensor);
 
-                }
-                //Check lai
-                if (!isConectivity) {
-                    if (CurrentHopper.isEmpty() || ListNcr.isEmpty()) {
-                        return;
+                    //Lay tung phan tu cua Connect Heuristic 
+                    while (!Connect_Heuristic.isEmpty()) {
+                        int selected_sensor = Connect_Heuristic.get(0).getId();
+                        if (!CheckNodeExit(EECCcnt, selected_sensor)) {
+                            EECCcnt.add(selected_sensor);
+                            if (numberOfIterations == 0) {
+                                listNearSink.add(selected_sensor);
+                            }
+                            //Add check
+                            if (CheckConectivity(listStart, IsCover, EECCcnt, listNearSink)) {
+                                isConectivity = true;
+                                break;
+                            } else {
+                                isConectivity = false;
+                            }
 
-                    } else {
-                        // Khoi tao next Hopper
-                        numberOfIterations++;
-                        List<Integer> next_hopper = Hop_Finder(ListNcr, CurrentHopper);
-
-                        CurrentHopper = next_hopper;
-                        showViewTest(CurrentHopper);
+                        }
+                        //Remove max heurius
+                        Connect_Heuristic.remove(0);
                         int a = 5;
-                    }
-                }
 
+                    }
+                    //Check lai
+                    if (!isConectivity) {
+                        if (CurrentHopper.isEmpty() || ListNcr.isEmpty()) {
+                            return;
+
+                        } else {
+                            // Khoi tao next Hopper
+                            numberOfIterations++;
+                            List<Integer> next_hopper = Hop_Finder(ListNcr, CurrentHopper);
+
+                            CurrentHopper = next_hopper;
+                            showViewTest(CurrentHopper);
+                            int a = 5;
+                        }
+                    }
+
+                }
             }
             
             if (isConectivity) {
@@ -291,7 +328,20 @@ public class Algorithm3 {
                 for (int i = 0;i <listEcri.length;i++ ) {
                     listEcri[i] = 0.0f;
                 }
-                float L = LifeCycle(EECCcnt,ListEnergySensor,listEcri,ListNcs,listNearSink,listTarget,listSink);
+                //Add ListNearsink
+                if (isFirstConectivity) {
+                    for (int i = 0; i< listStart.size() ;i++) {
+                        for (int j = 0 ;j < listSink.size();j++) {
+                            if (Distance[listStart.get(i)][N+T+listSink.get(j)] <= Rc) {
+                                listNearSink.add(listStart.get(i));
+                                break;
+                            }
+                        }
+                        
+                    }
+                }
+                
+                float L = LifeCycle(EECCcnt,ListEnergySensor,listEcri,listStart,listNearSink,listTarget,listSink);
                 
                 mTimeLife+= L*TimeStamp;
                 listTime.add((double)L*TimeStamp);
@@ -355,7 +405,7 @@ public class Algorithm3 {
         }
         
         //Find gia tri nho nhat L
-        float L = 1000000.0f;
+        float L = 1000000000000.0f;
         for (int i = 0;i < listEECCcnt.size();i++) {
             int sensor = listEECCcnt.get(i);
             if (L > (listEnergySensor[sensor]/listEcr[sensor])) {
@@ -438,7 +488,7 @@ public class Algorithm3 {
                 //Chi co 1 node trung gian
                 //Tieu hoa = recive + sending + tranfer
 
-                float minDistane = 1000000000.0f;
+                float minDistane = 100000000000000.0f;
                 for(int j =0;j<listSink.size();j++) {
                     if (Distance[path.get(0)][N+T+listSink.get(j)] < minDistane) {
                         minDistane = Distance[path.get(0)][N+T+listSink.get(j)];
@@ -458,7 +508,7 @@ public class Algorithm3 {
                 
                 //Tinh diem cuoi
                 int end = path.get(path.size()-1);
-                float minDistane = 1000000000.0f;
+                float minDistane = 100000000000000.0f;
                 for(int j =0;j<listSink.size();j++) {
                     if (Distance[end][N+T+listSink.get(j)] < minDistane) {
                         minDistane = Distance[end][N+T+listSink.get(j)];
@@ -490,6 +540,25 @@ public class Algorithm3 {
             System.out.print(end+ "-");
         }
     }
+    //Check conect with only ListNcs
+    public boolean CheckFirstConectivity(List<Integer> listNcs, List<Integer> listSink) {
+        int count = 0;
+        for (int i = 0; i < listNcs.size(); i++) {
+            count =0;
+            for (int j = 0; j < listSink.size(); j++) {
+                if (Distance[listNcs.get(i)][N + T + listSink.get(j)] <= Rc) {
+                    break;
+                } else {
+                   count ++; 
+                }
+            }
+            if (count == listSink.size()) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     // Check ham xem 
     public boolean CheckConectivity(List<Integer> listStart, boolean IsCover[], List<Integer> listEECCcnt, List<Integer> listEnd) {
         //Create matrix Distance from ListEECCcnt
@@ -674,20 +743,24 @@ public class Algorithm3 {
      }
      
      //Find current_hoppper //Chua check
-     public void Find_Current_Hoppers(List<Integer> listSensor,List<Integer> listSink, List<Integer> listNCR, List<Integer> listCurrenHopper) {
+     public void Find_Current_Hoppers(List<Integer> listRelaySensor,List<Integer> listSink, List<Integer> listNCR, List<Integer> listCurrenHopper) {
          listNCR.clear();
          listCurrenHopper.clear();
-         for (int i =0; i< listSensor.size();i++) {
+         for (int i =0; i< listRelaySensor.size();i++) {
              int count =0;
              for (int j = 0;j < listSink.size();j++) {
-                 if (Distance[listSensor.get(i)][N+T+listSink.get(j)] <= Rc) {
-                     listCurrenHopper.add(listSensor.get(i));
+                 if (Distance[listRelaySensor.get(i)][N+T+listSink.get(j)] <= Rc) {
+                     listCurrenHopper.add(listRelaySensor.get(i));
+                     //i++;
                      break;
                  } else {
                      count++;
                  }
              }
-             if (count == listSink.size()) listNCR.add(listSensor.get(i));
+             if (count == listSink.size()) {
+                 listNCR.add(listRelaySensor.get(i));
+                 //listRelaySensor.remove(i);
+             }
          }
          
      }
@@ -730,15 +803,15 @@ public class Algorithm3 {
          }
          
 //         //Delete listConnectHeuristic == 0;
-         for (int i = 0; i < listConnectHeuristic.size();) {
-             if (listConnectHeuristic.get(i).getValue() == 0.000000000f) {
-                 listConnectHeuristic.remove(i);
-                 listNCR.add(listCurrentHopper.get(i));
-                 listCurrentHopper.remove(i);
-                 
-             } else i++;
-
-         }
+//         for (int i = 0; i < listConnectHeuristic.size();) {
+//             if (listConnectHeuristic.get(i).getValue() == 0.000000000f) {
+//                 listConnectHeuristic.remove(i);
+//       //          listNCR.add(listCurrentHopper.get(i));
+//     //            listCurrentHopper.remove(i);
+//                 
+//             } else i++;
+//
+//         }
          
      }
      
