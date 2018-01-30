@@ -13,6 +13,7 @@ import iterface.algorithm.frameAlgorithm2;
 import iterface.algorithm.frameAlgorithm3;
 import iterface.algorithm.frameMyAlgorithm;
 import iterface.algorithm.frameMyAlgorithm2;
+import iterface.algorithm.frameMyAlgorithm3;
 import iterface.robot.frameAddRobot;
 import iterface.robot.frameModifyRobot;
 import iterface.sensor.frameAddSensor;
@@ -148,6 +149,7 @@ public class frameMain extends javax.swing.JFrame {
         Algorithm1MenuItem = new javax.swing.JMenuItem();
         MyAlgorithm2MenuItem = new javax.swing.JMenuItem();
         Algorithm2 = new javax.swing.JMenuItem();
+        MyAlgorithm3MenuItem = new javax.swing.JMenuItem();
         Algoritm3MenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         contentsMenuItem = new javax.swing.JMenuItem();
@@ -401,6 +403,14 @@ public class frameMain extends javax.swing.JFrame {
             }
         });
         AlgorithmMenu.add(Algorithm2);
+
+        MyAlgorithm3MenuItem.setText("MyAlgorithm3");
+        MyAlgorithm3MenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MyAlgorithm3MenuItemActionPerformed(evt);
+            }
+        });
+        AlgorithmMenu.add(MyAlgorithm3MenuItem);
 
         Algoritm3MenuItem.setText("Algorithm3");
         Algoritm3MenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -779,6 +789,13 @@ public class frameMain extends javax.swing.JFrame {
         mFrameAlgorithm.setVisible(true);
     }//GEN-LAST:event_Algoritm3MenuItemActionPerformed
 
+    private void MyAlgorithm3MenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MyAlgorithm3MenuItemActionPerformed
+        // TODO add your handling code here:
+        frameMyAlgorithm3 mFrameAlgorithm = new frameMyAlgorithm3();
+        mFrameAlgorithm.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        mFrameAlgorithm.setVisible(true);
+    }//GEN-LAST:event_MyAlgorithm3MenuItemActionPerformed
+
     public void saveFile() {
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new java.io.File("."));
@@ -882,6 +899,7 @@ public class frameMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem ModifyRobotMenuItem;
     private javax.swing.JMenuItem ModifyTargetMenuItem;
     private javax.swing.JMenuItem MyAlgorithm2MenuItem;
+    private javax.swing.JMenuItem MyAlgorithm3MenuItem;
     private javax.swing.JMenuItem MyAlgorithmMenuItem;
     private javax.swing.JMenuItem NetworkSizeMenuItem;
     private javax.swing.JMenu RobotMenu;

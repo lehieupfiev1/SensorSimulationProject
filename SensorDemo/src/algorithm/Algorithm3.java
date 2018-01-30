@@ -68,7 +68,8 @@ public class Algorithm3 {
         runAlgorithm();
 
         CoppyToListSensor();
-        //freeData();
+        
+        freeData();
     }
     
     
@@ -90,7 +91,7 @@ public class Algorithm3 {
         Rs = SensorUtility.mRsValue;
         Rc = SensorUtility.mRcValue;
         mTimeLife = 0;
-        MaxHopper = 3;
+        MaxHopper = SensorUtility.mMaxHopper;
         
         //Read constance Energy : Es, Et,Er,Efs,Emp
         Es = SensorUtility.mEsValue;
@@ -152,6 +153,7 @@ public class Algorithm3 {
 
         // Calculate Covering Heuristic
         List<Integer> listRelaySensor = new ArrayList<>();
+        List<Integer> listSensingSensor = new ArrayList<>();
         List<Integer> listSensor = new ArrayList<>();
         for (int i = 0; i < mListSensorNodes.size(); i++) {
             listSensor.add(i);
@@ -168,13 +170,23 @@ public class Algorithm3 {
         //Bat dau vong lap
         boolean isTerminal = false;
         do {
-            //Update listRelaySensor
+            //Update listRelaySensor and sensing node
             listRelaySensor.clear();
+            listSensingSensor.clear();
             for (int i = 0; i < listSensor.size(); i++) {
                listRelaySensor.add(listSensor.get(i));
             }
+            for (int i =0; i < listSensor.size();i++) {
+                for (int j = 0 ; j < listTarget.size(); j++) {
+                    if (Distance[listSensor.get(i)][N+listTarget.get(j)] <= Rs) {
+                        listSensingSensor.add(listSensor.get(i));
+                        break;
+                    }
+                }
+            }
+            
             // ------------------Tinh list sensor cover Target------------------------------------
-            Calculate_Cov_Heuristic(listTarget, listSensor, Cov_Heuristic);
+            Calculate_Cov_Heuristic(listTarget, listSensingSensor, Cov_Heuristic);
             Collections.sort(Cov_Heuristic, new Comparator<HeuristicItem>() {
                 @Override
                 public int compare(HeuristicItem o1, HeuristicItem o2) {
@@ -188,7 +200,7 @@ public class Algorithm3 {
             boolean isCorvering = false;
             int hasCover = 0;
             EECCcnt = new ArrayList<>();
-            do {
+            while (!isCorvering && !Cov_Heuristic.isEmpty()) {
                 int maxSvalue = Cov_Heuristic.get(0).getId();
                 EECCcnt.add(maxSvalue);
                 int ratio = Calculate_Coverage_Ratio(EECCcnt, listTarget);
@@ -202,7 +214,7 @@ public class Algorithm3 {
                     isCorvering = true;
                 }
 
-            } while (!isCorvering && !Cov_Heuristic.isEmpty());
+            }
 
             //Check is not covering 
             if (!isCorvering) {
@@ -255,8 +267,8 @@ public class Algorithm3 {
                 
                 //Tao list Check Covering LisNCS
                 int numberOfIterations = 0;
-                boolean IsCover[] = new boolean[ListNcs.size()];
-                for (int j = 0; j < ListNcs.size();j++) IsCover[j] = false;
+                boolean IsCover[] = new boolean[listStart.size()];
+                for (int j = 0; j < listStart.size();j++) IsCover[j] = false;
                 
                 
                 while (!isConectivity && !ListNcr.isEmpty() && !CurrentHopper.isEmpty() && numberOfIterations < MaxHopper) {
@@ -289,6 +301,7 @@ public class Algorithm3 {
                             }
                             //Add check
                             if (CheckConectivity(listStart, IsCover, EECCcnt, listNearSink)) {
+                                showViewTest(listNearSink);
                                 isConectivity = true;
                                 break;
                             } else {
@@ -323,6 +336,7 @@ public class Algorithm3 {
             if (isConectivity) {
                 //Calculate Eneergy
                 NDEECCcnt.add(EECCcnt);
+                showViewTest(EECCcnt);
                 //Create ListECRi : nang luong tieu hao
                 float listEcri[] = new float[N];
                 for (int i = 0;i <listEcri.length;i++ ) {
@@ -350,6 +364,7 @@ public class Algorithm3 {
                 
                 Update_Energy_Sensor(EECCcnt,ListEnergySensor,listEcri,listSensor,L);
                 
+                showViewTest(EECCcnt);
                 int a = 2;
                 
                 
@@ -446,8 +461,8 @@ public class Algorithm3 {
             float distance = Rs;
             int pos = 0;
             for (int j =0; j<listStart.size();j++) {
-                if (Distance[listStart.get(j)][N+listTarget.get(i)] <= distance) {
-                    distance = Distance[listStart.get(j)][N+listTarget.get(i)];
+                if (Distance[listStart.get(j)][this.N+listTarget.get(i)] <= distance) {
+                    distance = Distance[listStart.get(j)][this.N+listTarget.get(i)];
                     pos = j;
                 }
             }
@@ -867,6 +882,20 @@ public class Algorithm3 {
         }
         coordinatePanel.refresh();
     }    
+    
+    public void freeData() {
+        NDEECCcnt = null;
+        Cov_Heuristic = null;
+        Connect_Heuristic = null;
+        ListNcs = null;
+        ListNcr = null;
+        CurrentHopper = null;
+        listTime = null;
+        Point = null;
+        Distance = null;
+        ListEnergySensor = null;
+    }
+
     public static void main(String[] args) {
         mListSensorNodes.add(new NodeItem(10, 9, 2));
         mListSensorNodes.add(new NodeItem(8, 7, 2));

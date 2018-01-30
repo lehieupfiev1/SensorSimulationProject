@@ -284,6 +284,14 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Algorithm2ActionPerformed"/>
               </Events>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="MyAlgorithm3MenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="MyAlgorithm3"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="MyAlgorithm3MenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="Algoritm3MenuItem">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Algorithm3"/>
