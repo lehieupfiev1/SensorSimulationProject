@@ -88,6 +88,7 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
         EmpValueTextField.setText(""+mEmpValue);
         BitValueTextField.setText(""+mBitValue);
         ErValueTextField.setText(""+mErValue);
+        numberAlphaTextField.setText(""+Lvalue);
         
         //Result
         TimeRunningLabel.setText("Time Running : 0");
@@ -188,6 +189,8 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
         RcTextfiled = new javax.swing.JTextField();
         jLabel14 = new javax.swing.JLabel();
         MaxHopperTextField = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        numberAlphaTextField = new javax.swing.JTextField();
         DoneButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         ShowButton = new javax.swing.JButton();
@@ -358,6 +361,15 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
             }
         });
 
+        jLabel3.setText("Alpha");
+
+        numberAlphaTextField.setText("0");
+        numberAlphaTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                numberAlphaKeyReleased(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -378,11 +390,15 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
                                 .addGap(31, 31, 31)
                                 .addComponent(jLabel13)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(RcTextfiled, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(133, 133, 133)
+                                .addComponent(RcTextfiled, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(42, 42, 42)
                                 .addComponent(jLabel14)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(MaxHopperTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(MaxHopperTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(49, 49, 49)
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(numberAlphaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -399,7 +415,9 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
                     .addComponent(jLabel13)
                     .addComponent(RcTextfiled, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel14)
-                    .addComponent(MaxHopperTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(MaxHopperTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3)
+                    .addComponent(numberAlphaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -645,6 +663,15 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
         coordinatePanel.refresh();
     }//GEN-LAST:event_ShowButtonActionPerformed
 
+    private void numberAlphaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_numberAlphaKeyReleased
+        // TODO add your handling code here:
+        try {
+            SensorUtility.Lvalue = Integer.parseInt(numberAlphaTextField.getText());
+        } catch (NumberFormatException nfe) {
+            numberAlphaTextField.setText("");
+        }
+    }//GEN-LAST:event_numberAlphaKeyReleased
+
     /**
      * @param args the command line arguments
      */
@@ -707,6 +734,7 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -716,6 +744,7 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane listEECCScrollPane;
     private javax.swing.JScrollPane listSensorScrollPane;
+    private javax.swing.JTextField numberAlphaTextField;
     // End of variables declaration//GEN-END:variables
     private javax.swing.JList mJListSensor;
     private javax.swing.JList mJListEECC;

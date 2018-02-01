@@ -167,6 +167,11 @@ public class frameMyAlgorithm2 extends javax.swing.JFrame {
         jLabel1.setText("L value");
 
         LvalueTextField.setText("5");
+        LvalueTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LvalueTextFieldActionPerformed(evt);
+            }
+        });
         LvalueTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 changeLvalueKeyReleased(evt);
@@ -388,6 +393,10 @@ public class frameMyAlgorithm2 extends javax.swing.JFrame {
         coordinatePanel.refresh();
         this.dispose();
     }//GEN-LAST:event_DoneBtnActionPerformed
+
+    private void LvalueTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LvalueTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_LvalueTextFieldActionPerformed
     
     
     
