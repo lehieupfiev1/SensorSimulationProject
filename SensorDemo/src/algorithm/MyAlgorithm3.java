@@ -440,18 +440,28 @@ public class MyAlgorithm3 {
         int n = listSenSor.size();
         //Test
 //    if (m == 1) {
-//        time.add(valueT);
+//        time.add(valueE0/1000);
+//        for (int i = 1; i < listX.size(); i++) {
+//            time.add(0.0);
+//        }
 //    } else if (m == 2) {
-//        time.add(valueT);
-//        time.add(valueT);
-//    } else {
-//        time.add(valueT);
-//        time.add(valueT);
-//        time.add(valueT);
+//        time.add(valueE0/1000);
+//        time.add(valueE0/1000);
+//        for (int i = 2; i < listX.size(); i++) {
+//            time.add(0.0);
+//        }
+//    } else if (m > 2){
+//        time.add(valueE0/1000);
+//        time.add(valueE0/1000);
+//        time.add(valueE0/1000);
+//        
+//        for (int i = 3; i < listX.size(); i++) {
+//            time.add(0.0);
+//        }
 //    }
-        if (m == 0 || n == 0) {
-            return time;
-        }
+    if (m == 0 || n == 0) {
+        return time;
+    }
         
         float [][] a = new float[n][m];
 
@@ -629,8 +639,10 @@ public class MyAlgorithm3 {
             List<Double> tempReturnListT = new ArrayList<>();
             
             DiviceNetworkFollowWidth(UpLeftCornerPoint,DownRightCornerPoint,i,tempReturnListX,tempReturnListT);
-            ListOfListX.add(tempReturnListX);
-            ListOfListT.add(tempReturnListT);
+            if (!tempReturnListX.isEmpty() && !tempReturnListT.isEmpty()) {
+                ListOfListX.add(tempReturnListX);
+                ListOfListT.add(tempReturnListT);
+            }
         }
         Combining_All_Division(ListOfListX,ListOfListT,resultListX,resultListT);
         
@@ -680,16 +692,20 @@ public class MyAlgorithm3 {
                 List<List<Integer>> temp2returnListX = new ArrayList<>();
                 List<Double> temp2returnListT = new ArrayList<>();
                 DiviceNetWorkFollowHeight(upPoint,downPoint,i,temp2returnListX,temp2returnListT);
-                temp2ListOfListX.add(temp2returnListX);
-                temp2ListOfListT.add(temp2returnListT);
+                if (!temp2returnListX.isEmpty() && !temp2returnListT.isEmpty()) {
+                    temp2ListOfListX.add(temp2returnListX);
+                    temp2ListOfListT.add(temp2returnListT);
+                }
             }
             tempListX = new ArrayList<>();
             tempListT = new ArrayList<>();
             Combining_All_Division(temp2ListOfListX, temp2ListOfListT, tempListX, tempListT);
             temp2ListOfListX.clear();
             temp2ListOfListT.clear();
-            tempListOfListX.add(tempListX);
-            tempListOfListT.add(tempListT);
+            if (!tempListX.isEmpty() && !tempListT.isEmpty()) {
+               tempListOfListX.add(tempListX);
+               tempListOfListT.add(tempListT);
+            }
         }
         
         //Combining all strips follow the with of netwwork
@@ -760,8 +776,12 @@ public class MyAlgorithm3 {
             
             
             //Add result of Block
-            tempListOfListX.add(tempListX);
-            tempListOfListT.add(tempListT);
+            if (!tempListTarget.isEmpty() && !tempListX.isEmpty()) {
+                tempListOfListX.add(tempListX);
+                tempListOfListT.add(tempListT);
+            } else if (!tempListTarget.isEmpty() && tempListX.isEmpty()) {
+                System.err.println("Khong ton tai duong di");
+            }
         }
         Combining_All_Strips(tempListOfListX, tempListOfListT, returnListX, returnListT);
         
@@ -878,7 +898,9 @@ public class MyAlgorithm3 {
             int pos = getPostionOfList(ListT, 0, startValue);
             unionXi(ListOfListX.get(i).get(pos), retlistX);
         }
-        returnListX.add(retlistX);
+        if (!retlistX.isEmpty()) {
+            returnListX.add(retlistX);
+        }
 
         for (int i = start; i < ListTotalT.size(); i++) {
             if (ListTotalT.get(i) > startValue) {

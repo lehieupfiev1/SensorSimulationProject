@@ -648,18 +648,18 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
         for (int j = 0; j < mListSensorNodes.size(); j++) {
             mListSensorNodes.get(j).setStatus(0);
         }
-//        if (mListEECCIndex >= 0 && mListEECCIndex < mListofListSensor.size()) {
-//            ListSensor = mListofListSensor.get(mListEECCIndex);
-//            for (int i =0;i<ListSensor.size();i++) {
-//                //Change Value On foreach Sensor
-//                for(int j =0;j<mListSensorNodes.size();j++){
-//                    if (ListSensor.get(i).getX()== mListSensorNodes.get(j).getX() && ListSensor.get(i).getY()== mListSensorNodes.get(j).getY()) {
-//                        mListSensorNodes.get(j).setStatus(1);
-//                        break;
-//                    }
-//                }
-//            }
-//        }
+        if (mListEECCIndex >= 0 && mListEECCIndex < mListofListSensor.size()) {
+            ListSensor = mListofListSensor.get(mListEECCIndex);
+            for (int i =0;i<ListSensor.size();i++) {
+                //Change Value On foreach Sensor
+                for(int j =0;j<mListSensorNodes.size();j++){
+                    if (ListSensor.get(i).getX()== mListSensorNodes.get(j).getX() && ListSensor.get(i).getY()== mListSensorNodes.get(j).getY()) {
+                        mListSensorNodes.get(j).setStatus(1);
+                        break;
+                    }
+                }
+            }
+        }
         coordinatePanel.refresh();
     }//GEN-LAST:event_ShowButtonActionPerformed
 
