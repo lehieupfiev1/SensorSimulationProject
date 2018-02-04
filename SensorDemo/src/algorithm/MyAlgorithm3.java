@@ -390,6 +390,11 @@ public class MyAlgorithm3 {
         List<List<List<Integer>>> ListPathY = new ArrayList<>();
         Finding_CCP2(listSensor, listTarget, listSink, ListPathY);
         
+        int re =0;
+        for (int i =0; i < ListPathY.size();i++) {
+            re += ListPathY.get(i).size();
+        }
+        
         //Sink to hop
         List<List<Integer>> listCombi = new ArrayList<>();
         int a[] = new int[listTarget.size()];
@@ -433,7 +438,7 @@ public class MyAlgorithm3 {
         
     }
     
-    
+       
     public List<Double> LinearProAlgorithm(List<List<List<Integer>>> listPathX, List<List<Integer>> listX, List<Integer> listSenSor, double valueE0) {
         List<Double> time = new ArrayList<>();
         int m = listX.size();
@@ -575,7 +580,147 @@ public class MyAlgorithm3 {
         return result;
     }
     
+    public List<Double> LinearProAlgorithm2(List<List<List<Integer>>> listPathY, List<Integer> listSenSor, double valueE0) {
+        List<Double> time = new ArrayList<>();
+        int n = listPathY.size(); // Number target
+        int m = listSenSor.size(); // Number sensor
+        int Vmax =0;
+        //Test
+
+        if (m == 0 || n == 0) {
+            return time;
+        }
+        float[] v = new float[n];
+        for (int i = 0; i < listPathY.size(); i++) {
+            v[i] = listPathY.get(i).size();
+            if (Vmax < listPathY.get(i).size()) {
+                Vmax = listPathY.get(i).size();
+            }
+        }
+
+        //Check Input
+        double [][][] b = new double[m][n][Vmax];
+        for (int i = 0; i < m; i++) {
+            int sensor = listSenSor.get(i);
+            for (int j = 0; j < n; j++) {
+                List<List<Integer>> listYj = listPathY.get(j);
+                for (int k = 0; k < v[j]; k++) {
+                    b[i][j][k] = getEnergyConsumer(listYj.get(k), sensor);
+
+                }
+            }
+        }
+
+        try {
+            //Init model
+            IloCplex cplex = new IloCplex();
+
+            //Define variable
+            IloNumVar[][] t = new IloNumVar[n][Vmax];
             
+      
+            for (int j = 0; j < n; j++) {
+                for (int k = 0; k < Vmax; k++) {
+                    if (k < v[j]) {
+                        t[j][k] = cplex.numVar(0, Double.MAX_VALUE);
+                    } else {
+                        t[j][k] = cplex.numVar(-1.0, -1.0);
+                    }
+                }
+            }
+
+            //Define Objective
+            IloNumVar object = cplex.numVar(0, Double.MAX_VALUE);
+            IloLinearNumExpr objective = cplex.linearNumExpr();
+            objective.addTerm(1.0, object);
+            
+            cplex.addMaximize(objective);
+            
+            //Contraint
+            IloLinearNumExpr[] arrayExpress = new IloLinearNumExpr[m];
+            for (int i = 0; i < m; i++) {
+                arrayExpress[i] = cplex.linearNumExpr();
+                
+                for (int j = 0; j < n; j++) {
+                    for (int k = 0; k < v[j]; k++) {
+                        arrayExpress[i].addTerm(b[i][j][k], t[j][k]);
+                    }
+                }
+                cplex.addLe(arrayExpress[i], valueE0);
+            }
+            
+            IloLinearNumExpr[] express = new IloLinearNumExpr[n];
+            for (int j = 0; j < n; j++) {
+                express[j] = cplex.linearNumExpr();
+                for (int k = 0; k < v[j]; k++) {
+                    express[j].addTerm(1.0, t[j][k]);
+                }
+                cplex.addLe(object,express[j]);
+
+            }
+
+            if (cplex.solve()) {
+
+                System.out.println("value: " + cplex.getObjValue());
+                double[] Time = new double[n];
+                
+                for (int j = 0; j < n; j++) {
+                    Time[j] =0;
+                    for (int k = 0; k < v[j]; k++) {
+                       Time[j] += cplex.getValue(t[j][k]);
+                       System.out.print(" "+cplex.getValue(t[j][k]));
+                    }
+                    System.out.println();
+                }
+                
+                //Find Min
+                double min = Double.MAX_VALUE;
+                for (int i = 0 ;i <n ;i ++) {
+                    if (min > Time[i]) {
+                        min = Time[i];
+                    }
+                }
+                        
+                int da=5;
+
+                //return cplex.getValue(objective);        
+            } else {
+                System.out.println("Problem not solved");
+            }
+
+            cplex.end();
+
+        } catch (IloException ex) {
+            Logger.getLogger("LeHieu").log(Level.SEVERE, null, ex);
+        }
+        return time;
+    }
+    
+    double getEnergyConsumer(List<Integer> pathYi, int sensor) {
+        double result = 0;
+        for (int i =0; i< pathYi.size(); i++) {
+            if (i==0 && pathYi.get(i) == sensor ) {
+                result += bit * Es;
+                if (pathYi.size() == 1) {
+                    result += bit * TranferEnergy(MinDistanceSink[sensor]);
+                } else {
+                    result += bit * TranferEnergy(Distance[sensor][pathYi.get(i + 1)]);
+                }
+                return result;
+            } else if (pathYi.get(i) == sensor) {
+                result += bit * Er;
+                if (i == pathYi.size() - 1) {
+                    result += bit * TranferEnergy(MinDistanceSink[sensor]);
+                } else {
+                    result += bit * TranferEnergy(Distance[sensor][pathYi.get(i + 1)]);
+                }
+                return result;
+            }
+        }
+        return 0.0;
+    }
+    
+    
     public void CoppyToListSensor() {
         mListofListSensor.clear();
         for (int i =0;i<resultListX.size();i++ ) {
@@ -759,10 +904,13 @@ public class MyAlgorithm3 {
             //Find set X in Block
             tempListX= new ArrayList<>();
             List<List<List<Integer>>> tempListPathX = new ArrayList<>();
-            FindingPathX(tempListSensor, tempListTarget, tempListSink, tempListPathX, tempListX);
+            //FindingPathX(tempListSensor, tempListTarget, tempListSink, tempListPathX, tempListX);
             
+            List<List<List<Integer>>> ListPathY = new ArrayList<>();
+            Finding_CCP2(tempListSensor, tempListTarget, tempListSink, ListPathY);
+            tempListT = LinearProAlgorithm2(ListPathY, tempListSensor, SensorUtility.mEoValue);
             //Find set Time foreach SetX%
-            tempListT = LinearProAlgorithm(tempListPathX,tempListX,tempListSensor,SensorUtility.mEoValue);
+            //tempListT = LinearProAlgorithm(tempListPathX,tempListX,tempListSensor,SensorUtility.mEoValue);
             
             //Remove T = 0;
             for (int i =0 ; i < tempListX.size() ;) {
