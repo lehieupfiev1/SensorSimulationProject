@@ -113,6 +113,41 @@ public final class SensorUtility {
         outputWriter.close();
 
     }
+    
+    public static void writeTestFile(String filename, List<List<List<Integer>>> ListPathY) throws IOException {
+        File file = new File(filename);
+        if (!file.exists()) file.createNewFile();
+        BufferedWriter outputWriter;
+
+        outputWriter = new BufferedWriter(new FileWriter(file, false));
+        
+        int Target = ListPathY.size();
+        //Write Width and height
+        outputWriter.write(Target +" "+ mMaxHopper);
+        outputWriter.newLine();
+        
+        for (int i = 0 ; i < Target ; i ++) {
+            List<List<Integer>> pathY = ListPathY.get(i);
+            outputWriter.write(i +" : "+ pathY.size());
+            outputWriter.newLine();
+            for (int j = 0; j < pathY.size(); j++) {
+               List<Integer> Yi = pathY.get(j);
+               for (int k = 0 ; k < Yi.size();k++) {
+                    outputWriter.write(Yi.get(k) + " ");
+               }
+               outputWriter.newLine(); 
+            }
+
+        }
+        
+        
+        
+        
+        outputWriter.flush();
+        outputWriter.close();
+
+        
+    }
     public static void readFile(String filename) throws IOException {
         mListSensorNodes.clear();
         mListRobotNodes.clear();

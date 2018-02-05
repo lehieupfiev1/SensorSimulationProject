@@ -16,6 +16,7 @@ import ilog.concert.IloLinearNumExpr;
 import ilog.concert.IloNumVar;
 import ilog.cplex.IloCplex;
 import static iterface.frameMain.coordinatePanel;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.logging.Logger;
 import model.FloatPointItem;
 import model.HeuristicItem;
 import model.NodeItem;
+import model.PathItem;
 
 /**
  *
@@ -53,6 +55,8 @@ public class MyAlgorithm3 {
     
     List<List<Integer>> resultListX;
     List<Double> resultListT;
+    List<List<PathItem>> resultListY;
+    List<List<Double>> resultListTi;
     float ListEnergySensor[];
     int MAX_INTERGER = 100000000;
     float MAX_FLOAT = 10000000000000.0f;
@@ -244,7 +248,7 @@ public class MyAlgorithm3 {
         
     }
     
-    void Finding_CCP2(List<Integer> listSensor, List<Integer> listTarget, List<Integer> listSink, List<List<List<Integer>>> ListPathY) {
+    void Finding_CCP2(List<Integer> listSensor, List<Integer> listTarget, List<Integer> listSink, List<List<PathItem>> ListPathY) {
         List<List<List<Integer>>> ListPi = new ArrayList<>();
         List<List<Integer>> ListP = new ArrayList<>();
         List<List<Integer>> ListParent = new ArrayList<>();
@@ -341,12 +345,12 @@ public class MyAlgorithm3 {
         ListPathY.clear();
         for (int i =0 ; i< ListPi.size(); i++) {
             List<List<Integer>> Pi = ListPi.get(i);
-            List<List<Integer>> listPath = new ArrayList<>();
+            List<PathItem> listPath = new ArrayList<>();
             for (int j = 0 ; j< Pi.size(); j++) {
                 List<Integer> p = Pi.get(j);
-                List<Integer> path = new ArrayList<>();
+                PathItem path = new PathItem();
                 for (int k = p.size()-1; k >= 0 ; k--) {
-                    path.add(p.get(k));
+                    path.addElement(p.get(k));
                 }
                 listPath.add(path);
             }
@@ -580,8 +584,8 @@ public class MyAlgorithm3 {
         return result;
     }
     
-    public List<Double> LinearProAlgorithm2(List<List<List<Integer>>> listPathY, List<Integer> listSenSor, double valueE0) {
-        List<Double> time = new ArrayList<>();
+    public List<List<Double>> LinearProAlgorithm2(List<List<PathItem>> listPathY, List<Integer> listSenSor, double valueE0) {
+        List<List<Double>> time = new ArrayList<>();
         int n = listPathY.size(); // Number target
         int m = listSenSor.size(); // Number sensor
         int Vmax =0;
@@ -603,9 +607,9 @@ public class MyAlgorithm3 {
         for (int i = 0; i < m; i++) {
             int sensor = listSenSor.get(i);
             for (int j = 0; j < n; j++) {
-                List<List<Integer>> listYj = listPathY.get(j);
+                List<PathItem> listYj = listPathY.get(j);
                 for (int k = 0; k < v[j]; k++) {
-                    b[i][j][k] = getEnergyConsumer(listYj.get(k), sensor);
+                    b[i][j][k] = getEnergyConsumer(listYj.get(k).getPath(), sensor);
 
                 }
             }
@@ -666,20 +670,25 @@ public class MyAlgorithm3 {
                 
                 for (int j = 0; j < n; j++) {
                     Time[j] =0;
+                    List<Double> timeTarget = new ArrayList<>();
                     for (int k = 0; k < v[j]; k++) {
                        Time[j] += cplex.getValue(t[j][k]);
                        System.out.print(" "+cplex.getValue(t[j][k]));
+                       timeTarget.add(cplex.getValue(t[j][k]));
                     }
                     System.out.println();
+                    time.add(timeTarget);
                 }
                 
                 //Find Min
-                double min = Double.MAX_VALUE;
-                for (int i = 0 ;i <n ;i ++) {
-                    if (min > Time[i]) {
-                        min = Time[i];
-                    }
-                }
+//                double min = Double.MAX_VALUE;
+//                for (int i = 0 ;i <n ;i ++) {
+//                    if (min > Time[i]) {
+//                        min = Time[i];
+//                    }
+//                }
+
+
                         
                 int da=5;
 
@@ -776,28 +785,28 @@ public class MyAlgorithm3 {
         FloatPointItem UpLeftCornerPoint = new FloatPointItem(0,0);
         FloatPointItem DownRightCornerPoint = new FloatPointItem(SensorUtility.numberRow-1,SensorUtility.numberColum-1);
         
-        List<List<List<Integer>>> ListOfListX = new ArrayList<List<List<Integer>>>();
-        List<List<Double>> ListOfListT = new ArrayList<>();
+        List<List<List<PathItem>>> ListOfListY = new ArrayList<>();
+        List<List<List<Double>>> ListOfListTi = new ArrayList<>();
 
         for (int i =0; i< Anpha ;i++) {
-            List<List<Integer>> tempReturnListX = new ArrayList<>();
-            List<Double> tempReturnListT = new ArrayList<>();
+            List<List<PathItem>> tempReturnListY = new ArrayList<>();
+            List<List<Double>> tempReturnListTi = new ArrayList<>();
             
-            DiviceNetworkFollowWidth(UpLeftCornerPoint,DownRightCornerPoint,i,tempReturnListX,tempReturnListT);
-            if (!tempReturnListX.isEmpty() && !tempReturnListT.isEmpty()) {
-                ListOfListX.add(tempReturnListX);
-                ListOfListT.add(tempReturnListT);
+            DiviceNetworkFollowWidth(UpLeftCornerPoint,DownRightCornerPoint,i,tempReturnListY,tempReturnListTi);
+            if (!tempReturnListY.isEmpty() && !tempReturnListTi.isEmpty()) {
+                ListOfListY.add(tempReturnListY);
+                ListOfListTi.add(tempReturnListTi);
             }
         }
-        Combining_All_Division(ListOfListX,ListOfListT,resultListX,resultListT);
+        Combining_All_Division(ListOfListY,ListOfListTi,resultListY,resultListTi);
         
         //Free data
-        ListOfListX = null;
-        ListOfListT = null;
+        ListOfListY = null;
+        ListOfListTi = null;
 
     }
     
-    public  void DiviceNetworkFollowWidth(FloatPointItem UpLeftCornerPoint, FloatPointItem DownRightCornerPoint, int divisons, List<List<Integer>> returnListX, List<Double> returnListT) {
+    public  void DiviceNetworkFollowWidth(FloatPointItem UpLeftCornerPoint, FloatPointItem DownRightCornerPoint, int divisons, List<List<PathItem>> returnListY, List<List<Double>> returnListTi) {
         FloatPointItem upPoint = new FloatPointItem();
         FloatPointItem downPoint = new FloatPointItem();
         
@@ -870,10 +879,11 @@ public class MyAlgorithm3 {
         FloatPointItem upPoint = new FloatPointItem();
         FloatPointItem downPoint = new FloatPointItem();
         
-        List<List<List<Integer>>> tempListOfListX = new ArrayList<>();
-        List<List<Double>> tempListOfListT = new ArrayList<>();
-        List<List<Integer>> tempListX;
-        List<Double> tempListT;
+        List<List<List<PathItem>>> tempListOfListY = new ArrayList<>();
+        List<List<List<Double>>> tempListOfListTi = new ArrayList<>();
+        List<List<PathItem>> tempListY;
+        List<List<Double>> tempListTi;
+        
 
         float PostionY = UpLeftCornerPoint.getY();
         float MaxPostionY = DownRightCornerPoint.getY();
@@ -901,45 +911,88 @@ public class MyAlgorithm3 {
             List<Integer> tempListTarget = FindListTarget(upPoint, downPoint);
             List<Integer> tempListSink = FindListSink(upPoint, downPoint);
             showViewTest(tempListSensor);
-            //Find set X in Block
-            tempListX= new ArrayList<>();
-            List<List<List<Integer>>> tempListPathX = new ArrayList<>();
-            //FindingPathX(tempListSensor, tempListTarget, tempListSink, tempListPathX, tempListX);
             
-            List<List<List<Integer>>> ListPathY = new ArrayList<>();
+            List<List<PathItem>> ListPathY = new ArrayList<>();
             Finding_CCP2(tempListSensor, tempListTarget, tempListSink, ListPathY);
-            tempListT = LinearProAlgorithm2(ListPathY, tempListSensor, SensorUtility.mEoValue);
+
+//            try {
+//                SensorUtility.writeTestFile("D:\\Le-Hieu\\inputPathTest2.txt",ListPathY);
+//            } catch (IOException ex) {
+//                Logger.getLogger(MyAlgorithm3.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+            List<List<Double>> ListTi = LinearProAlgorithm2(ListPathY, tempListSensor, SensorUtility.mEoValue);
+            reduceListPathYi(ListPathY,ListTi);
+            
+            //Init tempListTi and tempListY
+            tempListY = new ArrayList<>();
+            tempListTi = new ArrayList<>();
+            for (int i =0 ; i< T; i++) {
+                List<PathItem> Yi = new ArrayList<>();
+                tempListY.add(Yi);
+                
+                //Ti
+                List<Double> Ty = new ArrayList<>();
+                tempListTi.add(Ty);
+            }
+            
+            //Add data from  ListPathY and List Ti
+            for(int i = 0; i< tempListTarget.size();i++) {
+                int pos = tempListTarget.get(i);
+                tempListY.remove(pos);
+                tempListY.add(pos, ListPathY.get(i));
+                
+                tempListTi.remove(pos);
+                tempListTi.add(pos, ListTi.get(i));
+            }
+            
             //Find set Time foreach SetX%
             //tempListT = LinearProAlgorithm(tempListPathX,tempListX,tempListSensor,SensorUtility.mEoValue);
             
-            //Remove T = 0;
-            for (int i =0 ; i < tempListX.size() ;) {
-                if (tempListT.get(i) <= 0.0001f) {
-                    tempListX.remove(i);
-                    tempListT.remove(i);
-                } else {
-                    i++;
-                }
-            }
+           
+ 
             
             
             //Add result of Block
-            if (!tempListTarget.isEmpty() && !tempListX.isEmpty()) {
-                tempListOfListX.add(tempListX);
-                tempListOfListT.add(tempListT);
-            } else if (!tempListTarget.isEmpty() && tempListX.isEmpty()) {
+            if (!tempListTarget.isEmpty() && !ListPathY.isEmpty()) {
+                tempListOfListY.add(tempListY);
+                tempListOfListTi.add(tempListTi);
+            } else if (!tempListTarget.isEmpty() && tempListY.isEmpty()) {
                 System.err.println("Khong ton tai duong di");
             }
+            
+            ListPathY = null;
+            ListTi = null;
+
         }
-        Combining_All_Strips(tempListOfListX, tempListOfListT, returnListX, returnListT);
+        Combining_All_Strips(tempListOfListY, tempListOfListTi, returnListX, returnListT);
         
         //Free Data
-        tempListOfListX = null;
-        tempListOfListT = null;
-        tempListX = null; 
-        tempListT = null;
+        tempListOfListY = null;
+        tempListOfListTi = null;
+        tempListY = null; 
+        tempListTi = null;
         upPoint = null;
         downPoint = null;
+    }
+    
+    void reduceListPathYi(List<List<PathItem>> ListPathY, List<List<Double>> ListTimeY) {
+        for (int i = 0; i< ListPathY.size(); i++) {
+            List<PathItem> pathY = ListPathY.get(i);
+            List<Double> timeListY  = ListTimeY.get(i);
+            // Giam cac TH TY = 0;
+            for (int j =0; j< timeListY.size();) {
+                if (timeListY.get(j) < 0.00001d) {
+                    timeListY.remove(j);
+                    pathY.remove(j);
+                } else {
+                    j++;
+                }
+                
+            }
+            
+        }
+        
+        
     }
     
     public List<Integer> FindListSensor(FloatPointItem UpLeftCornerPoint, FloatPointItem DownRightCornerPoint) {
@@ -990,83 +1043,134 @@ public class MyAlgorithm3 {
         return resultListSink;        
     }
     
-    public void Combining_All_Strips(List<List<List<Integer>>> ListOfListX, List<List<Double>> ListOfListT, List<List<Integer>> returnListX, List<Double> returnListT) {
-        int K = ListOfListX.size();
+    public void Combining_All_Strips(List<List<List<PathItem>>> ListOfListY, List<List<List<Double>>> ListOfListTi, List<List<PathItem>> returnListY, List<List<Double>> returnListTi) {
+        int Strip = ListOfListY.size();
         double Min = Double.MAX_VALUE;
         //Create ListT Ascending
-        List<List<Double>> ListOfSortListT = new ArrayList<>();
-        for (int i = 0; i < K; i++) {
-            List<Double> SortListT = new ArrayList<>();
-            List<Double> ListT = ListOfListT.get(i);
-//            if (ListT.isEmpty()) {
-//                System.out.println("ListX is null id:"+i);
-//                return;
+        
+        for(int i =0; i<Strip ; i++){
+            List<List<PathItem>> ListPathY = ListOfListY.get(i);
+            List<List<Double>> ListTimeTi = ListOfListTi.get(i);
+             for (int j = 0; j< ListPathY.size();j++) {
+                 List<PathItem> pathY = ListPathY.get(j);
+                 List<PathItem> retPathY = returnListY.get(j);
+                 List<Double> timeY = ListTimeTi.get(j);
+                 List<Double> reTimeY = returnListTi.get(j);
+                 
+                 unionListY(pathY,timeY,retPathY,reTimeY);
+                 
+             }
+            
+            
+        }
+        
+//        for (int i = 0; i < K; i++) {
+//            List<Double> SortListT = new ArrayList<>();
+//            List<Double> ListT = ListOfListT.get(i);
+////            if (ListT.isEmpty()) {
+////                System.out.println("ListX is null id:"+i);
+////                return;
+////            }
+//            for (int j = 0; j < ListT.size(); j++) {
+//                if (j == 0) {
+//                    SortListT.add(ListT.get(0));
+//                } else {
+//                    SortListT.add(SortListT.get(j - 1) + ListT.get(j));
+//                }
 //            }
-            for (int j = 0; j < ListT.size(); j++) {
-                if (j == 0) {
-                    SortListT.add(ListT.get(0));
+//            if (Min > SortListT.get(ListT.size() - 1)) {
+//                Min = SortListT.get(ListT.size() - 1);
+//            }
+//            // Add in ListOfSortListT
+//            ListOfSortListT.add(SortListT);
+//        }
+//
+//        //Tao duong thoi gian chieu
+//        List<Double> ListTotalT = new ArrayList<>();
+//        for (int i = 0; i < K; i++) {
+//            List<Double> SortListT = ListOfSortListT.get(i);
+//            for (int j = 0; j < SortListT.size(); j++) {
+//                if (SortListT.get(j) <= Min) {
+//                    ListTotalT.add(SortListT.get(j));
+//                }
+//            }
+//        }
+//        Collections.sort(ListTotalT);
+//
+//        //Find List T return
+//        int start;
+//        double startValue = 0;
+//        for (start = 0; start < ListTotalT.size(); start++) {
+//            if (ListTotalT.get(start) > 0) {
+//                returnListT.add(ListTotalT.get(start));
+//                startValue = ListTotalT.get(start);
+//                break;
+//            }
+//        }
+//
+//        //Ghep phan tu dau tien cua X
+//        List<Integer> retlistX = new ArrayList<>();
+//        for (int i = 0; i < K; i++) {
+//            List<Double> ListT = ListOfSortListT.get(i);
+//            int pos = getPostionOfList(ListT, 0, startValue);
+//            unionXi(ListOfListX.get(i).get(pos), retlistX);
+//        }
+//        if (!retlistX.isEmpty()) {
+//            returnListX.add(retlistX);
+//        }
+//
+//        for (int i = start; i < ListTotalT.size(); i++) {
+//            if (ListTotalT.get(i) > startValue) {
+//                returnListT.add(ListTotalT.get(i) - startValue);
+//                //Ghep ptu cua Xi
+//                retlistX = new ArrayList<>();
+//                for (int j = 0; j < K; j++) {
+//                    List<Double> ListT = ListOfSortListT.get(j);
+//                    int pos = getPostionOfList(ListT, startValue, ListTotalT.get(i));
+//                    unionXi(ListOfListX.get(j).get(pos), retlistX);
+//                }
+//                returnListX.add(retlistX);
+//
+//                startValue = ListTotalT.get(i);
+//
+//            }
+//        }
+
+    }
+    
+    void unionListY(List<PathItem> inputListY ,List<Double> inputTime, List<PathItem> outputListY, List<Double> outputTime) {
+        if (outputListY.isEmpty()) {
+            for (int i =0; i< inputListY.size();i++) {
+                outputListY.add(inputListY.get(i));
+                outputTime.add(inputTime.get(i));
+            }
+            
+        } else {
+            for (int i =0; i< inputListY.size();i++) {
+                int pos = CheckExitPath(inputListY.get(i), outputListY);
+                if ( pos == -1) {
+                   outputListY.add(inputListY.get(i));
+                   outputTime.add(inputTime.get(i));
                 } else {
-                    SortListT.add(SortListT.get(j - 1) + ListT.get(j));
+                   double firstTime = outputTime.get(pos);
+                   double second = inputTime.get(i);
+                   outputTime.remove(pos);
+                   outputTime.add(pos, firstTime+second);
                 }
+                
             }
-            if (Min > SortListT.get(ListT.size() - 1)) {
-                Min = SortListT.get(ListT.size() - 1);
-            }
-            // Add in ListOfSortListT
-            ListOfSortListT.add(SortListT);
+            
         }
-
-        //Tao duong thoi gian chieu
-        List<Double> ListTotalT = new ArrayList<>();
-        for (int i = 0; i < K; i++) {
-            List<Double> SortListT = ListOfSortListT.get(i);
-            for (int j = 0; j < SortListT.size(); j++) {
-                if (SortListT.get(j) <= Min) {
-                    ListTotalT.add(SortListT.get(j));
-                }
+        
+    }
+    
+    int CheckExitPath(PathItem item , List<PathItem> list) {
+        for (int i =0; i < list.size(); i++) {
+            if (PathItem.compareSame(item, list.get(i))) {
+                return i;
             }
         }
-        Collections.sort(ListTotalT);
-
-        //Find List T return
-        int start;
-        double startValue = 0;
-        for (start = 0; start < ListTotalT.size(); start++) {
-            if (ListTotalT.get(start) > 0) {
-                returnListT.add(ListTotalT.get(start));
-                startValue = ListTotalT.get(start);
-                break;
-            }
-        }
-
-        //Ghep phan tu dau tien cua X
-        List<Integer> retlistX = new ArrayList<>();
-        for (int i = 0; i < K; i++) {
-            List<Double> ListT = ListOfSortListT.get(i);
-            int pos = getPostionOfList(ListT, 0, startValue);
-            unionXi(ListOfListX.get(i).get(pos), retlistX);
-        }
-        if (!retlistX.isEmpty()) {
-            returnListX.add(retlistX);
-        }
-
-        for (int i = start; i < ListTotalT.size(); i++) {
-            if (ListTotalT.get(i) > startValue) {
-                returnListT.add(ListTotalT.get(i) - startValue);
-                //Ghep ptu cua Xi
-                retlistX = new ArrayList<>();
-                for (int j = 0; j < K; j++) {
-                    List<Double> ListT = ListOfSortListT.get(j);
-                    int pos = getPostionOfList(ListT, startValue, ListTotalT.get(i));
-                    unionXi(ListOfListX.get(j).get(pos), retlistX);
-                }
-                returnListX.add(retlistX);
-
-                startValue = ListTotalT.get(i);
-
-            }
-        }
-
+        return -1;
     }
 
     //Ghep Xik U Xin....
