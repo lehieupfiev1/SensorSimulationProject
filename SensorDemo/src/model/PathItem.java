@@ -68,5 +68,16 @@ public class PathItem {
         return false;
     }
     
+    public String getString() {
+        if (path == null) return "null";
+        if (path.size() == 1) return " "+path.get(0);
+        StringBuilder sb = new StringBuilder();
+        for (int i =0; i< path.size()-1;i++) {
+            sb.append(path.get(i)+"-");
+        }
+        sb.append(path.get(path.size()-1)+"");
+        return sb.toString();
+    }
+    
     
 }

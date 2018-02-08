@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
 import model.NodeItem;
+import model.PathItem;
 
 /**
  *
@@ -37,6 +38,8 @@ public final class SensorUtility {
     public static List<NodeItem> mListSinkNodes = new ArrayList<>();
     public static List<List<NodeItem>> mListRobotNodes = new ArrayList<List<NodeItem>>();
     public static List<List<NodeItem>> mListofListSensor = new ArrayList<List<NodeItem>>();
+    public static List<List<PathItem>> mListofListPath = new ArrayList<>();
+    public static List<List<Double>> mListofListPathTime = new ArrayList<>();
     public static List<Double> mListofListTime = new ArrayList<>();
     public static List<Color> mListColor = new ArrayList<>();
     public static int MaxTargetNodes = 30000;
