@@ -18,6 +18,7 @@ import ilog.concert.IloNumVar;
 import ilog.cplex.IloCplex;
 import static iterface.frameMain.coordinatePanel;
 import java.io.IOException;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,8 +55,11 @@ public class MyAlgorithm3 {
     List<Integer> CurrentHopper;
     List<Integer> ListNcr ; // Tap list relaying node
     
-//    List<List<Integer>> resultListX;
-//    List<Double> resultListT;
+    List<List<List<PathItem>>> SaveListofListY;
+    List<List<List<Double>>> SaveListofListTi;
+    List<List<Integer>> SaveListTarget;
+    List<List<Integer>> SaveListSensor;
+    List<List<Integer>> SaveListSink;
     List<List<PathItem>> resultListY;
     List<List<Double>> resultListTi;
     float ListEnergySensor[];
@@ -97,6 +101,10 @@ public class MyAlgorithm3 {
     public void init() {
         resultListY = new ArrayList<>();
         resultListTi = new ArrayList<>();
+        SaveListofListY = new ArrayList<>();
+        SaveListofListTi = new ArrayList<>();
+        SaveListTarget = new ArrayList<>();
+        SaveListSink = new ArrayList<>();
     }
     
     public  void readData() {
@@ -623,7 +631,7 @@ public class MyAlgorithm3 {
         if (m == 0 || n == 0) {
             return time;
         }
-        float[] v = new float[n];
+        int[] v = new int[n];
         for (int i = 0; i < listPathY.size(); i++) {
             v[i] = listPathY.get(i).size();
             if (Vmax < listPathY.get(i).size()) {
@@ -632,7 +640,7 @@ public class MyAlgorithm3 {
         }
 
         //Check Input
-        double [][][] b = new double[m][n][Vmax];
+        float [][][] b = new float[m][n][Vmax];
         for (int i = 0; i < m; i++) {
             int sensor = listSenSor.get(i);
             for (int j = 0; j < n; j++) {
@@ -655,7 +663,7 @@ public class MyAlgorithm3 {
             for (int j = 0; j < n; j++) {
                 for (int k = 0; k < Vmax; k++) {
                     if (k < v[j]) {
-                        t[j][k] = cplex.numVar(0, Double.MAX_VALUE);
+                        t[j][k] = cplex.numVar(0, Float.MAX_VALUE);
                     } else {
                         t[j][k] = cplex.numVar(-1.0, -1.0);
                     }
@@ -663,7 +671,7 @@ public class MyAlgorithm3 {
             }
 
             //Define Objective
-            IloNumVar object = cplex.numVar(0, Double.MAX_VALUE);
+            IloNumVar object = cplex.numVar(0, Float.MAX_VALUE);
             IloLinearNumExpr objective = cplex.linearNumExpr();
             objective.addTerm(1.0, object);
             
@@ -731,11 +739,13 @@ public class MyAlgorithm3 {
         } catch (IloException ex) {
             Logger.getLogger("LeHieu").log(Level.SEVERE, null, ex);
         }
+        //Free data
+        
         return time;
     }
     
-    double getEnergyConsumer(List<Integer> pathYi, int sensor) {
-        double result = 0;
+    float getEnergyConsumer(List<Integer> pathYi, int sensor) {
+        float result = 0;
         for (int i =0; i< pathYi.size(); i++) {
             if (i==0 && pathYi.get(i) == sensor ) {
                 result += bit * Es;
@@ -755,7 +765,7 @@ public class MyAlgorithm3 {
                 return result;
             }
         }
-        return 0.0;
+        return 0.0f;
     }
     
     
@@ -955,15 +965,25 @@ public class MyAlgorithm3 {
             showViewTest(tempListSensor);
             
             List<List<PathItem>> ListPathY = new ArrayList<>();
-            Finding_CCP2(tempListSensor, tempListTarget, tempListSink, ListPathY);
+            List<List<Double>> ListTi;
+            int postion = CheckExitListTargetInSaveList(tempListTarget, tempListSink);
+            //int postion = -1;
+            if (postion == -1) {
+                Finding_CCP2(tempListSensor, tempListTarget, tempListSink, ListPathY);
 
 //            try {
 //                SensorUtility.writeTestFile("D:\\Le-Hieu\\inputPathTest2.txt",ListPathY);
 //            } catch (IOException ex) {
 //                Logger.getLogger(MyAlgorithm3.class.getName()).log(Level.SEVERE, null, ex);
 //            }
-            List<List<Double>> ListTi = LinearProAlgorithm2(ListPathY, tempListSensor, SensorUtility.mEoValue);
-            reduceListPathYi(ListPathY,ListTi);
+                ListTi = LinearProAlgorithm2(ListPathY, tempListSensor, SensorUtility.mEoValue);
+                reduceListPathYi(ListPathY, ListTi);
+                CoppyListToSave(ListPathY, ListTi, tempListTarget, tempListSink);
+            } else {
+                ListTi = new ArrayList<>();
+                GetListFromSave(ListPathY, ListTi, postion);
+
+            }
             
             //Init tempListTi and tempListY
             tempListY = new ArrayList<>();
@@ -1231,6 +1251,122 @@ public class MyAlgorithm3 {
              
         }
         return false;
+    }
+    
+    int CheckExitListTargetInSaveList(List<Integer> listTarget, List<Integer> listSink) {
+        int posTarget = -1;
+        for(int i =0 ; i< SaveListTarget.size();i++) {
+            List<Integer> list = SaveListTarget.get(i);
+            if (list.size() == listTarget.size()) {
+                int count =0;
+                for (int j =0 ; j < listTarget.size();j++) {
+                    if (list.get(j) != listTarget.get(j)) {
+                        break;
+                    } else {
+                        count++;
+                    }
+                }
+                
+                if (list.size() == count) {
+                    posTarget = i;
+                }
+            }
+        }
+        if (posTarget != -1 && posTarget < SaveListSink.size()) {
+            List<Integer> listS = SaveListSink.get(posTarget);
+            if (listS.size() == listSink.size()) {
+                int count1 = 0;
+                for (int j = 0; j < listSink.size(); j++) {
+                    if (listS.get(j) != listSink.get(j)) {
+                        break;
+                    } else {
+                        count1++;
+                    }
+                }
+
+                if (listS.size() == count1) {
+                    return posTarget;
+                }
+            }
+        }
+        
+        return -1;
+    }
+    
+    void CoppyListToSave(List<List<PathItem>> ListY, List<List<Double>> listTi, List<Integer> listTarget,List<Integer> listSink ) {
+        List<List<PathItem>> newListY = new ArrayList<>();
+        List<List<Double>> newlistTi = new ArrayList<>();
+        List<Integer> newListTarget = new ArrayList<>();
+        List<Integer> newListSink = new ArrayList<>();
+        //Coppy ListY
+        for (int i = 0 ;i < ListY.size();i++) {
+            List<PathItem> pathY = ListY.get(i);
+            List<PathItem> newPathY = new ArrayList<>();
+            for (int j =0; j< pathY.size();j++) {
+                newPathY.add(pathY.get(j));
+            }
+            newListY.add(pathY);
+        }
+        
+        //Coppy ListTi
+        for (int i =0 ; i < listTi.size(); i++) {
+            List<Double> Ti = listTi.get(i);
+            List<Double> newTi = new ArrayList<>();
+            for (int j = 0; j < Ti.size();j++) {
+                double t = Ti.get(j);
+                newTi.add(t);
+            }
+            newlistTi.add(newTi);
+        }
+        
+        //Coppy ListTarget
+        for (int i =0; i < listTarget.size(); i++) {
+            int target = listTarget.get(i);
+            newListTarget.add(target);
+        }
+        
+        //Coppy ListSink
+        for (int i =0; i < listSink.size(); i++) {
+            int sink = listSink.get(i);
+            newListSink.add(sink);
+        }
+        
+        SaveListofListY.add(newListY);
+        SaveListofListTi.add(newlistTi);
+        SaveListTarget.add(newListTarget);
+    }
+    
+    void GetListFromSave(List<List<PathItem>> ListY, List<List<Double>> listTi, int pos) {
+        if (pos >= SaveListofListY.size()) return;
+        
+        List<List<PathItem>> saveListY = SaveListofListY.get(pos);
+        List<List<Double>> saveListTi = SaveListofListTi.get(pos);
+        
+        
+        //Get pathY
+        for (int i = 0 ; i < saveListY.size(); i++) {
+            List<PathItem> savepathY = saveListY.get(i);
+            List<PathItem> pathY = new ArrayList<>();
+            
+            for (int j = 0; j < savepathY.size(); j++) {
+                pathY.add(savepathY.get(j));
+            }
+            ListY.add(pathY);
+        }
+        
+        //Get listTi
+        for (int i =0 ; i < saveListTi.size();i++) {
+            List<Double> Ti = new ArrayList<>();  
+            List<Double> saveTi = saveListTi.get(i);
+            
+            for (int j = 0; j< saveTi.size(); j++) {
+                double t = saveTi.get(j);
+                Ti.add(t);
+            }
+            listTi.add(Ti);
+                
+        }
+        
     }
     
     

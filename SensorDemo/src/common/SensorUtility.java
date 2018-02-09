@@ -61,7 +61,7 @@ public final class SensorUtility {
     public static float mEmpValue = 0.0000013f;
     public static float mBitValue = 2.0f;
     public static float mTstamp = 1.0f;
-    public static int mMaxHopper = 5;
+    public static int mMaxHopper = 3;
     public static float mEoValue = 20000000000.0f;
     
     
