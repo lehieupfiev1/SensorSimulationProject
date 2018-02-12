@@ -23,7 +23,7 @@ import model.NodeItem;
 public class ConverInput {
     static int numberColum =1000; // Kich thuoc mang (theo cot)
     static int numberRow = 1000;// Kich thuoc mang (theo cot)
-    static float mRsValue = 20.0f;
+    static float mRsValue = 20.0f;//(bán kính sensing)	
     static float mRtValue = 40.0f;
     static int mNumberRobotCycle = 0;
     static List<NodeItem> mListNodes = new ArrayList<>();
@@ -35,29 +35,29 @@ public class ConverInput {
     
     //Cac tham so khac
     
-    static float mRcValue = 40f;
-    static float mEsValue = 100.0f;
-    static float mEtValue = 50.0f;
-    static float mErValue = 100.0f;
+    static float mRcValue = 40f; //(bán kính truyền tin)
+    static float mEsValue = 100.0f;//Sensing Energy đối với 1 bit
+    static float mErValue = 100.0f;//Receiving Energy đối với 1 bit
+    static float mEtValue = 50.0f; //Tranmitting Energy  
     static float mEfsValue = 0.01f;
     static float mEmpValue = 0.0000013f;
-    static float mBitValue = 2.0f;
+    static float mBitValue = 2.0f; //Tần suât sinh gói tin (bit/s)
     static float mTstamp = 1.0f;
-    static int mMaxHopper = 5;
-    static float mEoValue = 20000000000.0f;
+    static int mMaxHopper = 5; // Giá trị lớn nhất của hopper count
+    static float mEoValue = 20000000000.0f;//Năng lượng sensor
     
     
      public static void main(String[] args) {
          
         try {
-            readSensorFile("E:\\HIEU\\CAO HOC\\sensor.txt");
-            readTargetFile("E:\\HIEU\\CAO HOC\\target.txt");
-            readSinkFile("E:\\HIEU\\CAO HOC\\sink.txt");
+            readSensorFile("E:\\HIEU\\CAO HOC\\sensor.txt"); //Add URL sensor file with format (
+            readTargetFile("E:\\HIEU\\CAO HOC\\target.txt");//Add URL target file
+            readSinkFile("E:\\HIEU\\CAO HOC\\sink.txt");//Add URL Sink file
         } catch (IOException ex) {
             Logger.getLogger(ConverInput.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
-            writeFile("E:\\HIEU\\CAO HOC\\inputnew.INP");
+            writeFile("E:\\HIEU\\CAO HOC\\inputnew.INP"); //Url luu file input duoc sinh ra
         } catch (IOException ex) {
             Logger.getLogger(ConverInput.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -65,6 +65,9 @@ public class ConverInput {
      
      
      public static void readSensorFile(String filename) throws IOException {
+         // Format File  : 
+         // So luong sensor 
+         // Toa do tung sensor xi yi
         mListSensorNodes.clear();
         File file = new File(filename);
         Scanner scanner = new Scanner(file);

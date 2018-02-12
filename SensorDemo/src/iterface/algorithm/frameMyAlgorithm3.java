@@ -113,6 +113,8 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
         BitValueTextField.setText(""+mBitValue);
         ErValueTextField.setText(""+mErValue);
         numberAlphaTextField.setText(""+Lvalue);
+        float value = (float)(mEoValue/1000000000.0);
+        EoValueTextField.setText(""+value);
         
         //Result
         TimeRunningLabel.setText("Time Running : 0");
@@ -205,6 +207,7 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jRadioButton1 = new javax.swing.JRadioButton();
         CalculateButton = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         NumberSensorLabel = new javax.swing.JLabel();
@@ -225,12 +228,21 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
         ErValueTextField = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        EoValueTextField = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel20 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         RcTextfiled = new javax.swing.JTextField();
         jLabel14 = new javax.swing.JLabel();
         MaxHopperTextField = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         numberAlphaTextField = new javax.swing.JTextField();
+        jLabel21 = new javax.swing.JLabel();
         DoneButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         ShowButton = new javax.swing.JButton();
@@ -243,7 +255,10 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
         listSensorScrollPane = new javax.swing.JScrollPane();
         ListSensorResultLabel = new javax.swing.JLabel();
 
+        jRadioButton1.setText("jRadioButton1");
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         CalculateButton.setText("Calculate");
         CalculateButton.addActionListener(new java.awt.event.ActionListener() {
@@ -321,6 +336,32 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
             }
         });
 
+        jLabel4.setText("Eo : ");
+
+        EoValueTextField.setText("0");
+        EoValueTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EoValueTextFieldActionPerformed(evt);
+            }
+        });
+        EoValueTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                EoValueKeyReleased(evt);
+            }
+        });
+
+        jLabel5.setText("(Jun)");
+
+        jLabel15.setText("(nJ/bit)");
+
+        jLabel16.setText("(nJ/bit)");
+
+        jLabel17.setText("(nJ/bit)");
+
+        jLabel18.setText("(nJ/bit/m4)");
+
+        jLabel20.setText("(nJ/bit/m2)");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -344,7 +385,10 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(EtValueTextField)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel12)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel12)
+                    .addComponent(jLabel15)
+                    .addComponent(jLabel16))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel10)
@@ -355,7 +399,21 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
                     .addComponent(EfsValueTextField)
                     .addComponent(EmpValueTextField)
                     .addComponent(ErValueTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE))
-                .addGap(57, 57, 57))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel17)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel18, javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jLabel20)))
+                .addContainerGap())
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(131, 131, 131)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(EoValueTextField)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel5)
+                .addGap(149, 149, 149))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -366,21 +424,31 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
                     .addComponent(jLabel7)
                     .addComponent(EsValueTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9)
-                    .addComponent(EfsValueTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(EfsValueTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel15)
+                    .addComponent(jLabel20))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
                     .addComponent(EtValueTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10)
-                    .addComponent(EmpValueTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(EmpValueTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel16)
+                    .addComponent(jLabel18))
                 .addGap(27, 27, 27)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11)
                     .addComponent(BitValueTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel12)
                     .addComponent(jLabel19)
-                    .addComponent(ErValueTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 43, Short.MAX_VALUE))
+                    .addComponent(ErValueTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel17))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(EoValueTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addContainerGap())
         );
 
         jLabel13.setText("Rc : ");
@@ -410,6 +478,8 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
             }
         });
 
+        jLabel21.setText("(m)");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -421,25 +491,29 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(NumberSensorLabel)
-                                .addGap(96, 96, 96)
-                                .addComponent(NumberTargetLabel)
-                                .addGap(112, 112, 112)
-                                .addComponent(NumberSinkLabel))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(31, 31, 31)
                                 .addComponent(jLabel13)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(RcTextfiled, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(42, 42, 42)
-                                .addComponent(jLabel14)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel21))
+                            .addComponent(NumberSensorLabel))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel14)
+                                .addGap(6, 6, 6)
                                 .addComponent(MaxHopperTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(49, 49, 49)
+                                .addGap(35, 35, 35)
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(numberAlphaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addComponent(numberAlphaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(NumberTargetLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(NumberSinkLabel)
+                                .addGap(58, 58, 58)))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -457,7 +531,8 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
                     .addComponent(jLabel14)
                     .addComponent(MaxHopperTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
-                    .addComponent(numberAlphaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(numberAlphaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel21))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -538,13 +613,13 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(79, 79, 79)
+                .addGap(70, 70, 70)
                 .addComponent(CalculateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
+                .addGap(52, 52, 52)
                 .addComponent(ShowButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(49, 49, 49)
                 .addComponent(DoneButton, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(102, 102, 102))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -714,6 +789,21 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_numberAlphaKeyReleased
 
+    private void EoValueKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_EoValueKeyReleased
+        // TODO add your handling code here:
+        try {
+            float value = Float.parseFloat(EoValueTextField.getText());
+            SensorUtility.mEoValue = value * 1000000000;
+        } catch (NumberFormatException nfe) {
+            EoValueTextField.setText("");
+        }
+    }//GEN-LAST:event_EoValueKeyReleased
+
+    private void EoValueTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EoValueTextFieldActionPerformed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_EoValueTextFieldActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -755,6 +845,7 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
     private javax.swing.JButton DoneButton;
     private javax.swing.JTextField EfsValueTextField;
     private javax.swing.JTextField EmpValueTextField;
+    private javax.swing.JTextField EoValueTextField;
     private javax.swing.JTextField ErValueTextField;
     private javax.swing.JTextField EsValueTextField;
     private javax.swing.JTextField EtValueTextField;
@@ -774,9 +865,17 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -784,6 +883,7 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JScrollPane listEECCScrollPane;
     private javax.swing.JScrollPane listSensorScrollPane;
     private javax.swing.JTextField numberAlphaTextField;

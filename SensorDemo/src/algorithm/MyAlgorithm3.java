@@ -10,15 +10,11 @@ import static common.SensorUtility.mListSensorNodes;
 import static common.SensorUtility.mListSinkNodes;
 import static common.SensorUtility.mListTargetNodes;
 import static common.SensorUtility.mListofListPath;
-import static common.SensorUtility.mListofListSensor;
-import static common.SensorUtility.mListofListTime;
 import ilog.concert.IloException;
 import ilog.concert.IloLinearNumExpr;
 import ilog.concert.IloNumVar;
 import ilog.cplex.IloCplex;
 import static iterface.frameMain.coordinatePanel;
-import java.io.IOException;
-import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +23,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.FloatPointItem;
 import model.HeuristicItem;
-import model.NodeItem;
 import model.PathItem;
 
 /**
@@ -93,9 +88,9 @@ public class MyAlgorithm3 {
         
         CoppyToListSensor();
 //        
-//        freeData();
+        freeData();
 //        
-//        System.gc();
+        System.gc();
     }
     
     public void init() {
@@ -188,6 +183,17 @@ public class MyAlgorithm3 {
 
     }
     
+    public void freeData() {
+        MinDistanceSink = null;
+        SaveListofListY = null;
+        SaveListofListTi = null;
+        SaveListTarget = null;
+        SaveListSensor = null;
+        Point = null;
+        Distance = null;
+        SaveListSink = null;
+        ListEnergySensor = null;
+    }
     
     public  float calculateDistance(float x1, float y1, float x2, float y2) {
         return (float) Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
@@ -640,18 +646,35 @@ public class MyAlgorithm3 {
         }
 
         //Check Input
-        float [][][] b = new float[m][n][Vmax];
+        List<List<List<Float>>> ListofListB = new ArrayList<>();
         for (int i = 0; i < m; i++) {
+            List<List<Float>> ListB = new ArrayList<>();
             int sensor = listSenSor.get(i);
             for (int j = 0; j < n; j++) {
+                List<Float> lsB = new ArrayList<>();
                 List<PathItem> listYj = listPathY.get(j);
                 for (int k = 0; k < v[j]; k++) {
-                    b[i][j][k] = getEnergyConsumer(listYj.get(k).getPath(), sensor);
-
+                    float value = getEnergyConsumer(listYj.get(k).getPath(), sensor);
+                    lsB.add(value);
                 }
+                ListB.add(lsB);
             }
+            ListofListB.add(ListB);
         }
-
+        
+        
+//        float [][][] b = new float[m][n][Vmax];
+//        for (int i = 0; i < m; i++) {
+//            int sensor = listSenSor.get(i);
+//            for (int j = 0; j < n; j++) {
+//                List<PathItem> listYj = listPathY.get(j);
+//                for (int k = 0; k < v[j]; k++) {
+//                    b[i][j][k] = getEnergyConsumer(listYj.get(k).getPath(), sensor);
+//
+//                }
+//            }
+//        }
+      
         try {
             //Init model
             IloCplex cplex = new IloCplex();
@@ -684,7 +707,8 @@ public class MyAlgorithm3 {
                 
                 for (int j = 0; j < n; j++) {
                     for (int k = 0; k < v[j]; k++) {
-                        arrayExpress[i].addTerm(b[i][j][k], t[j][k]);
+                        float value = ListofListB.get(i).get(j).get(k);
+                        arrayExpress[i].addTerm(value, t[j][k]);
                     }
                 }
                 cplex.addLe(arrayExpress[i], valueE0);
@@ -740,6 +764,8 @@ public class MyAlgorithm3 {
             Logger.getLogger("LeHieu").log(Level.SEVERE, null, ex);
         }
         //Free data
+        v = null; 
+        ListofListB = null;
         
         return time;
     }

@@ -351,7 +351,7 @@ public class frameMain extends javax.swing.JFrame {
         ViewMenu.add(showRobotMenuItem);
 
         showSensorCorverMenuItem.setSelected(true);
-        showSensorCorverMenuItem.setText("Show Sensor Corver");
+        showSensorCorverMenuItem.setText("Show Sensor Cover");
         showSensorCorverMenuItem.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 showSensorCorverItemStateChanged(evt);

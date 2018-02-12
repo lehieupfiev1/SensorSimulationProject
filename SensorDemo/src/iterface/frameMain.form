@@ -230,7 +230,7 @@
             <MenuItem class="javax.swing.JCheckBoxMenuItem" name="showSensorCorverMenuItem">
               <Properties>
                 <Property name="selected" type="boolean" value="true"/>
-                <Property name="text" type="java.lang.String" value="Show Sensor Corver"/>
+                <Property name="text" type="java.lang.String" value="Show Sensor Cover"/>
               </Properties>
               <Events>
                 <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="showSensorCorverItemStateChanged"/>
