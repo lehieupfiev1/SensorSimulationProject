@@ -288,6 +288,7 @@ public class MyAlgorithm3 {
 
             ListP.clear();
             ListParent.clear();
+            System.out.println("Target "+k + " id ="+target);
             //
             List<Integer> listParent1 = new ArrayList<>();
             int num =0;
@@ -637,30 +638,34 @@ public class MyAlgorithm3 {
         if (m == 0 || n == 0) {
             return time;
         }
+        int totalpath =0;
         int[] v = new int[n];
         for (int i = 0; i < listPathY.size(); i++) {
             v[i] = listPathY.get(i).size();
             if (Vmax < listPathY.get(i).size()) {
                 Vmax = listPathY.get(i).size();
             }
+            System.out.println("Size Path "+i+ " =" + v[i]);
+            totalpath += v[i];
         }
+        System.out.println("Total Path " + totalpath);
 
         //Check Input
-        List<List<List<Float>>> ListofListB = new ArrayList<>();
-        for (int i = 0; i < m; i++) {
-            List<List<Float>> ListB = new ArrayList<>();
-            int sensor = listSenSor.get(i);
-            for (int j = 0; j < n; j++) {
-                List<Float> lsB = new ArrayList<>();
-                List<PathItem> listYj = listPathY.get(j);
-                for (int k = 0; k < v[j]; k++) {
-                    float value = getEnergyConsumer(listYj.get(k).getPath(), sensor);
-                    lsB.add(value);
-                }
-                ListB.add(lsB);
-            }
-            ListofListB.add(ListB);
-        }
+//        List<List<List<Float>>> ListofListB = new ArrayList<>();
+//        for (int i = 0; i < m; i++) {
+//            List<List<Float>> ListB = new ArrayList<>();
+//            int sensor = listSenSor.get(i);
+//            for (int j = 0; j < n; j++) {
+//                List<Float> lsB = new ArrayList<>();
+//                List<PathItem> listYj = listPathY.get(j);
+//                for (int k = 0; k < v[j]; k++) {
+//                    float value = getEnergyConsumer(listYj.get(k).getPath(), sensor);
+//                    lsB.add(value);
+//                }
+//                ListB.add(lsB);
+//            }
+//            ListofListB.add(ListB);
+//        }
         
         
 //        float [][][] b = new float[m][n][Vmax];
@@ -704,10 +709,12 @@ public class MyAlgorithm3 {
             IloLinearNumExpr[] arrayExpress = new IloLinearNumExpr[m];
             for (int i = 0; i < m; i++) {
                 arrayExpress[i] = cplex.linearNumExpr();
-                
+                int sensor = listSenSor.get(i);
                 for (int j = 0; j < n; j++) {
+                    List<PathItem> listYj = listPathY.get(j);
                     for (int k = 0; k < v[j]; k++) {
-                        float value = ListofListB.get(i).get(j).get(k);
+                    	float value = getEnergyConsumer(listYj.get(k).getPath(), sensor);
+                        //float value = ListofListB.get(i).get(j).get(k);
                         arrayExpress[i].addTerm(value, t[j][k]);
                     }
                 }
@@ -740,18 +747,6 @@ public class MyAlgorithm3 {
                     System.out.println();
                     time.add(timeTarget);
                 }
-                
-                //Find Min
-//                double min = Double.MAX_VALUE;
-//                for (int i = 0 ;i <n ;i ++) {
-//                    if (min > Time[i]) {
-//                        min = Time[i];
-//                    }
-//                }
-
-
-                        
-                int da=5;
 
                 //return cplex.getValue(objective);        
             } else {
@@ -765,7 +760,6 @@ public class MyAlgorithm3 {
         }
         //Free data
         v = null; 
-        ListofListB = null;
         
         return time;
     }
