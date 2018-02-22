@@ -523,7 +523,7 @@ public class frameCoordinateSystemPanel extends JPanel{
                  if (i != j) {
                     secondNode = mListSensorNodes.get(j);
                     temp = SensorUtility.calculateDistance(firstNode.getX(), firstNode.getY(), secondNode.getX(), secondNode.getY());
-                    if (temp <= SensorUtility.mRsValue) {
+                    if (temp <= SensorUtility.mRcValue) {
                         g.drawLine(getPX(firstNode.getX()), getPY(firstNode.getY()), getPX(secondNode.getX()), getPY(secondNode.getY()));
                     }
                  }
