@@ -41,7 +41,7 @@ public class ConverInput {
     static float mEtValue = 50.0f; //Tranmitting Energy  
     static float mEfsValue = 0.01f;
     static float mEmpValue = 0.0000013f;
-    static float mBitValue = 2.0f; //Tần suât sinh gói tin (bit/s)
+    static float mBitValue = 16.0f; //Tần suât sinh gói tin (bit/s)
     static float mTstamp = 1.0f;
     static int mMaxHopper = 5; // Giá trị lớn nhất của hopper count
     static float mEoValue = 20000000000.0f;//Năng lượng sensor
@@ -50,14 +50,14 @@ public class ConverInput {
      public static void main(String[] args) {
          
         try {
-            readSensorFile("E:\\HIEU\\CAO HOC\\sensor.txt"); //Add URL sensor file with format (
-            readTargetFile("E:\\HIEU\\CAO HOC\\target.txt");//Add URL target file
-            readSinkFile("E:\\HIEU\\CAO HOC\\sink.txt");//Add URL Sink file
+            readSensorFile("D:\\sensor.txt"); //Add URL sensor file with format (
+            readTargetFile("D:\\target.txt");//Add URL target file
+            readSinkFile("D:\\sink.txt");//Add URL Sink file
         } catch (IOException ex) {
             Logger.getLogger(ConverInput.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
-            writeFile("E:\\HIEU\\CAO HOC\\inputnew.INP"); //Url luu file input duoc sinh ra
+            writeFile("D:\\inputnew.INP"); //Url luu file input duoc sinh ra
         } catch (IOException ex) {
             Logger.getLogger(ConverInput.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -71,7 +71,7 @@ public class ConverInput {
         mListSensorNodes.clear();
         File file = new File(filename);
         Scanner scanner = new Scanner(file);
-        int sizeSensor = 1059;
+        int sizeSensor = scanner.nextInt();
         for (int i = 0; i < sizeSensor; i++) {
             int x = scanner.nextInt();
             int y = scanner.nextInt();
@@ -82,7 +82,7 @@ public class ConverInput {
         mListTargetNodes.clear();
         File file = new File(filename);
         Scanner scanner = new Scanner(file);
-        int sizeTarget = 100;
+        int sizeTarget = scanner.nextInt();
          for (int i = 0; i < sizeTarget; i++) {
             int x = scanner.nextInt();
             int y = scanner.nextInt();
@@ -93,7 +93,7 @@ public class ConverInput {
         mListSinkNodes.clear();
         File file = new File(filename);
         Scanner scanner = new Scanner(file);
-        int sizeSink = 25;
+        int sizeSink = scanner.nextInt();
         for (int i = 0; i < sizeSink; i++) {
             int x = scanner.nextInt();
             int y = scanner.nextInt();

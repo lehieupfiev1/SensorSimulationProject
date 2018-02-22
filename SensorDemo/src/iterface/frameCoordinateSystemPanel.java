@@ -44,6 +44,11 @@ public class frameCoordinateSystemPanel extends JPanel{
     static boolean isShowRobot = true;
     static boolean isShowCorver = true;
     static boolean isShowSink = true;
+    static boolean isShowAllPath = false;
+    public static boolean isShowPathSelected = false;
+    public static int TargetSelected;
+    public static int SinkSelected;
+    
     JPopupMenu popup;
     JMenuItem deleteSensorItem;
     JMenuItem deleteTargetItem;
@@ -64,13 +69,45 @@ public class frameCoordinateSystemPanel extends JPanel{
            @Override
            public void mouseClicked(MouseEvent e) {
                if (SwingUtilities.isLeftMouseButton(e)) {
-                int x = e.getX()-SensorUtility.marginPanel;
-                int y = e.getY()-SensorUtility.marginPanel;
-                int cellX = x / sizeRect;
-                int cellY = y / sizeRect;
-                if (cellX < SensorUtility.numberRow && cellX >= 0 && cellY < SensorUtility.numberColum && cellY >=0 )
-                   JOptionPane.showMessageDialog(null, "X ="+cellX +" Y =" +cellY );
-                //System.out.println("Clicked! X=" +cellX +" Y =" +cellY);
+                   int x = e.getX() - SensorUtility.marginPanel;
+                   int y = e.getY() - SensorUtility.marginPanel;
+                   int cellX = x / sizeRect;
+                   int cellY = y / sizeRect;
+                   if (cellX < SensorUtility.numberRow && cellX >= 0 && cellY < SensorUtility.numberColum && cellY >= 0) {
+
+                       int targetId = checkTargetExit(cellX, cellY);
+                       int sensorId = checkSensorExit(cellX, cellY);
+                       int sinkId = checkSinkExit(cellX, cellY);
+                       //JOptionPane.showMessageDialog(null, "X =" + cellX + " Y =" + cellY);
+                       if (targetId == -1 && sensorId == -1 && sinkId == -1) {
+                           //No point
+                           JOptionPane.showMessageDialog(null, "No Point", "X =" + cellX + " Y =" + cellY, 1);
+                       } else  if (targetId != -1 && sensorId == -1 && sinkId == -1) {
+                           //Only Target
+                           JOptionPane.showMessageDialog(null, "Target Id ="+targetId, "X =" + cellX + " Y =" + cellY, 1);
+                       } else if (targetId == -1 && sensorId != -1 && sinkId == -1) {
+                           //Only Sensor
+                           JOptionPane.showMessageDialog(null, "Sensor Id ="+sensorId, "X =" + cellX + " Y =" + cellY, 1);
+                           
+                       } else if (targetId == -1 && sensorId == -1 && sinkId != -1) {
+                           //Only Sink
+                           JOptionPane.showMessageDialog(null, "Sink Id ="+sinkId, "X =" + cellX + " Y =" + cellY, 1);
+                       } else if (targetId != -1 && sensorId == -1 && sinkId != -1) {
+                           //Sink and Target
+                           JOptionPane.showMessageDialog(null, "Target Id ="+targetId+"\nSink Id ="+sinkId, "X =" + cellX + " Y =" + cellY, 1);
+                       } else if (targetId == -1 && sensorId != -1 && sinkId != -1) {
+                           //Sink and Sensor
+                           JOptionPane.showMessageDialog(null, "Sink Id ="+sinkId+"\nSensor Id ="+sensorId, "X =" + cellX + " Y =" + cellY, 1);
+                       } else if (targetId != -1 && sensorId != -1 && sinkId == -1) {
+                           //Target and Sensor
+                           JOptionPane.showMessageDialog(null, "Target Id ="+targetId+"\nSensor Id ="+sensorId, "X =" + cellX + " Y =" + cellY, 1);
+                           
+                       } else {
+                           //All
+                           JOptionPane.showMessageDialog(null, "Target Id ="+targetId+"\nSensor Id ="+sensorId+"\nSink Id ="+sinkId, "X =" + cellX + " Y =" + cellY, 1);
+                       }
+                       //System.out.println("Clicked! X=" +cellX +" Y =" +cellY);
+                   }
                }
            }
            
@@ -156,7 +193,7 @@ public class frameCoordinateSystemPanel extends JPanel{
         
         // New Sink
         menuItem = new JMenuItem("Add Sink",
-                new ImageIcon(getClass().getResource("/resource/triange_icon.png")));
+                new ImageIcon(getClass().getResource("/resource/tringleGreen.png")));
         menuItem.setMnemonic(KeyEvent.VK_F);
         menuItem.addActionListener(new ActionListener() {
 
@@ -281,6 +318,43 @@ public class frameCoordinateSystemPanel extends JPanel{
         }
         return 0;
    }
+   
+   int checkTargetExit(int cellX, int cellY) {
+       int result = -1;
+       for (int i =0; i < mListTargetNodes.size(); i++) {
+            NodeItem next = mListTargetNodes.get(i);
+            if (next.getX() == cellX && next.getY() == cellY) {
+                result = i;
+                break;
+            }
+        }
+       return result;
+   }
+   
+   int checkSensorExit(int cellX, int cellY) {
+       int result = -1;
+       for (int i =0; i < mListSensorNodes.size(); i++) {
+            NodeItem next = mListSensorNodes.get(i);
+            if (next.getX() == cellX && next.getY() == cellY) {
+                result = i;
+                break;
+            }
+        }
+       return result;
+   }
+   
+   int checkSinkExit(int cellX, int cellY) {
+       int result = -1;
+       for (int i =0; i < mListSinkNodes.size(); i++) {
+            NodeItem next = mListSinkNodes.get(i);
+            if (next.getX() == cellX && next.getY() == cellY) {
+                result = i;
+                break;
+            }
+        }
+       return result;
+   }
+   
    public void setPanelScreenReSize(int withScreen, int heightScreen,int row,int colum) {
        sizeWidthPanel = withScreen-SensorUtility.marginPanel*2;
        sizeHeightPanel = heightScreen -SensorUtility.marginPanel*2;
@@ -304,7 +378,10 @@ public class frameCoordinateSystemPanel extends JPanel{
     protected void paintComponent(Graphics g) {
         super.paintComponent(g); //To change body of generated methods, choose Tools | Templates.
 
-        //Draw list nodes
+        //Draw all Path
+        if (isShowAllPath) {
+            paintAllPath(g);
+        }
         
        // for (Iterator<NodeItem> iterator = mListNodes.iterator(); iterator.hasNext();) {
         for (int i =0; i< mListNodes.size();i++) {
@@ -350,7 +427,7 @@ public class frameCoordinateSystemPanel extends JPanel{
                 case 3:
                     //Sink node
                     if (isShowSink) {
-                        g.setColor(Color.BLACK);
+                        g.setColor(Color.GREEN);
                     } else {
                         g.setColor(new Color(0, 0, 0, 0));
                     }   
@@ -380,7 +457,16 @@ public class frameCoordinateSystemPanel extends JPanel{
         // Draw khung toa do
         g.setColor(Color.BLACK);
         g.drawRect(SensorUtility.marginPanel, SensorUtility.marginPanel, sizeWidthCoordinater-SensorUtility.marginPanel, sizeHeightCoordianter-SensorUtility.marginPanel);
+        
 
+        
+        //Draw a Path Selected
+        if (isShowPathSelected) {
+            if (SensorUtility.mPathSensor != null || !SensorUtility.mPathSensor.isEmpty()) {
+                paintPathFromTargetToSink(g, TargetSelected, SensorUtility.mPathSensor, SinkSelected);
+            }
+            isShowPathSelected = false;
+        }
         
     }
     public void fillCell(int x, int y, int type) {
@@ -415,10 +501,98 @@ public class frameCoordinateSystemPanel extends JPanel{
         refresh();
     }
     
+    public void setShowAllPath(boolean view) {
+        isShowAllPath = view;
+        refresh();
+    }
+    
     public void deleteArraryList(){
         mListNodes.clear();
         repaint();
     }
+    
+     public void paintAllPath(Graphics g) {
+         //Draw Sensor with sensor
+         float temp;
+         NodeItem firstNode;
+         NodeItem secondNode;
+         g.setColor(Color.DARK_GRAY);
+         for (int i =0; i<mListSensorNodes.size();i++) {
+             firstNode = mListSensorNodes.get(i);
+             for (int j =0; j< i;j++) {
+                 if (i != j) {
+                    secondNode = mListSensorNodes.get(j);
+                    temp = SensorUtility.calculateDistance(firstNode.getX(), firstNode.getY(), secondNode.getX(), secondNode.getY());
+                    if (temp <= SensorUtility.mRsValue) {
+                        g.drawLine(getPX(firstNode.getX()), getPY(firstNode.getY()), getPX(secondNode.getX()), getPY(secondNode.getY()));
+                    }
+                 }
+             }
+         }
+         //Draw Sensor with Target
+         for (int i = 0; i < mListSensorNodes.size(); i++) {
+             firstNode = mListSensorNodes.get(i);
+             for (int j = 0; j < mListTargetNodes.size(); j++) {
+                 secondNode = mListTargetNodes.get(j);
+                 temp = SensorUtility.calculateDistance(firstNode.getX(), firstNode.getY(), secondNode.getX(), secondNode.getY());
+                 if (temp <= SensorUtility.mRsValue) {
+                     g.drawLine(getPX(firstNode.getX()), getPY(firstNode.getY()), getPX(secondNode.getX()), getPY(secondNode.getY()));
+                 }
+
+             }
+         }
+         
+         //Draw Sensor with Sink
+         for (int i = 0; i < mListSensorNodes.size(); i++) {
+             firstNode = mListSensorNodes.get(i);
+             for (int j = 0; j < mListSinkNodes.size(); j++) {
+                 secondNode = mListSinkNodes.get(j);
+                 temp = SensorUtility.calculateDistance(firstNode.getX(), firstNode.getY(), secondNode.getX(), secondNode.getY());
+                 if (temp <= SensorUtility.mRcValue) {
+                     g.drawLine(getPX(firstNode.getX()), getPY(firstNode.getY()), getPX(secondNode.getX()), getPY(secondNode.getY()));
+                 }
+
+             }
+         }  
+         
+         
+     }
+    
+    public void paintPathFromTargetToSink(Graphics g, int targetId, List<Integer> listPathSensor,int sinkId) {
+        if (listPathSensor.isEmpty()) return;
+        if (targetId >= mListTargetNodes.size()) return;
+        if (sinkId >= mListSinkNodes.size()) return;
+        NodeItem targetNode = mListTargetNodes.get(targetId);
+        NodeItem sinkNode = mListSinkNodes.get(sinkId);
+        
+        NodeItem senSorNode = mListSensorNodes.get(listPathSensor.get(0));
+        g.setColor(Color.RED);
+        g.drawLine(getPX(targetNode.getX()), getPY(targetNode.getY()), getPX(senSorNode.getX()), getPY(senSorNode.getY()));
+        
+        //Noi cac sensor voi nhau
+        
+        for (int i =1 ; i< listPathSensor.size();i++) {
+            NodeItem senSorNodeNext = mListSensorNodes.get(listPathSensor.get(i));
+            g.drawLine(getPX(senSorNode.getX()), getPY(senSorNode.getY()), getPX(senSorNodeNext.getX()), getPY(senSorNodeNext.getY()));
+            
+            senSorNode = mListSensorNodes.get(listPathSensor.get(i));
+            senSorNodeNext = null;
+            
+        }
+        
+        //Noi Sensor voi Sink
+        g.drawLine(getPX(senSorNode.getX()), getPY(senSorNode.getY()), getPX(sinkNode.getX()), getPY(sinkNode.getY()));
+        
+    }
+    
+    int getPX(int X) {
+        return SensorUtility.marginPanel + (X * sizeRect)+sizeRect/2;
+    }
+    
+    int getPY(int Y) {
+        return SensorUtility.marginPanel + (Y * sizeRect)+sizeRect/2;
+    }
+    
     public void refresh() {
         mListNodes.clear();
         //Add target nodes

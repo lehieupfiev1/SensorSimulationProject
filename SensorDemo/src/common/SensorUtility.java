@@ -42,6 +42,7 @@ public final class SensorUtility {
     public static List<List<Double>> mListofListPathTime = new ArrayList<>();
     public static List<Double> mListofListTime = new ArrayList<>();
     public static List<Color> mListColor = new ArrayList<>();
+    public static List<Integer> mPathSensor;
     public static int MaxTargetNodes = 30000;
     public static int MaxCycleRobots = 1000;
     public static int MaxRobotNodesCycle = 1000;
@@ -238,6 +239,10 @@ public final class SensorUtility {
            return result+1;   
         }
         return result;
+    }
+    
+    public static float calculateDistance(float x1, float y1, float x2, float y2) {
+        return (float) Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
     }
         
     public static void resetSetting() {

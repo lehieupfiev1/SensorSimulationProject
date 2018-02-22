@@ -9,6 +9,7 @@ import algorithm.MyAlgorithm3;
 import common.SensorUtility;
 import static common.SensorUtility.*;
 import static iterface.algorithm.frameAlgorithm3.ListSensor;
+import iterface.frameCoordinateSystemPanel;
 import static iterface.frameMain.coordinatePanel;
 import java.util.ArrayList;
 import java.util.List;
@@ -155,9 +156,11 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
                 ListSensorResultLabel.setText("List Path : 0");
                 if (index >= 0 && index < mListofListPath.size()) {
                     List<PathItem> ListPath = mListofListPath.get(index);
+                    List<Double>  ListTime = mListofListPathTime.get(index);
                     for (int i = 0; i < ListPath.size(); i++) {
                         PathItem next = ListPath.get(i);
-                        ((DefaultListModel) mJListPath.getModel()).addElement(i + ". " + next.getString()+ " ");
+                        Double time = ListTime.get(i);
+                        ((DefaultListModel) mJListPath.getModel()).addElement(i + ". " + next.getString()+ " "+ "(Time : "+time.doubleValue()+")");
                     }
                     ListSensorResultLabel.setText("List Path : " + ListPath.size());
                 }
@@ -546,7 +549,7 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
 
         jLabel1.setText("Input");
 
-        ShowButton.setText("ShowView");
+        ShowButton.setText("ShowPath");
         ShowButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ShowButtonActionPerformed(evt);
@@ -658,6 +661,8 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
         }  else {
             clearData();
             //Algorithm2 mAlgorithm = new Algorithm2();
+            TimeRunningLabel.setText("Time Running : ...");
+            TimeLifeLabel.setText("Total time life : ...");
             MyAlgorithm3 mAlgorithm = new MyAlgorithm3();
             Thread thread;
             thread = new Thread(new Runnable() {
@@ -667,6 +672,7 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
                     mAlgorithm.run();
                     long end = System.currentTimeMillis();
                     timeRun = end-begin;
+                    JOptionPane.showMessageDialog(null, "Run finished !");
                     calculateTotalTime();
                     updateListTarget();
                     displayResult();
@@ -767,16 +773,39 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
                 
                 PathItem path = mListofListPath.get(mListTargetIndex).get(mListPathIndex);
                 List<Integer> list = path.getPath();
-                for (int i = 0; i < list.size(); i++) {
-                    //Change Value On foreach Sensor
-                    mListSensorNodes.get(list.get(i)).setStatus(1);
-                   
+//                for (int i = 0; i < list.size(); i++) {
+//                    //Change Value On foreach Sensor
+//                    mListSensorNodes.get(list.get(i)).setStatus(1);
+//                   
+//                }
+                mPathSensor = path.getPath();
+                
+                
+                int lastSensor = list.get(list.size()-1);
+                NodeItem sensorNode = mListSensorNodes.get(lastSensor);
+                float MinDistane = Float.MAX_VALUE;
+                int minSink = -1;
+                for (int i = 0 ; i< mListSinkNodes.size();i++) {
+                    NodeItem sinkNode = mListSinkNodes.get(i);
+                    float distance = SensorUtility.calculateDistance(sensorNode.getX(), sensorNode.getY(), sinkNode.getX(), sinkNode.getY());
+                    if (distance < MinDistane) {
+                        MinDistane = distance;
+                        if (MinDistane <= SensorUtility.mRcValue) minSink = i;
+                    }
                 }
+                
+                if (minSink != -1) {
+                    frameCoordinateSystemPanel.SinkSelected = minSink;
+                    frameCoordinateSystemPanel.isShowPathSelected = true;
+                    frameCoordinateSystemPanel.TargetSelected = mListTargetIndex;
+                }
+
             }
         }
         coordinatePanel.refresh();
     }//GEN-LAST:event_ShowButtonActionPerformed
-
+      
+    
     private void numberAlphaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_numberAlphaKeyReleased
         // TODO add your handling code here:
         try {

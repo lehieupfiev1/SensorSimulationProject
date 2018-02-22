@@ -144,6 +144,7 @@ public class frameMain extends javax.swing.JFrame {
         showRobotMenuItem = new javax.swing.JCheckBoxMenuItem();
         showSensorCorverMenuItem = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
+        ShowAllPathMenuItem = new javax.swing.JCheckBoxMenuItem();
         AlgorithmMenu = new javax.swing.JMenu();
         MyAlgorithmMenuItem = new javax.swing.JMenuItem();
         Algorithm1MenuItem = new javax.swing.JMenuItem();
@@ -367,6 +368,14 @@ public class frameMain extends javax.swing.JFrame {
             }
         });
         ViewMenu.add(jCheckBoxMenuItem1);
+
+        ShowAllPathMenuItem.setText("Show All Path");
+        ShowAllPathMenuItem.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                showAllPathItemStateChanged(evt);
+            }
+        });
+        ViewMenu.add(ShowAllPathMenuItem);
 
         menuBar.add(ViewMenu);
 
@@ -796,6 +805,17 @@ public class frameMain extends javax.swing.JFrame {
         mFrameAlgorithm.setVisible(true);
     }//GEN-LAST:event_MyAlgorithm3MenuItemActionPerformed
 
+    private void showAllPathItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showAllPathItemStateChanged
+        // TODO add your handling code here:
+        int state = evt.getStateChange();
+        if (state == ItemEvent.SELECTED) {
+            coordinatePanel.setShowAllPath(true);
+        } else {
+            coordinatePanel.setShowAllPath(false);
+        }
+        coordinatePanel.refresh();
+    }//GEN-LAST:event_showAllPathItemStateChanged
+
     public void saveFile() {
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new java.io.File("."));
@@ -905,6 +925,7 @@ public class frameMain extends javax.swing.JFrame {
     private javax.swing.JMenu RobotMenu;
     private javax.swing.JMenuItem SaveFileMenuItem;
     private javax.swing.JMenu SensorMenu;
+    private javax.swing.JCheckBoxMenuItem ShowAllPathMenuItem;
     private javax.swing.JMenu TargetMenu;
     private javax.swing.JMenu ViewMenu;
     private javax.swing.JMenuItem aboutMenuItem;

@@ -7,6 +7,7 @@ package iterface.setting;
 
 import common.SensorUtility;
 import iterface.frameMain;
+import static iterface.frameMain.coordinatePanel;
 import javax.swing.JOptionPane;
 
 /**
@@ -232,24 +233,32 @@ public class frameSetNetworkSize extends javax.swing.JFrame {
             SensorUtility.mRsValue = mRsValue ;
             SensorUtility.mRtValue = mRtValue ;
             if (SensorUtility.numberRow < 300 && SensorUtility.numberColum < 300) {
-                frameMain.coordinatePanel.setPanelScreenReSize(1240,1240,SensorUtility.numberRow,SensorUtility.numberColum);
-            } else if (SensorUtility.numberRow <= 400 && SensorUtility.numberColum <= 400) {
-                if (SensorUtility.numberRow > SensorUtility.numberColum ) {
-                    int tempScreen = SensorUtility.numberRow*4+SensorUtility.marginPanel*2;
-                    frameMain.coordinatePanel.setPanelScreenReSize(tempScreen,tempScreen,SensorUtility.numberRow,SensorUtility.numberColum);
+                    coordinatePanel.setPanelScreenReSize(1240, 1240, SensorUtility.numberRow, SensorUtility.numberColum);
+                } else if (SensorUtility.numberRow <= 400 && SensorUtility.numberColum <= 400) {
+                    if (SensorUtility.numberRow > SensorUtility.numberColum) {
+                        int tempScreen = SensorUtility.numberRow * 4 + SensorUtility.marginPanel * 2;
+                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+                    } else {
+                        int tempScreen = SensorUtility.numberColum * 4 + SensorUtility.marginPanel * 2;
+                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+                    }
+                } else if (SensorUtility.numberRow <= 700 && SensorUtility.numberColum <= 700){
+                    if (SensorUtility.numberRow > SensorUtility.numberColum) {
+                        int tempScreen = SensorUtility.numberRow * 3 + SensorUtility.marginPanel * 2;
+                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+                    } else {
+                        int tempScreen = SensorUtility.numberColum * 3 + SensorUtility.marginPanel * 2;
+                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+                    }
                 } else {
-                    int tempScreen = SensorUtility.numberColum*4+SensorUtility.marginPanel*2;
-                    frameMain.coordinatePanel.setPanelScreenReSize(tempScreen,tempScreen,SensorUtility.numberRow,SensorUtility.numberColum);
+                    if (SensorUtility.numberRow > SensorUtility.numberColum) {
+                        int tempScreen = SensorUtility.numberRow * 2 + SensorUtility.marginPanel * 2;
+                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+                    } else {
+                        int tempScreen = SensorUtility.numberColum * 2 + SensorUtility.marginPanel * 2;
+                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+                    }    
                 }
-            } else {
-                if (SensorUtility.numberRow > SensorUtility.numberColum ) {
-                    int tempScreen = SensorUtility.numberRow*3+SensorUtility.marginPanel*2;
-                    frameMain.coordinatePanel.setPanelScreenReSize(tempScreen,tempScreen,SensorUtility.numberRow,SensorUtility.numberColum);
-                } else {
-                    int tempScreen = SensorUtility.numberColum*3+SensorUtility.marginPanel*2;
-                    frameMain.coordinatePanel.setPanelScreenReSize(tempScreen,tempScreen,SensorUtility.numberRow,SensorUtility.numberColum);
-                }
-            }
             this.dispose();
         }
     }//GEN-LAST:event_changeButtonActionPerformed

@@ -439,7 +439,7 @@ public class Algorithm3 {
            for (int j =0; j <= i;j++) {
                if (i == j) {
                    Matrix[i][j] = 0;
-               } else if (Distance[listEECCcnt.get(i)][listEECCcnt.get(j)] <= Rc) {
+               } else if (Distance[listEECCcnt.get(i)][listEECCcnt.get(j)] <= Rs) {
                    Matrix[i][j] = Matrix[j][i] = 1;
                } else {
                    Matrix[i][j] = Matrix[j][i] = 0;
@@ -583,7 +583,7 @@ public class Algorithm3 {
            for (int j =0; j <= i;j++) {
                if (i == j) {
                    Matrix[i][j] = 0;
-               } else if (Distance[listEECCcnt.get(i)][listEECCcnt.get(j)] <= Rc) {
+               } else if (Distance[listEECCcnt.get(i)][listEECCcnt.get(j)] <= Rs) {
                    Matrix[i][j] = Matrix[j][i] = 1;
                } else {
                    Matrix[i][j] = Matrix[j][i] = 0;
@@ -796,7 +796,7 @@ public class Algorithm3 {
              heuristicItem.setId(listCurrentHopper.get(i));
              float kq = 0;
              for(int j = 0; j < listNCS.size();j++) {
-                 if (Distance[listCurrentHopper.get(i)][listNCS.get(j)] <= Rc) {
+                 if (Distance[listCurrentHopper.get(i)][listNCS.get(j)] <= Rs) {
                      kq += (1.0/(listTotalCoverNCS.get(j)));
                  }
              }
@@ -833,7 +833,7 @@ public class Algorithm3 {
      public int Total_CoverNCS(List<Integer> listSensor, int ncs) {
          int result = 0;
          for (int i = 0; i< listSensor.size(); i++ ) {
-             if (Distance[listSensor.get(i)][ncs] <= Rc) {
+             if (Distance[listSensor.get(i)][ncs] <= Rs) {
                 result++; 
              }
          }
@@ -845,7 +845,7 @@ public class Algorithm3 {
         
          for (int i = 0; i< listCurrentHopper.size();i++) {
              for (int j = 0; j < listNCR.size(); ) {
-                 if (Distance[listCurrentHopper.get(i)][listNCR.get(j)] <= Rc) {
+                 if (Distance[listCurrentHopper.get(i)][listNCR.get(j)] <= Rs) {
                      listNextHopper.add(listNCR.get(j));
                      listNCR.remove(j);
                  } else j++;

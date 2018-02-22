@@ -657,6 +657,8 @@ public class frameAlgorithm3 extends javax.swing.JFrame {
         }  else {
             clearData();
             //Algorithm2 mAlgorithm = new Algorithm2();
+            TimeRunningLabel.setText("Time Running : ...");
+            TimeLifeLabel.setText("Total time life : ...");
             Algorithm3 mAlgorithm = new Algorithm3();
             Thread thread;
             thread = new Thread(new Runnable() {
@@ -666,6 +668,7 @@ public class frameAlgorithm3 extends javax.swing.JFrame {
                     mAlgorithm.run();
                     long end = System.currentTimeMillis();
                     timeRun = end-begin;
+                    JOptionPane.showMessageDialog(null, "Run finished !");
                     updateListX();
                     displayResult();
                 }
