@@ -48,6 +48,7 @@ public class frameCoordinateSystemPanel extends JPanel{
     public static boolean isShowPathSelected = false;
     public static int TargetSelected;
     public static int SinkSelected;
+    public static int offset = 1;
     
     JPopupMenu popup;
     JMenuItem deleteSensorItem;
@@ -321,11 +322,21 @@ public class frameCoordinateSystemPanel extends JPanel{
    
    int checkTargetExit(int cellX, int cellY) {
        int result = -1;
+       int Xmax,Xmin,Ymax,Ymin;
+       Xmin = cellX - offset;
+       Xmax = cellX + offset;
+       Ymin = cellY - offset;
+       Ymax = cellY + offset;
+       float minDistance = Float.MAX_VALUE;
        for (int i =0; i < mListTargetNodes.size(); i++) {
             NodeItem next = mListTargetNodes.get(i);
-            if (next.getX() == cellX && next.getY() == cellY) {
-                result = i;
-                break;
+            if (next.getX() <= Xmax && next.getX() >= Xmin && next.getY() <= Ymax && next.getY() >= Ymin ) {
+                float dis = SensorUtility.calculateDistance(cellX, cellY, next.getX(), next.getY());
+                if (dis < minDistance) {
+                   minDistance = dis;
+                   result = i;
+                }
+                if (minDistance == 0) break;
             }
         }
        return result;
@@ -333,11 +344,21 @@ public class frameCoordinateSystemPanel extends JPanel{
    
    int checkSensorExit(int cellX, int cellY) {
        int result = -1;
+       int Xmax,Xmin,Ymax,Ymin;
+       Xmin = cellX - offset;
+       Xmax = cellX + offset;
+       Ymin = cellY - offset;
+       Ymax = cellY + offset;
+       float minDistance = Float.MAX_VALUE;
        for (int i =0; i < mListSensorNodes.size(); i++) {
             NodeItem next = mListSensorNodes.get(i);
-            if (next.getX() == cellX && next.getY() == cellY) {
-                result = i;
-                break;
+            if (next.getX() <= Xmax && next.getX() >= Xmin && next.getY() <= Ymax && next.getY() >= Ymin ) {
+                float dis = SensorUtility.calculateDistance(cellX, cellY, next.getX(), next.getY());
+                if (dis < minDistance) {
+                   minDistance = dis;
+                   result = i;
+                }
+                if (minDistance == 0) break;
             }
         }
        return result;
@@ -345,11 +366,21 @@ public class frameCoordinateSystemPanel extends JPanel{
    
    int checkSinkExit(int cellX, int cellY) {
        int result = -1;
+       int Xmax,Xmin,Ymax,Ymin;
+       Xmin = cellX - offset;
+       Xmax = cellX + offset;
+       Ymin = cellY - offset;
+       Ymax = cellY + offset;
+       float minDistance = Float.MAX_VALUE;
        for (int i =0; i < mListSinkNodes.size(); i++) {
             NodeItem next = mListSinkNodes.get(i);
-            if (next.getX() == cellX && next.getY() == cellY) {
-                result = i;
-                break;
+            if (next.getX() <= Xmax && next.getX() >= Xmin && next.getY() <= Ymax && next.getY() >= Ymin ) {
+                float dis = SensorUtility.calculateDistance(cellX, cellY, next.getX(), next.getY());
+                if (dis < minDistance) {
+                   minDistance = dis;
+                   result = i;
+                }
+                if (minDistance == 0) break;
             }
         }
        return result;
@@ -371,6 +402,13 @@ public class frameCoordinateSystemPanel extends JPanel{
         }
         sizeWidthCoordinater = (SensorUtility.numberRow)*sizeRect+SensorUtility.marginPanel;
         sizeHeightCoordianter = (SensorUtility.numberColum)*sizeRect+SensorUtility.marginPanel;
+        if (SensorUtility.numberRow < 300) {
+            offset = 1;
+        } else if (SensorUtility.numberRow < 700) {
+            offset = 2;
+        } else {
+            offset = 3;
+        }
         repaint();
     }
     

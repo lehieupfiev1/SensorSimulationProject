@@ -21,8 +21,8 @@ import model.NodeItem;
  * @author Hieu
  */
 public class ConverInput {
-    static int numberColum =1000; // Kich thuoc mang (theo cot)
-    static int numberRow = 1000;// Kich thuoc mang (theo cot)
+    static int numberColum =1001; // Kich thuoc mang (theo cot)
+    static int numberRow = 1001;// Kich thuoc mang (theo cot)
     static float mRsValue = 20.0f;//(bán kính sensing)	
     static float mRtValue = 40.0f;
     static int mNumberRobotCycle = 0;
@@ -50,14 +50,14 @@ public class ConverInput {
      public static void main(String[] args) {
          
         try {
-            readSensorFile("D:\\sensor.txt"); //Add URL sensor file with format (
-            readTargetFile("D:\\target.txt");//Add URL target file
-            readSinkFile("D:\\sink.txt");//Add URL Sink file
+            readSensorFile("E:\\HIEU\\CAO HOC\\Hoc May\\sensor.txt"); //Add URL sensor file with format (
+            readTargetFile("E:\\HIEU\\CAO HOC\\Hoc May\\target.txt");//Add URL target file
+            readSinkFile("E:\\HIEU\\CAO HOC\\Hoc May\\sink.txt");//Add URL Sink file
         } catch (IOException ex) {
             Logger.getLogger(ConverInput.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
-            writeFile("D:\\inputnew.INP"); //Url luu file input duoc sinh ra
+            writeFile("E:\\HIEU\\CAO HOC\\Hoc May\\inputnew.INP"); //Url luu file input duoc sinh ra
         } catch (IOException ex) {
             Logger.getLogger(ConverInput.class.getName()).log(Level.SEVERE, null, ex);
         }
