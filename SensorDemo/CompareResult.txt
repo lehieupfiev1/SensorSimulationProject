@@ -1,0 +1,10 @@
+
+
+Test case : 6
+Sensor=26  Target=3  Sink=3  Rs=20.0  Rc=40.0  MaxHop=3
+Time Run = 18.0 , Time Life = 6.1192069E7
+
+Test case : 7
+Sensor=6  Target=3  Sink=8  Rs=10.0  Rc=10.0  MaxHop=2
+Time Run = 2.0 , Time Life = 0.0
+

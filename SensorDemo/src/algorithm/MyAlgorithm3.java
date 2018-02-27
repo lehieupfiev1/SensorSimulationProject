@@ -17,10 +17,12 @@ import ilog.cplex.IloCplex;
 import static iterface.frameMain.coordinatePanel;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.EnergyItem;
 import model.FloatPointItem;
 import model.HeuristicItem;
 import model.PathItem;
@@ -58,6 +60,7 @@ public class MyAlgorithm3 {
     List<List<PathItem>> resultListY;
     List<List<Double>> resultListTi;
     float ListEnergySensor[];
+    float ListEnergyUsing[];
     int MAX_INTERGER = 100000000;
     float MAX_FLOAT = 10000000000000.0f;
     float TimeStamp ;
@@ -130,12 +133,14 @@ public class MyAlgorithm3 {
         //Add to Total Point;
         Point = new float[TP+1][2];
         ListEnergySensor = new float[N];
+        ListEnergyUsing = new float[N];
 
         for (int i =0; i < mListSensorNodes.size();i++) {
             Point[i][0] = mListSensorNodes.get(i).getX();
             Point[i][1] = mListSensorNodes.get(i).getY();
             //Add Energy for every node
             ListEnergySensor[i] = SensorUtility.mEoValue;
+            ListEnergyUsing[i] = 0;
         }
         
         for (int i =0; i < mListTargetNodes.size();i++) {
@@ -297,12 +302,12 @@ public class MyAlgorithm3 {
                     List<Integer> list = new ArrayList<>();
                     list.add(listSensor.get(i));
                     listParent1.add(listSensor.get(i));
-                    num++;
+                    
                     if (Distance[listSensor.get(i)][N + target] <= Rs) {
                        Pi.add(list);
                     } else {
                        ListP.add(list);
-                       
+                       num++;
                     }
 
                 }
@@ -793,6 +798,24 @@ public class MyAlgorithm3 {
         mListofListPath.clear();
         mListofListPath = resultListY;
         SensorUtility.mListofListPathTime = resultListTi;
+        for (int i =0; i < mListofListPath.size();i++) {
+            List<PathItem> listPath = mListofListPath.get(i);
+            List<Double> listTime = resultListTi.get(i);
+            for (int j = 0; j <listPath.size();j++) {
+                PathItem path= listPath.get(j);
+                Double time = listTime.get(j);
+                List<Integer> listPoint = path.getPath();
+                for (int k = 0; k < listPoint.size(); k++) {
+                    int point = listPoint.get(k);
+                    ListEnergyUsing[point] += (getEnergyConsumer(listPoint, point) * time.floatValue());
+                }
+            }
+        }
+        System.out.println("Nang luong cua cac Sensor :--------------");
+        for (int i =0 ; i < ListEnergySensor.length;i++) {
+            System.out.print(ListEnergyUsing[i]/1000000000+" ");
+        }
+        System.out.println();
     }
     
     public void showViewTest(List<Integer> listSensor) {                                            
@@ -857,7 +880,7 @@ public class MyAlgorithm3 {
                 ListOfListTi.add(tempReturnListTi);
             }
         }
-        Combining_All_Division(ListOfListY,ListOfListTi,resultListY,resultListTi);
+        Combining_All_Division2(ListOfListY,ListOfListTi,resultListY,resultListTi);
         
         //Free data
         ListOfListY = null;
@@ -925,7 +948,7 @@ public class MyAlgorithm3 {
                     tempListY.add(pathY);
                     tempListT.add(timeY);
             }
-            Combining_All_Division(temp2ListOfListY, temp2ListOfListTi, tempListY, tempListT);
+            Combining_All_Division2(temp2ListOfListY, temp2ListOfListTi, tempListY, tempListT);
             temp2ListOfListY.clear();
             temp2ListOfListTi.clear();
             if (!tempListY.isEmpty() && !tempListT.isEmpty()) {
@@ -1243,6 +1266,162 @@ public class MyAlgorithm3 {
             reTimeY.remove(j);
             reTimeY.add(j, x);
            }
+        }
+    }
+    
+    public void Combining_All_Division2(List<List<List<PathItem>>> ListOfListY, List<List<List<Double>>> ListOfListT, List<List<PathItem>> returnListY, List<List<Double>> returnListTi) {
+
+        for (int i = 0; i< ListOfListY.size();i++) {
+          List<List<PathItem>> tempListPathY = ListOfListY.get(i);
+          List<List<Double>>  tempListTi  =ListOfListT.get(i);
+          for (int j =0 ; j< tempListPathY.size();j++) {
+                 List<PathItem> pathY = tempListPathY.get(j);
+                 List<PathItem> retPathY = returnListY.get(j);
+                 List<Double> timeY = tempListTi.get(j);
+                 List<Double> reTimeY = returnListTi.get(j);
+                 
+                 unionListY(pathY, timeY, retPathY, reTimeY);
+              
+          }
+       }
+       // Divice Time to (mLvalue +1)
+       for (int i = 0; i < returnListTi.size(); i++) {
+           List<Double> reTimeY = returnListTi.get(i);
+           for (int j =0; j < reTimeY.size();j++) {
+            Double x = reTimeY.get(j)/(Anpha);
+            reTimeY.remove(j);
+            reTimeY.add(j, x);
+           }
+        }
+       
+       //Tim list sensor in all Path
+       List<Integer> listSensorInAllPath = new ArrayList<>();
+       FindListSensorInAllPath(returnListY,listSensorInAllPath);
+       
+       if (listSensorInAllPath.size() == 0) return;
+       //Tao list Energy tuong ung voi cac sensor      
+       List<EnergyItem> listEnergy = new ArrayList<EnergyItem>();
+       for (int i = 0; i < listSensorInAllPath.size();i++) {
+           EnergyItem energyItem = new EnergyItem(listSensorInAllPath.get(i), 0);
+           listEnergy.add(energyItem);
+       }
+       
+       //Calculate Energy using in Sensor
+       for (int i =0; i < listSensorInAllPath.size();i++) {
+           int sensor = listSensorInAllPath.get(i);
+           for (int j =0; j < returnListY.size();j++) {
+               List<PathItem> listPath = returnListY.get(j);
+               List<Double> listTime = returnListTi.get(j);
+               for (int k =0; k < listPath.size();k++) {
+                   PathItem path = listPath.get(k);
+                   Double time = listTime.get(k);
+                   EnergyItem energyItem = listEnergy.get(i);
+                   float energyUse = getEnergyConsumer(path.getPath(), sensor) * time.floatValue();
+                   
+                   if (energyUse > 0) {
+                       energyItem.addEnergyUse(energyUse);
+                       energyItem.addPostion(j, k);
+                   }
+                   
+               }
+
+           }
+
+       }
+       //Sort cac phan tu
+       Collections.sort(listEnergy, new Comparator<EnergyItem>(){
+            @Override
+               public int compare(EnergyItem o1, EnergyItem o2) {
+                   float size1 = o1.getEnergyUse();
+                   float size2 = o2.getEnergyUse();
+                   
+                   return Float.compare(size2, size1);
+               }
+            
+        });
+        float MaxEnergyInList = listEnergy.get(0).getEnergyUse();
+        if (MaxEnergyInList < SensorUtility.mEoValue / Anpha) {
+            //TH 1 : Energy ban dau khong lon hon E0
+            for (int i = 0; i < returnListTi.size(); i++) {
+                List<Double> reTimeY = returnListTi.get(i);
+                for (int j = 0; j < reTimeY.size(); j++) {
+                    Double x = reTimeY.get(j) *(Anpha);
+                    reTimeY.remove(j);
+                    reTimeY.add(j, x);
+                }
+            }
+            return;
+
+        } else if (MaxEnergyInList <= SensorUtility.mEoValue) {
+            //TH2 : Energy sau khi chia cho L (Anpha) khong lon hon E0
+            return ;
+
+        } else {
+            //Ton tai Energy cua 1 node lon hon Eo
+            float ratio = SensorUtility.mEoValue/MaxEnergyInList;
+            
+            
+
+        }
+       
+       int a= 6;
+       
+    }
+    
+    void CalculateReduceTime(List<List<List<PathItem>>> returnListY, List<List<Double>> returnListTi, List<EnergyItem> listEnergy, List<Integer> listSensor) {
+        float MaxEnergyInList = listEnergy.get(0).getEnergyUse();
+        int sensor = listEnergy.get(0).getId();
+        
+        while (MaxEnergyInList > SensorUtility.mEoValue) {
+            float ratio = SensorUtility.mEoValue/MaxEnergyInList;
+            //Reduce time of path contain sensor;
+            List<Integer> listPosTarget = listEnergy.get(0).getTargetList();
+            List<Integer> listPosPath = listEnergy.get(0).getPosiList();
+            
+            //Change time
+            for (int i =0; i< listPosTarget.size(); i++) {
+                int indexTarget = listPosTarget.get(i);
+                int indexPath = listPosPath.get(i);
+                List<Double> reTimeY = returnListTi.get(indexTarget);
+                Double time = reTimeY.get(indexPath)*ratio;
+                reTimeY.remove(indexPath);
+                reTimeY.add(indexPath,time);
+            }
+            
+            
+            
+            
+            
+            
+        }
+        
+        
+        
+        
+        
+        
+        
+    }
+    
+    void FindListSensorInAllPath(List<List<PathItem>> returnListY, List<Integer> listSenSor) {
+        boolean checkExit[];
+        checkExit = new boolean[N];
+        for (int i = 0; i < returnListY.size(); i++) {
+            List<PathItem> listPath = returnListY.get(i);
+            for (int j =0; j < listPath.size();j++) {
+                PathItem path = listPath.get(j);
+                List<Integer> list = path.getPath();
+                for (int k =0; k < list.size();k++) {
+                    checkExit[list.get(k)] = true;
+                }
+            } 
+        }
+        
+        listSenSor.clear();
+        for (int i =0; i < checkExit.length; i++) {
+            if (checkExit[i]) {
+                listSenSor.add(i);
+            }
         }
     }
     

@@ -156,6 +156,7 @@ public final class SensorUtility {
         mListSensorNodes.clear();
         mListRobotNodes.clear();
         mListTargetNodes.clear();
+        mListSinkNodes.clear();
         File file = new File(filename);
         Scanner scanner = new Scanner(file);
         //Read width , height, RsValue, mRtValue
