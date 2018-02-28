@@ -16,8 +16,8 @@ public class EnergyItem {
     
     int id ; //Id of Sensor
     float energyUse;
-    List<Integer> listTarget; //List target co duong path chua id sensor
-    List<Integer> listPosition;//Position cua path tuong ung voi taget
+    List<Integer> listPosTarget; //List target co duong path chua id sensor
+    List<Integer> listPosPath;//Position cua path tuong ung voi taget
     
 
     public EnergyItem() {
@@ -26,8 +26,8 @@ public class EnergyItem {
     public EnergyItem(int id, float energyUse) {
         this.id = id;
         this.energyUse = energyUse;
-        listTarget = new ArrayList<>();
-        listPosition = new ArrayList<>();
+        listPosTarget = new ArrayList<>();
+        listPosPath = new ArrayList<>();
     }
 
     public int getId() {
@@ -55,15 +55,15 @@ public class EnergyItem {
     }
     
     public void addPostion(int target,int postion) {
-        listTarget.add(target);
-        listPosition.add(postion);
+        listPosTarget.add(target);
+        listPosPath.add(postion);
     }
     
-    public List<Integer> getTargetList() {
-        return listTarget;
+    public List<Integer> getPosTargetList() {
+        return listPosTarget;
     }
     
-    public List<Integer> getPosiList() {
-        return listPosition;
+    public List<Integer> getPosPathList() {
+        return listPosPath;
     }
 }
