@@ -76,7 +76,7 @@ public final class SensorUtility {
         outputWriter.write(numberColum + " "+ numberRow+" "+mRsValue+ " "+mRtValue);
         outputWriter.newLine();
         //Write parameter of energy
-        outputWriter.write(mRcValue + " "+ mEsValue+" "+mEtValue+ " "+mErValue+ " "+mEfsValue+" "+mEmpValue+" "+mBitValue+ " "+mMaxHopper);
+        outputWriter.write(mRcValue + " "+ mEsValue+" "+mEtValue+ " "+mErValue+ " "+mEfsValue+" "+mEmpValue+" "+mBitValue+ " "+mMaxHopper+ " "+Lvalue);
         outputWriter.newLine();
         //Write number Target, number Robot Cycle, number Sensor
         outputWriter.write(mListTargetNodes.size() + " "+ mListRobotNodes.size()+" "+mListSensorNodes.size()+ " "+ mListSinkNodes.size());
@@ -174,6 +174,7 @@ public final class SensorUtility {
         mEmpValue = scanner.nextFloat();
         mBitValue = scanner.nextFloat();
         mMaxHopper = scanner.nextInt();
+        Lvalue = scanner.nextInt();
 
         ////Read number Target, number Robot Cycle, number Sensor
         int sizeTarget = scanner.nextInt();
