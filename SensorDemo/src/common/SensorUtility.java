@@ -64,7 +64,7 @@ public final class SensorUtility {
     public static float mTstamp = 1.0f;
     public static int mMaxHopper = 3;
     public static float mEoValue = 20000000000.0f;
-    
+    public static float mOffset = mEoValue/100000;
     
     public static void writeFile(String filename) throws IOException {
         File file = new File(filename);

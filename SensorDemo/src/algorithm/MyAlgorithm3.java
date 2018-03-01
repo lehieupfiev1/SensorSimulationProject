@@ -1353,7 +1353,7 @@ public class MyAlgorithm3 {
                    PathItem path = listPath.get(k);
                    Double time = listTime.get(k);
                    EnergyItem energyItem = listEnergy.get(i);
-                   float energyUse = getEnergyConsumer(path.getPath(), sensor) * time.floatValue();
+                   float energyUse = (float)(getEnergyConsumer(path.getPath(), sensor) * time.doubleValue());
                    
                    if (energyUse > 0) {
                        energyItem.addEnergyUse(energyUse);
@@ -1424,7 +1424,7 @@ public class MyAlgorithm3 {
                    PathItem path = listPath.get(k);
                    Double time = listTime.get(k);
                    EnergyItem energyItem = listEnergy.get(i);
-                   float energyUse = getEnergyConsumer(path.getPath(), sensor) * time.floatValue();
+                   float energyUse = (float)(getEnergyConsumer(path.getPath(), sensor) * time.doubleValue());
                    
                    if (energyUse > 0) {
                        energyItem.addEnergyUse(energyUse);
@@ -1439,7 +1439,7 @@ public class MyAlgorithm3 {
        //Check exit Energy > Eo
         for (int i = 0; i < listEnergy.size(); i++) {
             float MaxEnergyInList = listEnergy.get(i).getEnergyUse();
-            if (MaxEnergyInList > SensorUtility.mEoValue) {
+            if (MaxEnergyInList > SensorUtility.mEoValue +SensorUtility.mOffset) {
                 return true;
             }
         }
