@@ -295,7 +295,7 @@ public class MyAlgorithm3 {
 
             ListP.clear();
             ListParent.clear();
-            System.out.println("Target "+k + " id ="+target);
+            //System.out.println("Target "+k + " id ="+target);
             //
             List<Integer> listParent1 = new ArrayList<>();
             int num =0;
@@ -617,11 +617,13 @@ public class MyAlgorithm3 {
         return result;
     }
     
-    public List<List<Double>> LinearProAlgorithm2(List<List<PathItem>> listPathY, List<Integer> listSenSor, double valueE0) {
+    public List<List<Double>> LinearProAlgorithm2(List<List<PathItem>> listPathY, List<Integer> listSenSor,List<Integer> listTarget, double valueE0) {
         List<List<Double>> time = new ArrayList<>();
         int n = listPathY.size(); // Number target
         int m = listSenSor.size(); // Number sensor
         int Vmax =0;
+
+        System.out.println();
         //Test
         
 //        for (int i =0 ; i< listPathY.size(); i++) {
@@ -652,7 +654,8 @@ public class MyAlgorithm3 {
             if (Vmax < listPathY.get(i).size()) {
                 Vmax = listPathY.get(i).size();
             }
-            System.out.println("Size Path "+i+ " =" + v[i]);
+            int id = listTarget.get(i);
+            System.out.println("Target "+i+ " id ="+id+" (X ="+ mListTargetNodes.get(id).getX()+" ,Y ="+ mListTargetNodes.get(id).getY()+")"+ " sizePath ="+ v[i]);
             totalpath += v[i];
         }
         System.out.println("Total Path " + totalpath);
@@ -738,6 +741,8 @@ public class MyAlgorithm3 {
 
             }
 
+            cplex.setParam(IloCplex.Param.Simplex.Display, 0);
+            
             if (cplex.solve()) {
 
                 System.out.println("value: " + cplex.getObjValue());
@@ -1056,7 +1061,7 @@ public class MyAlgorithm3 {
 //            } catch (IOException ex) {
 //                Logger.getLogger(MyAlgorithm3.class.getName()).log(Level.SEVERE, null, ex);
 //            }
-                ListTi = LinearProAlgorithm2(ListPathY, tempListSensor, SensorUtility.mEoValue);
+                ListTi = LinearProAlgorithm2(ListPathY, tempListSensor,tempListTarget, SensorUtility.mEoValue);
                 reduceListPathYi(ListPathY, ListTi);
                 CoppyListToSave(ListPathY, ListTi, tempListTarget, tempListSink);
             } else {
