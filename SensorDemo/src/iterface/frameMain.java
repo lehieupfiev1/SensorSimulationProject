@@ -49,6 +49,7 @@ public class frameMain extends javax.swing.JFrame {
      */
     MyAlgorithm myAlgorithm;
     Algorithm1 algorithm1;
+    static javax.swing.GroupLayout jPanel1Layout;
     
     public frameMain() {
         //Init ListColor
@@ -80,11 +81,11 @@ public class frameMain extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 3000, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE,1000, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 2500, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE,1000, Short.MAX_VALUE)
         );
         
 
@@ -94,7 +95,7 @@ public class frameMain extends javax.swing.JFrame {
 
        // jScrollPane1.setPreferredSize(new Dimension(1500,1500));
         coordinatePanel = new frameCoordinateSystemPanel(1240,1240);
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(coordinatePanel);
+        jPanel1Layout = new javax.swing.GroupLayout(coordinatePanel);
         coordinatePanel.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -107,6 +108,17 @@ public class frameMain extends javax.swing.JFrame {
 
         jScrollPane1.setViewportView(coordinatePanel);
 
+    }
+    
+    public static void resizeLayout(int sizeHoriz, int sizeVert) {
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, sizeHoriz, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, sizeVert, Short.MAX_VALUE)
+        );
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -579,33 +591,37 @@ public class frameMain extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Error open file !");
                 SensorUtility.resetSetting();
             } finally {
+                int tempScreen = 1240;
                 if (SensorUtility.numberRow < 300 && SensorUtility.numberColum < 300) {
                     coordinatePanel.setPanelScreenReSize(1240, 1240, SensorUtility.numberRow, SensorUtility.numberColum);
                 } else if (SensorUtility.numberRow <= 400 && SensorUtility.numberColum <= 400) {
                     if (SensorUtility.numberRow > SensorUtility.numberColum) {
-                        int tempScreen = SensorUtility.numberRow * 4 + SensorUtility.marginPanel * 2;
+                        tempScreen = SensorUtility.numberRow * 4 + SensorUtility.marginPanel * 2;
                         coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
                     } else {
-                        int tempScreen = SensorUtility.numberColum * 4 + SensorUtility.marginPanel * 2;
+                        tempScreen = SensorUtility.numberColum * 4 + SensorUtility.marginPanel * 2;
                         coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
                     }
                 } else if (SensorUtility.numberRow <= 700 && SensorUtility.numberColum <= 700){
                     if (SensorUtility.numberRow > SensorUtility.numberColum) {
-                        int tempScreen = SensorUtility.numberRow * 3 + SensorUtility.marginPanel * 2;
+                        tempScreen = SensorUtility.numberRow * 3 + SensorUtility.marginPanel * 2;
                         coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
                     } else {
-                        int tempScreen = SensorUtility.numberColum * 3 + SensorUtility.marginPanel * 2;
+                        tempScreen = SensorUtility.numberColum * 3 + SensorUtility.marginPanel * 2;
                         coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
                     }
                 } else {
+                    
                     if (SensorUtility.numberRow > SensorUtility.numberColum) {
-                        int tempScreen = SensorUtility.numberRow * 2 + SensorUtility.marginPanel * 2;
+                        tempScreen = SensorUtility.numberRow * 2 + SensorUtility.marginPanel * 2;
                         coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
                     } else {
-                        int tempScreen = SensorUtility.numberColum * 2 + SensorUtility.marginPanel * 2;
+                        tempScreen = SensorUtility.numberColum * 2 + SensorUtility.marginPanel * 2;
                         coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
-                    }    
+                    } 
+                    
                 }
+                resizeLayout(tempScreen,tempScreen);
                 coordinatePanel.refresh();
             }
 

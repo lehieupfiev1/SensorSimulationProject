@@ -174,10 +174,11 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
                 dataListTargetModel.clear();
                 
                 for (int i = 0; i < mListofListPath.size(); i++) {
+                    NodeItem targetNode = mListTargetNodes.get(i);
                     if (mListofListPath.get(i).size() > 0) {
-                        ((DefaultListModel) mJListTarget.getModel()).addElement(i + ". id = " + i + " (NoPath: "+mListofListPath.get(i).size() +", TotalTime: " + listTotalTime.get(i) + ")");
+                        ((DefaultListModel) mJListTarget.getModel()).addElement(i + ". id = " + i +"( "+targetNode.getX()+" , "+targetNode.getY()+" )"+"(NoPath: "+mListofListPath.get(i).size() +", TotalTime: " + listTotalTime.get(i) + ")");
                     } else {
-                        ((DefaultListModel) mJListTarget.getModel()).addElement(i + ". id = null");
+                        ((DefaultListModel) mJListTarget.getModel()).addElement(i + ". id = "+i+"( "+targetNode.getX()+" , "+targetNode.getY()+" )" +"path=null");
                     }
                 }
                 ListEECCLabel.setText("List Target :"+ mListofListPath.size());

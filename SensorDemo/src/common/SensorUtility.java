@@ -24,8 +24,8 @@ import model.PathItem;
  * @author Hieu
  */
 public final class SensorUtility {
-    public static int MaxColum =1001;
-    public static int MaxRow =1001;
+    public static int MaxColum =10001;
+    public static int MaxRow =10001;
     public static int numberColum =200;
     public static int marginPanel =20;
     public static int numberRow = 200;

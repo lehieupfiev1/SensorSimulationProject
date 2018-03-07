@@ -7,7 +7,7 @@ package iterface.setting;
 
 import common.SensorUtility;
 import iterface.frameMain;
-import static iterface.frameMain.coordinatePanel;
+import static iterface.frameMain.*;
 import javax.swing.JOptionPane;
 
 /**
@@ -229,36 +229,39 @@ public class frameSetNetworkSize extends javax.swing.JFrame {
           JOptionPane.showMessageDialog(null, "Maximum Row =" + SensorUtility.MaxRow +" and Maximum Colum =" +SensorUtility.MaxColum);
         } else {
             SensorUtility.numberRow = numberRow;
-            SensorUtility.numberColum = numberColum ;
-            SensorUtility.mRsValue = mRsValue ;
-            SensorUtility.mRtValue = mRtValue ;
+            SensorUtility.numberColum = numberColum;
+            SensorUtility.mRsValue = mRsValue;
+            SensorUtility.mRtValue = mRtValue;
+            int tempScreen = 1240;
             if (SensorUtility.numberRow < 300 && SensorUtility.numberColum < 300) {
-                    coordinatePanel.setPanelScreenReSize(1240, 1240, SensorUtility.numberRow, SensorUtility.numberColum);
-                } else if (SensorUtility.numberRow <= 400 && SensorUtility.numberColum <= 400) {
-                    if (SensorUtility.numberRow > SensorUtility.numberColum) {
-                        int tempScreen = SensorUtility.numberRow * 4 + SensorUtility.marginPanel * 2;
-                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
-                    } else {
-                        int tempScreen = SensorUtility.numberColum * 4 + SensorUtility.marginPanel * 2;
-                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
-                    }
-                } else if (SensorUtility.numberRow <= 700 && SensorUtility.numberColum <= 700){
-                    if (SensorUtility.numberRow > SensorUtility.numberColum) {
-                        int tempScreen = SensorUtility.numberRow * 3 + SensorUtility.marginPanel * 2;
-                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
-                    } else {
-                        int tempScreen = SensorUtility.numberColum * 3 + SensorUtility.marginPanel * 2;
-                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
-                    }
+                coordinatePanel.setPanelScreenReSize(1240, 1240, SensorUtility.numberRow, SensorUtility.numberColum);
+            } else if (SensorUtility.numberRow <= 400 && SensorUtility.numberColum <= 400) {
+                if (SensorUtility.numberRow > SensorUtility.numberColum) {
+                    tempScreen = SensorUtility.numberRow * 4 + SensorUtility.marginPanel * 2;
+                    coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
                 } else {
-                    if (SensorUtility.numberRow > SensorUtility.numberColum) {
-                        int tempScreen = SensorUtility.numberRow * 2 + SensorUtility.marginPanel * 2;
-                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
-                    } else {
-                        int tempScreen = SensorUtility.numberColum * 2 + SensorUtility.marginPanel * 2;
-                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
-                    }    
+                    tempScreen = SensorUtility.numberColum * 4 + SensorUtility.marginPanel * 2;
+                    coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
                 }
+            } else if (SensorUtility.numberRow <= 700 && SensorUtility.numberColum <= 700) {
+                if (SensorUtility.numberRow > SensorUtility.numberColum) {
+                    tempScreen = SensorUtility.numberRow * 3 + SensorUtility.marginPanel * 2;
+                    coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+                } else {
+                    tempScreen = SensorUtility.numberColum * 3 + SensorUtility.marginPanel * 2;
+                    coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+                }
+            } else {
+                if (SensorUtility.numberRow > SensorUtility.numberColum) {
+                    tempScreen = SensorUtility.numberRow * 2 + SensorUtility.marginPanel * 2;
+                    coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+                } else {
+                    tempScreen = SensorUtility.numberColum * 2 + SensorUtility.marginPanel * 2;
+                    coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+                }
+
+            }
+            resizeLayout(tempScreen,tempScreen);
             this.dispose();
         }
     }//GEN-LAST:event_changeButtonActionPerformed
