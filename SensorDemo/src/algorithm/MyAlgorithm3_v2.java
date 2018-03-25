@@ -31,10 +31,9 @@ import model.PathItem;
 
 /**
  *
- * @author sev_user
+ * @author Hieu
  */
-public class MyAlgorithm3 {
-    
+public class MyAlgorithm3_v2 {
     public float Distance[][];// Matrix distance between two nodes
     public float MinDistanceSink[];// Matrix distance between two nodes
     public float Target[][];// Target nodes
@@ -78,7 +77,7 @@ public class MyAlgorithm3 {
     int T;//Number of Tagert Nodes
     int Anpha; // So lan tang
     
-    public MyAlgorithm3() {
+    public MyAlgorithm3_v2() {
     }
     
     public void run() {
@@ -216,70 +215,7 @@ public class MyAlgorithm3 {
         }
         return false;
     }
-    void Finding_CCP(List<Integer> listSensor, List<Integer> listTarget, List<Integer> listSink, List<List<List<Integer>>> ListPi) {
-        ListPi.clear();
-        //Khoi tao danh sach Pi
-        for(int i = 0; i< listTarget.size();i++) {
-            List<List<Integer>> Pi = new ArrayList<>();
-            ListPi.add(Pi);
-        }
-        List<List<Integer>> ListP = new ArrayList<>();
-        //
-        for(int i =0; i< listSensor.size();i++) {
-            if (checkSensorConnectSink(listSensor.get(i), listSink)) {
-                for (int j = 0; j< listTarget.size(); j++) {
-                    if (Distance[listSensor.get(i)][N+listTarget.get(j)] <= Rs) {
-                        List<Integer> list1 = new ArrayList<>();
-                        list1.add(listSensor.get(i));
-                        ListPi.get(j).add(list1);
-                    }  
-                }
-                List<Integer> list = new ArrayList<>();
-                list.add(listSensor.get(i));
-                ListP.add(list);
-                
-            }
-        }
-        
-        while (!ListP.isEmpty()) {
-            List<Integer> headP = ListP.get(0);
-            int lastSensor = headP.get(headP.size()-1); // Lay phan tu cuoi cung cua head
-            
-            for (int i = 0 ; i < listTarget.size(); i++) {
-                if (Distance[lastSensor][N+listTarget.get(i)] <= Rs) {
-                    ListPi.get(i).add(headP);
-                }
-            }
-            
-            if (headP.size() == MaxHopper+1) {
-                ListP.remove(0);
-            } else {
-                for (int i = 0 ; i < listSensor.size(); i++) {
-                    if (lastSensor != listSensor.get(i) && Distance[lastSensor][listSensor.get(i)] <= Rc) {
-                        
-                        if (!checkPointExitInList(listSensor.get(i), headP)) {
-                            // Coppy to new Array
-                            List<Integer> list = new ArrayList<>();
-                            for (int j = 0 ; j< headP.size();j++) {
-                                list.add(headP.get(j));
-                            }
-                            list.add(listSensor.get(i));
-                            
-                            //Add list to P
-                            ListP.add(list);
-                        }
-
-                    }
-                    
-                }
-                ListP.remove(0);
-                
-            }
- 
-        }
-        //Dao chieu cua List
-        
-    }
+    
     
     void Finding_CCP2(List<Integer> listSensor, List<Integer> listTarget, List<Integer> listSink, List<List<PathItem>> ListPathY) {
         List<List<List<Integer>>> ListPi = new ArrayList<>();
@@ -392,190 +328,13 @@ public class MyAlgorithm3 {
             ListPathY.add(listPath);
         }
         
-    }
-    
-    void SinkToHop(List<List<List<Integer>>> lis, int pos , int N, int a[] , List<List<Integer>> Lists) {
-        if (pos == N) {
-            List<Integer> result = new ArrayList<>();
-            for (int i = 0; i<N ;i++){
-                result.add(a[i]);
-            }
-            Lists.add(result);
-            
-        } else {
-            List<List<Integer>> list1 = lis.get(pos);
-            for (int i = 0; i< list1.size();i++) {
-                a[pos] = i;
-                pos++;
-                SinkToHop(lis,pos,N,a,Lists);
-                pos--;
-            }
-            
-        }
-    }
-    
+    }   
     
     boolean checkPointExitInList(int point , List<Integer> listPoint ) {
         for (int i = 0 ; i < listPoint.size(); i++) {
             if (point == listPoint.get(i)) return true;
         }
         return false;
-    }
-    
-    public void FindingPathX(List<Integer> listSensor, List<Integer> listTarget, List<Integer> listSink,List<List<List<Integer>>> listPathX, List<List<Integer>> listX) {
-        if (listSensor.isEmpty() || listTarget.isEmpty() || listSink.isEmpty()) {
-            return;
-        }
-        List<List<List<Integer>>> ListPathY = new ArrayList<>();
-        //Finding_CCP2(listSensor, listTarget, listSink, ListPathY);
-        
-        int re =0;
-        for (int i =0; i < ListPathY.size();i++) {
-            re += ListPathY.get(i).size();
-        }
-        
-        //Sink to hop
-        List<List<Integer>> listCombi = new ArrayList<>();
-        int a[] = new int[listTarget.size()];
-        SinkToHop(ListPathY, 0, listTarget.size(), a, listCombi);
-        
-        //Caculate result ListPathX;
-        for (int i = 0 ; i < listCombi.size();i++) {
-            List<Integer> combin = listCombi.get(i);
-            List<List<Integer>> pathX = new ArrayList<>();
-            for (int j =0 ; j< combin.size();j++) {
-                pathX.add(ListPathY.get(j).get(combin.get(j)));
-            }
-            listPathX.add(pathX);
-        }
-        
-        //Caculate Listx;
-        for (int i =0 ; i < listPathX.size();i++) {
-            List<List<Integer>> pathX = listPathX.get(i);
-            List<Integer> Xi= new ArrayList<>();
-            
-            for (int j  = 0 ; j< pathX.size(); j++) {
-                List<Integer> path = pathX.get(j);
-                if (j == 0) {
-                    for (int k = 0; k < path.size();k++)
-                        Xi.add(path.get(k));
-                } else {
-                    for (int k = 0; k < path.size();k++)
-                        if (!checkPointExitInList(path.get(k), Xi)) {
-                            Xi.add(path.get(k));
-                        }
-                    
-                }
-                
-                
-            }
-            listX.add(Xi);
-            
-        }
-        int s =8;
-        
-        
-    }
-    
-       
-    public List<Double> LinearProAlgorithm(List<List<List<Integer>>> listPathX, List<List<Integer>> listX, List<Integer> listSenSor, double valueE0) {
-        List<Double> time = new ArrayList<>();
-        int m = listX.size();
-        int n = listSenSor.size();
-        //Test
-//    if (m == 1) {
-//        time.add(valueE0/1000);
-//        for (int i = 1; i < listX.size(); i++) {
-//            time.add(0.0);
-//        }
-//    } else if (m == 2) {
-//        time.add(valueE0/1000);
-//        time.add(valueE0/1000);
-//        for (int i = 2; i < listX.size(); i++) {
-//            time.add(0.0);
-//        }
-//    } else if (m > 2){
-//        time.add(valueE0/1000);
-//        time.add(valueE0/1000);
-//        time.add(valueE0/1000);
-//        
-//        for (int i = 3; i < listX.size(); i++) {
-//            time.add(0.0);
-//        }
-//    }
-    if (m == 0 || n == 0) {
-        return time;
-    }
-        
-        float [][] a = new float[n][m];
-
-        //Check Input
-        for (int i = 0; i < n; i++) {
-            int sensor = listSenSor.get(i);
-            for (int j = 0; j < m; j++) {
-                a[i][j] = 0;
-                List<Integer> Xj = listX.get(j);
-                List<List<Integer>> pathXj = listPathX.get(j);
-                for (int k = 0; k < Xj.size(); k++) {
-                    if (sensor == Xj.get(k)) {
-                        a[i][j] = CaculateEnergyConsume(pathXj,sensor);
-                        break;
-                    }
-                }
-            }
-        }
-
-        try {
-            //Define new model
-            IloCplex cplex = new IloCplex();
-
-            //Variable
-            IloNumVar[] T = new IloNumVar[m];
-            for (int i = 0; i < m; i++) {
-                T[i] = cplex.numVar(0, Double.MAX_VALUE);
-            }
-
-            //Expression
-            IloLinearNumExpr[] totalTimeOnExpr = new IloLinearNumExpr[n];
-            for (int j = 0; j < n; j++) {
-                totalTimeOnExpr[j] = cplex.linearNumExpr();
-
-                for (int i = 0; i < m; i++) {
-                    totalTimeOnExpr[j].addTerm(a[j][i], T[i]);
-                }
-            }
-
-            IloLinearNumExpr objective = cplex.linearNumExpr();
-            for (int i = 0; i < m; i++) {
-                objective.addTerm(1, T[i]);
-            }
-
-            //Define Objective
-            cplex.addMaximize(objective);
-
-            //Constraints
-            for (int i = 0; i < n; i++) {
-                cplex.addLe(totalTimeOnExpr[i], valueE0);
-            }
-
-            cplex.setParam(IloCplex.Param.Simplex.Display, 0);
-            //Resolve Model
-            if (cplex.solve()) {
-                for (int i = 0; i < m; i++) {
-                    time.add(cplex.getValue(T[i]));
-                    System.out.println("time: " + cplex.getValue(T[i]));
-                }
-                System.out.println("value: " + cplex.getObjValue());
-            } else {
-                System.out.println("Problem not solved");
-            }
-
-            cplex.end();
-
-        } catch (IloException ex) {
-            Logger.getLogger("LeHieu").log(Level.SEVERE, null, ex);
-        }
-        return time;
     }
     
     float TranferEnergy(float distance) {
@@ -971,116 +730,7 @@ public class MyAlgorithm3 {
         return ListTime;
     }
     
-    public List<List<Double>> LinearProAlgorithm4(List<List<PathItem>> listPathY, List<Integer> listSenSor,List<Integer> listTarget, List<EnergyItem> listEnergy) {
-        List<List<Double>> time = new ArrayList<>();
-        int n = listPathY.size(); // Number target
-        int m = listSenSor.size(); // Number sensor
-        int Vmax =0;
-
-        System.out.println();
-
-        if (m == 0 || n == 0) {
-            return time;
-        }
-        int totalpath =0;
-        int[] v = new int[n];
-        for (int i = 0; i < listPathY.size(); i++) {
-            v[i] = listPathY.get(i).size();
-            if (Vmax < listPathY.get(i).size()) {
-                Vmax = listPathY.get(i).size();
-            }
-            int id = listTarget.get(i);
-            System.out.println("Target "+i+ " id ="+id+" (X ="+ mListTargetNodes.get(id).getX()+" ,Y ="+ mListTargetNodes.get(id).getY()+")"+ " sizePath ="+ v[i]);
-            totalpath += v[i];
-        }
-        System.out.println("Total Path " + totalpath);
-      
-        try {
-            //Init model
-            IloCplex cplex = new IloCplex();
-
-            //Define variable
-            IloNumVar[][] t = new IloNumVar[n][Vmax];
-            
-      
-            for (int j = 0; j < n; j++) {
-                for (int k = 0; k < Vmax; k++) {
-                    if (k < v[j]) {
-                        t[j][k] = cplex.numVar(0, Float.MAX_VALUE);
-                    } else {
-                        t[j][k] = cplex.numVar(-1.0, -1.0);
-                    }
-                }
-            }
-
-            //Define Objective
-            IloNumVar object = cplex.numVar(0, Float.MAX_VALUE);
-            IloLinearNumExpr objective = cplex.linearNumExpr();
-            objective.addTerm(1.0, object);
-            
-            cplex.addMaximize(objective);
-            
-            //Contraint
-            IloLinearNumExpr[] arrayExpress = new IloLinearNumExpr[m];
-            for (int i = 0; i < m; i++) {
-                arrayExpress[i] = cplex.linearNumExpr();
-                int sensor = listSenSor.get(i);
-                for (int j = 0; j < n; j++) {
-                    List<PathItem> listYj = listPathY.get(j);
-                    for (int k = 0; k < v[j]; k++) {
-                    	float value = getEnergyConsumer(listYj.get(k).getPath(), sensor);
-                        //float value = ListofListB.get(i).get(j).get(k);
-                        arrayExpress[i].addTerm(value, t[j][k]);
-                    }
-                }
-                cplex.addLe(arrayExpress[i], findEnergyInList(listSenSor.get(i),listEnergy));
-            }
-            
-            IloLinearNumExpr[] express = new IloLinearNumExpr[n];
-            for (int j = 0; j < n; j++) {
-                express[j] = cplex.linearNumExpr();
-                for (int k = 0; k < v[j]; k++) {
-                    express[j].addTerm(1.0, t[j][k]);
-                }
-                cplex.addLe(object,express[j]);
-
-            }
-
-            cplex.setParam(IloCplex.Param.Simplex.Display, 0);
-            
-            if (cplex.solve()) {
-
-                System.out.println("value: " + cplex.getObjValue());
-                double[] Time = new double[n];
-                
-                for (int j = 0; j < n; j++) {
-                    Time[j] =0;
-                    List<Double> timeTarget = new ArrayList<>();
-                    for (int k = 0; k < v[j]; k++) {
-                       Time[j] += cplex.getValue(t[j][k]);
-                       System.out.print(" "+cplex.getValue(t[j][k]));
-                       timeTarget.add(cplex.getValue(t[j][k]));
-                    }
-                    System.out.println();
-                    time.add(timeTarget);
-                }
-
-                //return cplex.getValue(objective);        
-            } else {
-                System.out.println("Problem not solved");
-            }
-
-            cplex.end();
-
-        } catch (IloException ex) {
-            Logger.getLogger("LeHieu").log(Level.SEVERE, null, ex);
-        }
-        //Free data
-        v = null; 
         
-        return time;
-    }
-    
     float findEnergyInList(int id, List<EnergyItem> listEnergy) {
         for (int i =0; i < listEnergy.size(); i++) {
             if (id == listEnergy.get(i).getId()) {
@@ -1113,7 +763,6 @@ public class MyAlgorithm3 {
         }
         return 0.0f;
     }
-    
     
     public void CoppyToListSensor() {
         mListofListPath.clear();
@@ -1223,7 +872,7 @@ public class MyAlgorithm3 {
             
             DiviceNetworkFollowWidth(UpLeftCornerPoint,DownRightCornerPoint,i,tempReturnListY,tempReturnListTi);
             if (!tempReturnListY.isEmpty() && !tempReturnListTi.isEmpty()) {
-                if (CheckEnergyMoreThanEo(tempReturnListY, tempReturnListTi)) {
+                if (CheckEnergyMoreThanEo3(tempReturnListY, tempReturnListTi)) {
                     isWidthOptimal = false;
                     ListOfListY.add(tempReturnListY);
                     ListOfListTi.add(tempReturnListTi);
@@ -1239,7 +888,7 @@ public class MyAlgorithm3 {
             }
         }
         if (!isWidthOptimal) {
-            Combining_All_Division2(ListOfListY,ListOfListTi,resultListY,resultListTi);
+            Combining_All_Division3(ListOfListY,ListOfListTi,resultListY,resultListTi);
         } else {
             System.out.println("Found case optimize follow width");
             resultListY = ListOfListY.get(0);
@@ -1300,7 +949,7 @@ public class MyAlgorithm3 {
                 }
                 DiviceNetWorkFollowHeight(upPoint,downPoint,i,temp2returnListX,temp2returnListTi);
                 if (!temp2returnListX.isEmpty() && !temp2returnListTi.isEmpty()) {
-                    if (CheckEnergyMoreThanEo(temp2returnListX, temp2returnListTi)) {
+                    if (CheckEnergyMoreThanEo3(temp2returnListX, temp2returnListTi)) {
                         isHeightOptimal = false;
                         temp2ListOfListY.add(temp2returnListX);
                         temp2ListOfListTi.add(temp2returnListTi);
@@ -1324,7 +973,7 @@ public class MyAlgorithm3 {
                     tempListT.add(timeY);
             }
             if (!isHeightOptimal) {
-                Combining_All_Division2(temp2ListOfListY, temp2ListOfListTi, tempListY, tempListT);
+                Combining_All_Division3(temp2ListOfListY, temp2ListOfListTi, tempListY, tempListT);
             } else {
                 System.out.println("Found case optimize follow height");
                 tempListY = temp2ListOfListY.get(0);
@@ -1396,7 +1045,12 @@ public class MyAlgorithm3 {
             if (postion == -1) {
                 Finding_CCP2(tempListSensor, tempListTarget, tempListSink, ListPathY);
 
-                ListTi = LinearProAlgorithm2(ListPathY, tempListSensor,tempListTarget, SensorUtility.mEoValue);
+//            try {
+//                SensorUtility.writeTestFile("D:\\Le-Hieu\\inputPathTest2.txt",ListPathY);
+//            } catch (IOException ex) {
+//                Logger.getLogger(MyAlgorithm3.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+                ListTi = LinearProAlgorithm3(ListPathY, tempListSensor,tempListTarget, SensorUtility.mEoValue);
                 reduceListPathYi(ListPathY, ListTi);
                 CoppyListToSave(ListPathY, ListTi, tempListTarget, tempListSink);
             } else {
@@ -1428,6 +1082,13 @@ public class MyAlgorithm3 {
                     tempListTi.add(pos, ListTi.get(i));
                 }
             }
+            
+            //Find set Time foreach SetX%
+            //tempListT = LinearProAlgorithm(tempListPathX,tempListX,tempListSensor,SensorUtility.mEoValue);
+            
+           
+ 
+            
             
             //Add result of Block
             if (!tempListTarget.isEmpty() && !ListPathY.isEmpty()) {
@@ -1882,7 +1543,6 @@ public class MyAlgorithm3 {
         }
         return -1;
     }    
-    
     boolean CheckEnergyMoreThanEo (List<List<PathItem>> returnListY, List<List<Double>> returnListTi) {
          //Tim list sensor in all Path
        List<Integer> listSensorInAllPath = new ArrayList<>();

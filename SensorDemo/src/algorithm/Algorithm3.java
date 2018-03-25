@@ -827,9 +827,9 @@ public class Algorithm3 {
 //             } else i++;
 //
 //         }
+                 
+         }
          
-     }
-     
      public int Total_CoverNCS(List<Integer> listSensor, int ncs) {
          int result = 0;
          for (int i = 0; i< listSensor.size(); i++ ) {

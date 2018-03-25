@@ -6,6 +6,7 @@
 package iterface.algorithm;
 
 import algorithm.MyAlgorithm3;
+import algorithm.MyAlgorithm3_v2;
 import common.SensorUtility;
 import static common.SensorUtility.*;
 import static iterface.algorithm.frameAlgorithm3.ListSensor;
@@ -120,7 +121,7 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
         //Result
         TimeRunningLabel.setText("Time Running : 0");
         TimeLifeLabel.setText("Total time life : 0");
-        ListEECCLabel.setText("List EECCcnt :0");
+        ListEECCLabel.setText("List Target :0");
         ListSensorResultLabel.setText("List Sensor : 0");
      
     }
@@ -128,7 +129,7 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
     void clearData(){
         TimeRunningLabel.setText("Time Running : 0");
         TimeLifeLabel.setText("Total time life : 0");
-        ListEECCLabel.setText("List EECCcnt :0");
+        ListEECCLabel.setText("List Target :0");
         ListSensorResultLabel.setText("List Sensor : 0");
         
         
