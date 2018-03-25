@@ -10,7 +10,7 @@ import static common.SensorUtility.mListSensorNodes;
 import static common.SensorUtility.mListSinkNodes;
 import static common.SensorUtility.mListTargetNodes;
 import static common.SensorUtility.mListofListPath;
-import static common.SensorUtility.mListofListPathTime;
+import static common.SensorUtility.*;
 import ilog.concert.IloException;
 import ilog.concert.IloLinearNumExpr;
 import ilog.concert.IloNumVar;
@@ -1847,8 +1847,8 @@ public class MyAlgorithm3 {
             for (int i = 0; i < returnListY.size(); i++) {
                 List<PathItem> pathY = returnListY.get(i);
                 pathY.clear();
-                List<Double> time = new ArrayList<>();
-                returnListTi.add(time);
+                List<Double> time = returnListTi.get(i);
+                time.clear();
             }
             //Coppy to ListY and ListTime
             for (int i = 0; i < ListAllPathItem.size(); i++) {
@@ -1930,7 +1930,7 @@ public class MyAlgorithm3 {
     
     boolean CheckEnergyMoreThanEo3(List<List<PathItem>> returnListY, List<List<Double>> returnListTi) {
         //Test
-       if (true) return true;
+       //if (true) return true;
          //Tim list sensor in all Path
        List<Integer> listSensorInAllPath = new ArrayList<>();
        FindListSensorInAllPath(returnListY,listSensorInAllPath);
