@@ -65,6 +65,9 @@ public final class SensorUtility {
     public static int mMaxHopper = 3;
     public static float mEoValue = 20000000000.0f;
     public static float mOffset = mEoValue/100000;
+    public static float mGamma1 = 0.3f;
+    public static float mGamma2 = 0.3f;
+    public static int mKmax = 7;
     
     public static void writeFile(String filename) throws IOException {
         File file = new File(filename);
