@@ -6,6 +6,8 @@
 package iterface.algorithm;
 
 import algorithm.Algorithm3;
+import algorithm.Algorithm3_v1;
+import algorithm.Algorithm3_v2;
 import algorithm.TempAlgorithm;
 import common.SensorUtility;
 import static common.SensorUtility.*;
@@ -659,7 +661,7 @@ public class frameAlgorithm3 extends javax.swing.JFrame {
             //Algorithm2 mAlgorithm = new Algorithm2();
             TimeRunningLabel.setText("Time Running : ...");
             TimeLifeLabel.setText("Total time life : ...");
-            Algorithm3 mAlgorithm = new Algorithm3();
+            Algorithm3_v2 mAlgorithm = new Algorithm3_v2();
             Thread thread;
             thread = new Thread(new Runnable() {
                 @Override

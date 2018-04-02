@@ -1144,7 +1144,7 @@ public class MyAlgorithm3 {
                 listPathY.get(id).add(pathItem);
                 tempReturnListTi.get(id).add(time);
             }
-        }
+        }        
         System.out.println("Time on for each Tarrget : size = " +listPathY.size());
         for (int i =0; i < listPathY.size(); i++) {
             List<Double> tempListTime = tempReturnListTi.get(i);
