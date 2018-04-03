@@ -68,6 +68,7 @@ public final class SensorUtility {
     public static float mGamma1 = 0.3f;
     public static float mGamma2 = 0.3f;
     public static int mKmax = 7;
+    public static int mUnitTime = 7;
     
     public static void writeFile(String filename) throws IOException {
         File file = new File(filename);
