@@ -11,6 +11,7 @@ import common.SensorUtility;
 import iterface.algorithm.frameAlgorithm1;
 import iterface.algorithm.frameAlgorithm2;
 import iterface.algorithm.frameAlgorithm3;
+import iterface.algorithm.frameAlgorithm3_v2;
 import iterface.algorithm.frameMyAlgorithm;
 import iterface.algorithm.frameMyAlgorithm2;
 import iterface.algorithm.frameMyAlgorithm3;
@@ -164,6 +165,7 @@ public class frameMain extends javax.swing.JFrame {
         Algorithm2 = new javax.swing.JMenuItem();
         MyAlgorithm3MenuItem = new javax.swing.JMenuItem();
         Algoritm3MenuItem = new javax.swing.JMenuItem();
+        Algorithm3_v2MenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         contentsMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
@@ -440,6 +442,14 @@ public class frameMain extends javax.swing.JFrame {
             }
         });
         AlgorithmMenu.add(Algoritm3MenuItem);
+
+        Algorithm3_v2MenuItem.setText("Algorithm3_v2");
+        Algorithm3_v2MenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Algorithm3_v2MenuItemActionPerformed(evt);
+            }
+        });
+        AlgorithmMenu.add(Algorithm3_v2MenuItem);
 
         menuBar.add(AlgorithmMenu);
 
@@ -832,6 +842,13 @@ public class frameMain extends javax.swing.JFrame {
         coordinatePanel.refresh();
     }//GEN-LAST:event_showAllPathItemStateChanged
 
+    private void Algorithm3_v2MenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Algorithm3_v2MenuItemActionPerformed
+        // TODO add your handling code here:
+        frameAlgorithm3_v2 mFrameAlgorithm = new frameAlgorithm3_v2();
+        mFrameAlgorithm.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        mFrameAlgorithm.setVisible(true);
+    }//GEN-LAST:event_Algorithm3_v2MenuItemActionPerformed
+
     public void saveFile() {
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new java.io.File("."));
@@ -925,6 +942,7 @@ public class frameMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem AddTargetMenuItem;
     private javax.swing.JMenuItem Algorithm1MenuItem;
     private javax.swing.JMenuItem Algorithm2;
+    private javax.swing.JMenuItem Algorithm3_v2MenuItem;
     private javax.swing.JMenu AlgorithmMenu;
     private javax.swing.JMenuItem Algoritm3MenuItem;
     private javax.swing.JMenuItem CalculateDistanceMenuItem;

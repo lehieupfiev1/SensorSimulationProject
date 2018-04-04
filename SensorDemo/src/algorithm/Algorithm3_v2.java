@@ -4,6 +4,7 @@ import common.SensorUtility;
 import static common.SensorUtility.mListSensorNodes;
 import static common.SensorUtility.mListSinkNodes;
 import static common.SensorUtility.mListTargetNodes;
+import static common.SensorUtility.mListofListCMLCT;
 import static common.SensorUtility.mListofListSensor;
 import static common.SensorUtility.mListofListTime;
 import static iterface.frameMain.coordinatePanel;
@@ -14,6 +15,7 @@ import model.EnergyItem;
 import model.HeuristicItem;
 import model.LoadBalanceItem;
 import model.NodeItem;
+import model.PathItem;
 
 /**
  *
@@ -30,7 +32,10 @@ public class Algorithm3_v2 {
     float Rs, Rc;// Rs and Rt value
     int MaxHopper;
     List<Double> listTime;
+    List<Double> mListTimeLife;
+    List<List<List<Integer>>> mListAllResultPath;
     float ListEnergySensor[];
+    float ListEnergyUse[];
     int MAX_INTERGER = 100000000;
     float MAX_FLOAT = 10000000000000.0f;
     float TimeStamp ;
@@ -66,6 +71,8 @@ public class Algorithm3_v2 {
     public  void init() {
 
         listTime = new ArrayList<>();
+        mListAllResultPath = new ArrayList<>();
+        mListTimeLife = new ArrayList<>();
 
     }
 
@@ -95,12 +102,14 @@ public class Algorithm3_v2 {
         //Add to Total Point;
         Point = new float[TP+1][2];
         ListEnergySensor = new float[N];
+        ListEnergyUse = new float[N];
 
         for (int i =0; i < mListSensorNodes.size();i++) {
             Point[i][0] = mListSensorNodes.get(i).getX();
             Point[i][1] = mListSensorNodes.get(i).getY();
             //Add Energy for every node
             ListEnergySensor[i] = SensorUtility.mEoValue;
+            ListEnergyUse[i] = 0;
         }
         
         for (int i =0; i < mListTargetNodes.size();i++) {
@@ -146,7 +155,7 @@ public class Algorithm3_v2 {
     
     
     public void runAlgorithm() {
-                // Calculate Covering Heuristic
+        // Calculate Covering Heuristic
         List<Integer> listSensor = new ArrayList<>();
         for (int i = 0; i < mListSensorNodes.size(); i++) {
             listSensor.add(i);
@@ -160,38 +169,221 @@ public class Algorithm3_v2 {
             listSink.add(i);
         }
         //Calculate ListIu and listSa
-        
-        List<CoverageItem> mListIu = CalculateListIu(listSensor,listTarget);
-        
+
+        List<CoverageItem> mListIu = CalculateListIu(listSensor, listTarget);
+
         List<Integer> mListSa = findListSa(listSensor, mListIu);
         showViewTest(mListSa);
         List<List<Integer>> mListDs = Coverage_Optimizing_RecursiveHeuristic(mListSa, listTarget, mListIu);
-        
+
         //Only test
-        for (int i= 0; i< mListDs.size();i++) {
+        for (int i = 0; i < mListDs.size(); i++) {
             List<Integer> tempList = mListDs.get(i);
             showViewTest(tempList);
-            int a =0;
-            
+            int a = 0;
+
         }
         List<Integer> mListSrsd = findListSrsd(mListDs, listSensor);
-        
+
         //Vong lap lay tung Ci
-        
-        for (int i = 0 ; i < mListDs.size(); i++) {
+        for (int i = 0; i < mListDs.size(); i++) {
             //Get list Ci
             List<Integer> mListCi = mListDs.get(i);
-            List<List<Integer>> mListPath = CalculatePathConnection(mListCi, mListSrsd);
+            //test
+            showViewTest(mListCi);
             
+            while (CheckListCoverAllTarget(mListCi, mListIu, listTarget)) {
+                
+                List<List<Integer>> mListPath = CalculatePathConnection(mListCi, mListSrsd);
+                if (mListPath.isEmpty()) {
+                    break;
+                }
+
+                //Calculate energy for path
+                //reset Energy usse
+                List<Integer> tempListSensor = FindListSensorInAllPath(mListPath);
+                for (int k = 0; k < N; k++) {
+                    ListEnergyUse[i] = 0;
+                }
+                //Calculate eneruse for 
+                for (int j = 0; j < tempListSensor.size(); j++) {
+                    int idSen = tempListSensor.get(j);
+                    ListEnergyUse[idSen] = CaculateEnergyConsume(mListPath, idSen);
+                }
+                // Find minListEnerUse
+                boolean isEnoughtEnergy = checkEnoughEnergy(tempListSensor, ListEnergyUse);
+
+                if (isEnoughtEnergy) {
+                    for (int j = 0; j < tempListSensor.size(); j++) {
+                        int idSensor = tempListSensor.get(j);
+                        ListEnergySensor[idSensor] -= (SensorUtility.mUnitTime * ListEnergyUse[idSensor]);
+                    }
+                    //Add to List result
+                    mListAllResultPath.add(mListPath);
+                    mListTimeLife.add((double) SensorUtility.mUnitTime);
+
+                }
+
+                //Update List Srd and list Ci
+                List<Integer> ListSensorLoss = new ArrayList<>();
+                List<Integer> ListPLoss;
+                for (int j = 0; j < tempListSensor.size(); j++) {
+                    int idSensor = tempListSensor.get(j);
+                    float temp = ListEnergySensor[idSensor] - (SensorUtility.mUnitTime * ListEnergyUse[idSensor]);
+                    if (temp < 0) {
+                        boolean exitInSrd = removeNodeFromList(mListSrsd, idSensor);
+                        boolean exitInCi = removeNodeFromList(mListCi, idSensor);
+                        if (exitInCi) {
+                            ListSensorLoss.add(idSensor);
+                        }
+                    }
+                }
+
+                //Update to ListCi if have loss
+                if (!ListSensorLoss.isEmpty()) {
+                    ListPLoss = findPloss(mListCi, mListIu, listTarget);
+                    List<Integer> listW = findCOR_Heuristic_Utilized_CovRecovery(mListSrsd, mListIu, ListPLoss, ListSensorLoss);
+                    
+                    //Add listW to Ci
+                    for (int j =0; j < listW.size(); j ++) {
+                        int idS = listW.get(j);
+                        if (!CheckExitInList(mListCi ,idS)) {
+                            mListCi.add(idS);
+                        }
+                    }
+                }
+            }
             
+            //Update List Srd with node remain of Ci
+            for (int k = 0; k < mListCi.size(); k++) {
+                int idCi = mListCi.get(k);
+                if (!CheckExitInList(mListSrsd,idCi)) {
+                    mListSrsd.add(idCi);
+                }
+            }
             
-            
-            
-            
-            
-            
+
+        }
+
+    }
+    
+    boolean CheckExitInList(List<Integer> ListCi , int sensor) {
+        for (int i =0; i < ListCi.size(); i++) {
+            if (sensor == ListCi.get(i)) return true;
+        }
+        return false;
+    }
+    
+    List<Integer> findPloss(List<Integer> ListCi ,List<CoverageItem> listIu, List<Integer> listTarget) {
+        List<Integer> listPloss = new ArrayList<>();
+
+        boolean Check[] = new boolean[T];
+        for (int i=0; i < T;i++) {
+            Check[i] = false;
+        }
+        //Check ListCi
+        for (int i =0; i< ListCi.size(); i++) {
+            int sensorId = ListCi.get(i);
+            CoverageItem coverageItem = listIu.get(sensorId);
+            List<Integer> listId = coverageItem.getListCoverage();
+            for (int j =0 ; j<listId.size();j++ ) {
+                int id = listId.get(j);
+                Check[id] = true;
+            }
         }
         
+        for (int i =0; i< listTarget.size(); i++) {
+            int idtarget = listTarget.get(i);
+            if (!Check[idtarget]) listPloss.add(idtarget);
+        }
+        
+        return listPloss;
+    }
+    
+    boolean checkEnoughEnergy(List<Integer> tempListSensor , float ListEnergyUse[]) {
+        for (int i =0; i < tempListSensor.size(); i++) {
+            int idSen = tempListSensor.get(i);
+            float temp = ListEnergySensor[idSen] - (SensorUtility.mUnitTime * ListEnergyUse[idSen]);
+            if (temp < 0) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    boolean removeNodeFromList(List<Integer> listS, int sensor) {
+        for (int i = 0; i < listS.size(); i++) {
+            if (listS.get(i) == sensor) {
+                listS.remove(i);
+                return true;
+            }
+            
+        }
+        return false;
+    }
+    
+    float TranferEnergy(float distance) {
+        float result = Et;
+        if (distance <Do) {
+            result+= (Efs*distance*distance);
+        } else {
+            result+= (Emp*distance*distance*distance*distance);
+        }
+        return result;
+    }
+    float CaculateEnergyConsume(List<List<Integer>> ListPath,int sensor) {
+        List<Integer> path;
+        float result =0;
+        for (int i =0 ; i < ListPath.size(); i++) {
+            path = ListPath.get(i);
+            for (int j =0; j<path.size();j++) {
+                if (j == 0 && sensor == path.get(j)) {
+                    //TH sensor la sensing node
+                    result += bit*Es;
+                    if (path.size()== 1) {
+                        result += bit*TranferEnergy(MinDistanceSink[sensor]);
+                    } else {
+                        result += bit*TranferEnergy(Distance[sensor][path.get(j+1)]);
+                    }
+                    
+                    break;
+                } else if (sensor == path.get(j)) {
+                    //TH sensor laf relay node
+                    result += bit*Er;
+                    if (j == path.size()-1) {
+                        result += bit*TranferEnergy(MinDistanceSink[sensor]);
+                    } else {
+                        result += bit*TranferEnergy(Distance[sensor][path.get(j+1)]);
+                    }
+                    break;
+                }
+            }
+            
+        }
+        return result;
+    }
+    
+    
+    List<Integer> FindListSensorInAllPath(List<List<Integer>> mListPath) {
+        List<Integer> listSenSor = new ArrayList<>();
+        boolean checkExit[];
+        checkExit = new boolean[N];
+        for (int i = 0; i < mListPath.size(); i++) {
+            List<Integer> path = mListPath.get(i);
+            for (int j =0; j < path.size();j++) {
+
+                checkExit[path.get(j)] = true;
+            } 
+        }
+        
+        listSenSor.clear();
+        for (int i =0; i < checkExit.length; i++) {
+            if (checkExit[i]) {
+                listSenSor.add(i);
+            }
+        }
+        return listSenSor;
     }
     
     public List<List<Integer>> CalculatePathConnection(List<Integer> mListCi,List<Integer> mListSrsd) {
@@ -213,7 +405,7 @@ public class Algorithm3_v2 {
             List<LoadBalanceItem> mListNeighborSensing = FindLoadBalanceSensing(senSing,mListSrsd);
             LoadBalanceItem item = getRanDomItem(mListNeighborSensing);
             
-            if(item == null) return ListPath;
+            if(item == null) break;
             int nextNode = item.getIdSr();
             float loadNextNode = 1;
             path.add(nextNode);
@@ -233,9 +425,11 @@ public class Algorithm3_v2 {
                 List<LoadBalanceItem> mListNeighborRelaying = FindLoadBalanceRelaying(nextNode,loadNextNode,mListSrsd, listRetrict);
                 
                 LoadBalanceItem item2 = getRanDomItem(mListNeighborRelaying);
+                if(item2 == null) break;
                 nextNode = item2.getIdSr();
                 loadNextNode /= mListNeighborRelaying.size();
                 path.add(nextNode);
+                showViewTest(path);
                 if (MinDistanceSink[nextNode] <= Rc) {
                     ListPath.add(path);
                     break;
@@ -243,6 +437,10 @@ public class Algorithm3_v2 {
                 counHop++;
             }
             
+        }
+        
+        if (ListPath.size() != mListCi.size()) {
+            ListPath.clear();
         }
         
         return ListPath;
@@ -266,7 +464,7 @@ public class Algorithm3_v2 {
         for (int i =0; i < listSnei.size(); i++ ) {
             HeuristicItem WeightItem = new HeuristicItem();
             WeightItem.setId(listSnei.get(i));
-            double temp = ListEnergySensor[listSnei.get(i)]/((loadRelayNode/sizeNei) + 1);
+            double temp = ListEnergySensor[listSnei.get(i)]/(1000000000*((loadRelayNode/sizeNei) + 1));
             float result = (float) Math.pow(temp, 4);
             WeightItem.setValue(result);
             ListWeigh.add(WeightItem);
@@ -278,12 +476,14 @@ public class Algorithm3_v2 {
         List<Integer> ListSnei = new ArrayList<>();
         List<LoadBalanceItem> listBalanceLoad = new ArrayList<>();
         //Find neghbour
-        for (int i =0; i < ListSnei.size(); i++) {
+        for (int i =0; i < mListSrsd.size(); i++) {
             if (Distance[relayNode][mListSrsd.get(i)] <= Rc) {
+                int count =0;
                 for (int j =0 ; j < mListRetrict.size(); j++) {
                     if (mListSrsd.get(i) != mListRetrict.get(j))
-                       ListSnei.add(mListSrsd.get(i));
+                       count ++;
                 }
+                if (count == mListRetrict.size()) ListSnei.add(mListSrsd.get(i));
             }
         }
         if (ListSnei.isEmpty()) return listBalanceLoad;
@@ -324,7 +524,7 @@ public class Algorithm3_v2 {
         List<Integer> ListSnei = new ArrayList<>();
         List<LoadBalanceItem> listLoad = new ArrayList<>();
         //Find neghbour
-        for (int i =0; i < ListSnei.size(); i++) {
+        for (int i =0; i < mListSrsd.size(); i++) {
             if (Distance[sensing][mListSrsd.get(i)] <= Rc) {
                 ListSnei.add(mListSrsd.get(i));
             }
@@ -334,12 +534,12 @@ public class Algorithm3_v2 {
         float Total = 0;
         for (int i = 0; i< ListSnei.size();i++) {
             int idSr = ListSnei.get(i);
-            Total += ((ListEnergySensor[idSr]/Distance[sensing][idSr]) *(ListEnergySensor[idSr]/Distance[sensing][idSr]));
+            Total += ((ListEnergySensor[idSr]/(1000000000*Distance[sensing][idSr])) *(ListEnergySensor[idSr]/(1000000000*Distance[sensing][idSr])));
         }
         
         for (int i = 0; i< ListSnei.size();i++) {
             int idSr = ListSnei.get(i);
-            float weigh = ((ListEnergySensor[idSr]/Distance[sensing][idSr]) *(ListEnergySensor[idSr]/Distance[sensing][idSr]));
+            float weigh = ((ListEnergySensor[idSr]/(1000000000*Distance[sensing][idSr])) *(ListEnergySensor[idSr]/(1000000000*Distance[sensing][idSr])));
             LoadBalanceItem loadBalanceItem = new LoadBalanceItem(sensing, idSr);
             loadBalanceItem.setValue(weigh/Total);
             listLoad.add(loadBalanceItem);
@@ -426,6 +626,16 @@ public class Algorithm3_v2 {
             }
 
         }
+        //remove LisTW in listSrd
+        if (CheckListCoverAllTarget(listW, listIu, listPloss)) {
+            for (int i = 0; i < listW.size(); i++) {
+                int id = listW.get(i);
+                boolean remove = removeNodeFromList(listSrsd, id);
+            }
+        } else {
+            listW.clear();
+        }
+        
         return listW;
     }
     
@@ -650,16 +860,22 @@ public class Algorithm3_v2 {
     }
     
     public void CoppyToListSensor() {
-//        mListofListSensor.clear();
-//        for (int i =0;i<NDEECCcnt.size();i++ ) {
-//            List<Integer> temp = NDEECCcnt.get(i);
-//            List<NodeItem> tempNodeList = new ArrayList<>();
-//            for (int j =0;j<temp.size();j++) {
-//               tempNodeList.add(mListSensorNodes.get(temp.get(j)));
-//            }
-//            mListofListSensor.add(tempNodeList);
-//        }
-//        mListofListTime = listTime;
+        mListofListCMLCT.clear();
+        for (int i =0;i<mListAllResultPath.size();i++ ) {
+            List<List<Integer>> temp = mListAllResultPath.get(i);
+            mListofListCMLCT.add(temp);
+        }
+        mListofListTime = mListTimeLife;
+        
+        //Show log Energy ofsensor
+        System.out.println();
+        System.out.println("Nang luong tieu thu cua sensor");
+        for (int i =0; i < ListEnergySensor.length; i++) {
+            float energy = SensorUtility.mEoValue - ListEnergySensor[i];
+            System.out.print(""+energy/1000000000+" ");        
+            
+        }
+        System.out.println();
     }
     
     public void showViewTest(List<Integer> listSensor) {                                            

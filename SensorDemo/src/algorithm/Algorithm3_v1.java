@@ -24,7 +24,8 @@ import model.NodeItem;
  * @author Hieu
  */
 public class Algorithm3_v1 {
-  public float Distance[][];// Matrix distance between two nodes
+    public float Distance[][];// Matrix distance between two nodes
+    public float MinDistanceSink[];// Matrix distance between two nodes
     public float Target[][];// Target nodes
     public float Point[][];// Total nodes
     public float Sink[][];// Target covering sensors
@@ -44,6 +45,7 @@ public class Algorithm3_v1 {
     List<Integer> ListNcr ; // Tap list relaying node
     float ListEnergySensor[];
     int MAX_INTERGER = 100000000;
+    float MAX_FLOAT = 10000000000000.0f;
     float TimeStamp ;
     
     float Es, Et,Er,Efs,Emp,Do, bit;
@@ -141,6 +143,19 @@ public class Algorithm3_v1 {
                     Distance[i][j] = Distance[j][i] = calculateDistance(Point[i][0], Point[i][1], Point[j][0], Point[j][1]);
                 }
             }
+        }
+         
+         //Caculate Mindistance form sensor to Sink
+        MinDistanceSink = new float[N];
+        float min;
+        for (int i =0; i<N ;i++) {
+            min = MAX_FLOAT;
+            for (int j =0; j < K; j++) {
+                if (Distance[i][N+T+j] < min) {
+                    min = Distance[i][N+T+j];
+                }
+            }
+            MinDistanceSink[i] = min;
         }
 
     }
@@ -254,8 +269,8 @@ public class Algorithm3_v1 {
 
             // Vong lap tim Connect Node
             boolean isConectivity = false;
-            List<Integer> listNearSink = new ArrayList<>();
-            listNearSink.clear();
+//            List<Integer> listNearSink = new ArrayList<>();
+//            listNearSink.clear();
 
             
             boolean isFirstConectivity = false;
@@ -310,11 +325,11 @@ public class Algorithm3_v1 {
                         temp_hopper.add(selected_sensor);
                         if (!CheckNodeExit(EECCcnt, selected_sensor)) {
                             EECCcnt.add(selected_sensor);
-                            if (numberOfIterations == 0) {
-                                listNearSink.add(selected_sensor);
-                            }
+//                            if (numberOfIterations == 0) {
+//                                listNearSink.add(selected_sensor);
+//                            }
                             //Add check
-                            if (CheckConectivity(listStart, IsCover, EECCcnt, listNearSink)) {
+                            if (CheckConectivity(listStart, IsCover, EECCcnt)) {
                                 //showViewTest(listNearSink);
                                 isConectivity = true;
                                 break;
@@ -358,18 +373,18 @@ public class Algorithm3_v1 {
                 }
                 //Add ListNearsink
                 if (isFirstConectivity) {
-                    for (int i = 0; i< listStart.size() ;i++) {
-                        for (int j = 0 ;j < listSink.size();j++) {
-                            if (Distance[listStart.get(i)][N+T+listSink.get(j)] <= Rc) {
-                                listNearSink.add(listStart.get(i));
-                                break;
-                            }
-                        }
-                        
-                    }
+//                    for (int i = 0; i< listStart.size() ;i++) {
+//                        for (int j = 0 ;j < listSink.size();j++) {
+//                            if (Distance[listStart.get(i)][N+T+listSink.get(j)] <= Rc) {
+//                                listNearSink.add(listStart.get(i));
+//                                break;
+//                            }
+//                        }
+//                        
+//                    }
                 }
                 
-                float L = LifeCycle(EECCcnt,ListEnergySensor,listEcri,listStart,listNearSink,listTarget,listSink);
+                float L = LifeCycle(EECCcnt,ListEnergySensor,listEcri,listStart,listTarget,listSink);
                 
                 mTimeLife+= L*TimeStamp;
                 listTime.add((double)L*TimeStamp);
@@ -419,10 +434,10 @@ public class Algorithm3_v1 {
     }
     
     // Check energy Sensor
-    public float LifeCycle (List<Integer> listEECCcnt, float listEnergySensor[], float listEcr[],List<Integer> listStart, List<Integer> listEnd,List<Integer> listTarget, List<Integer> listSink) {
+    public float LifeCycle (List<Integer> listEECCcnt, float listEnergySensor[], float listEcr[],List<Integer> listStart,List<Integer> listTarget, List<Integer> listSink) {
         //Tinh toan duong di ngan nhat toi sink
         List<List<Integer>> ListPathSensor = new ArrayList<>();
-        Calculate_Path_ToSink(listStart,listEnd,listTarget,listEECCcnt,ListPathSensor);
+        Calculate_Path_ToSink(listStart,listTarget,listEECCcnt,ListPathSensor);
         
         //Tinh toan nang luong tieu thu qua cac sensor;
 
@@ -445,10 +460,10 @@ public class Algorithm3_v1 {
 
     }
     // Tinh toan nang luong tieu hao
-    public void Calculate_Path_ToSink(List<Integer> listStart,List<Integer> listEnd, List<Integer> listTarget, List<Integer> listEECCcnt, List<List<Integer>> listPathResult) {
+    public void Calculate_Path_ToSink(List<Integer> listStart, List<Integer> listTarget, List<Integer> listEECCcnt, List<List<Integer>> listPathResult) {
        //Create matrix Distance from ListEECCcnt
-       int N = listEECCcnt.size();
-       int Matrix[][] = new int[N][N];
+       int N1 = listEECCcnt.size();
+       int Matrix[][] = new int[N1+1][N1+1];
        for (int i = 0; i<listEECCcnt.size();i++) {
            for (int j =0; j <= i;j++) {
                if (i == j) {
@@ -460,10 +475,19 @@ public class Algorithm3_v1 {
                }
            }
        }
+       //Khoang cacah den Sink
+       Matrix[N1][N1] = 0;
+       for (int i = 0; i<listEECCcnt.size();i++) {
+           if (MinDistanceSink[listEECCcnt.get(i)] <= Rc) {
+               Matrix[i][N1] = Matrix[N1][i] = 1;
+           } else {
+               Matrix[i][N1] = Matrix[N1][i] = 0;
+           }
+       }
        
        //Using DijtraAlgorithm
-        int back[] = new int[N]; //luu dinh cha
-        int weight[] = new int[N];//luu trong so
+        int back[] = new int[N1+1]; //luu dinh cha
+        int weight[] = new int[N1+1];//luu trong so
         List<Integer> path;
         listPathResult.clear();
         int time[] = new int[listStart.size()];
@@ -484,26 +508,23 @@ public class Algorithm3_v1 {
             
         }
         
-        for (int i= 0;i < listStart.size();i++) {
+        for (int i = 0; i < listStart.size(); i++) {
             //Check TH start point is not cover
             int result;
-            int minWeith = MaxHopper+1;
+            int minWeith = MaxHopper + 1;
             path = new ArrayList<>();
-            for (int j = 0; j < listEnd.size(); j++) {
-                int posEnd = findPostion(listEECCcnt, listEnd.get(j));
+            int posEnd = N1;
 
-                result = DijkstraAlgorithm(i, posEnd, Matrix, N, back, weight);
-                if (result != -1 && minWeith > weight[posEnd]) { // Ton tai duong di
-                    minWeith = weight[posEnd];
-                    path.clear();
-                    FindListPath(i,posEnd,back,listEECCcnt,path);
-                }
-
+            result = DijkstraAlgorithm(i, posEnd, Matrix, N1+1, back, weight);
+            if (result != -1 && minWeith > weight[posEnd]) { // Ton tai duong di
+                minWeith = weight[posEnd];
+                path.clear();
+                FindListPath(i, posEnd, back, listEECCcnt, path,N1);
             }
-            
+
             //Add to list
-            for (int j =0 ;j <time[i];j++) {
-               listPathResult.add(path);
+            for (int j = 0; j < time[i]; j++) {
+                listPathResult.add(path);
             }
             int a = 4;
         }
@@ -558,14 +579,14 @@ public class Algorithm3_v1 {
         return result;
     }
     
-    void FindListPath(int start, int end ,int back[],List<Integer> listEECCcnt, List<Integer> listPath) {
+    void FindListPath(int start, int end ,int back[],List<Integer> listEECCcnt, List<Integer> listPath,int N1) {
         
         if (start == end) {
-            listPath.add(listEECCcnt.get(end));
-            System.out.print(end+ "-");
+            if (end != N1) listPath.add(listEECCcnt.get(end));
+            System.out.print("sink"+ "-");
         } else {
-            FindListPath(start, back[end], back,listEECCcnt,listPath);
-            listPath.add(listEECCcnt.get(end));
+            FindListPath(start, back[end], back,listEECCcnt,listPath,N1);
+            if (end != N1) listPath.add(listEECCcnt.get(end));
             System.out.print(end+ "-");
         }
     }
@@ -589,10 +610,10 @@ public class Algorithm3_v1 {
     }
     
     // Check ham xem 
-    public boolean CheckConectivity(List<Integer> listStart, boolean IsCover[], List<Integer> listEECCcnt, List<Integer> listEnd) {
+    public boolean CheckConectivity(List<Integer> listStart, boolean IsCover[], List<Integer> listEECCcnt) {
         //Create matrix Distance from ListEECCcnt
-       int N = listEECCcnt.size();
-       int Matrix[][] = new int[N][N];
+       int N1 = listEECCcnt.size();
+       int Matrix[][] = new int[N1+1][N1+1];// Them 1 bien lu khoang cach nhỏ nhat đen bien 
        for (int i = 0; i<listEECCcnt.size();i++) {
            for (int j =0; j <= i;j++) {
                if (i == j) {
@@ -604,23 +625,30 @@ public class Algorithm3_v1 {
                }
            }
        }
+       //Khoang cacah den Sink
+       Matrix[N1][N1] = 0;
+       for (int i = 0; i<listEECCcnt.size();i++) {
+           if (MinDistanceSink[listEECCcnt.get(i)] <= Rc) {
+               Matrix[i][N1] = Matrix[N1][i] = 1;
+           } else {
+               Matrix[i][N1] = Matrix[N1][i] = 0;
+           }
+       }
         
         
         //Using DijtraAlgorithm
-        for (int i= 0;i < listStart.size();i++) {
+        for (int i = 0; i < listStart.size(); i++) {
             //Check TH start point is not cover
             if (!IsCover[i]) {
-                for (int j = 0; j < listEnd.size();j++) {
-                    int posEnd = findPostion(listEECCcnt, listEnd.get(j));
-                    int back[] = new int[N]; //luu dinh cha
-                    int weight[] = new int[N];//luu trong so
-                    int result = DijkstraAlgorithm(i,posEnd,Matrix,N,back,weight);
-                    if (result != -1) { // Ton tai duong di
-                        IsCover[i] = true;
-                        break;
-                    }
+                int posEnd = N1;
+                int back[] = new int[N1 + 1]; //luu dinh cha
+                int weight[] = new int[N1 + 1];//luu trong so
+                int result = DijkstraAlgorithm(i, posEnd, Matrix, N1 + 1, back, weight);
+                if (result != -1) { // Ton tai duong di
+                    IsCover[i] = true;
+                    break;
                 }
-                
+
             }
         }
         

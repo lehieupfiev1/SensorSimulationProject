@@ -41,6 +41,7 @@ public final class SensorUtility {
     public static List<List<PathItem>> mListofListPath = new ArrayList<>();
     public static List<List<Double>> mListofListPathTime = new ArrayList<>();
     public static List<Double> mListofListTime = new ArrayList<>();
+    public static List<List<List<Integer>>> mListofListCMLCT = new ArrayList<>();
     public static List<Color> mListColor = new ArrayList<>();
     public static List<Integer> mPathSensor;
     public static int MaxTargetNodes = 30000;
@@ -68,7 +69,7 @@ public final class SensorUtility {
     public static float mGamma1 = 0.3f;
     public static float mGamma2 = 0.3f;
     public static int mKmax = 7;
-    public static int mUnitTime = 7;
+    public static float mUnitTime = 60000000;
     
     public static void writeFile(String filename) throws IOException {
         File file = new File(filename);
