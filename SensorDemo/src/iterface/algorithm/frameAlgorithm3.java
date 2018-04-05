@@ -55,7 +55,7 @@ public class frameAlgorithm3 extends javax.swing.JFrame {
         initOtherComponent();
         displayInput();
         clearData();
-        this.setTitle("CompareAlgorithm 3");
+        this.setTitle("Compare EECC Algorithm");
     }
 
     

@@ -76,7 +76,7 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
         initOtherComponent();
         displayInput();
         clearData();
-        this.setTitle("MyAlgorithm 3");
+        this.setTitle("NDST Algorithm");
     }
 
     private void initOtherComponent() {

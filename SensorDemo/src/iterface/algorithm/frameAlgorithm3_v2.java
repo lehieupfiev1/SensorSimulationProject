@@ -53,7 +53,7 @@ public class frameAlgorithm3_v2 extends javax.swing.JFrame {
         initOtherComponent();
         displayInput();
         clearData();
-        this.setTitle("CompareAlgorithm 3");
+        this.setTitle("Compare MCLCT Algorithm");
     }
 
     private void initOtherComponent() {

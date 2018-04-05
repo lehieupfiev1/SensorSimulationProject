@@ -427,7 +427,7 @@ public class frameMain extends javax.swing.JFrame {
         });
         AlgorithmMenu.add(Algorithm2);
 
-        MyAlgorithm3MenuItem.setText("MyAlgorithm3");
+        MyAlgorithm3MenuItem.setText("NDST Algorithm");
         MyAlgorithm3MenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 MyAlgorithm3MenuItemActionPerformed(evt);
@@ -435,7 +435,7 @@ public class frameMain extends javax.swing.JFrame {
         });
         AlgorithmMenu.add(MyAlgorithm3MenuItem);
 
-        Algoritm3MenuItem.setText("Algorithm3");
+        Algoritm3MenuItem.setText("EECC Algorithm");
         Algoritm3MenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Algoritm3MenuItemActionPerformed(evt);
@@ -443,7 +443,7 @@ public class frameMain extends javax.swing.JFrame {
         });
         AlgorithmMenu.add(Algoritm3MenuItem);
 
-        Algorithm3_v2MenuItem.setText("Algorithm3_v2");
+        Algorithm3_v2MenuItem.setText("MCLCT Algorithm");
         Algorithm3_v2MenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Algorithm3_v2MenuItemActionPerformed(evt);

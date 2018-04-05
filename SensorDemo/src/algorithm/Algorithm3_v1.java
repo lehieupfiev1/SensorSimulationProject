@@ -285,7 +285,7 @@ public class Algorithm3_v1 {
                 for (int i =0; i< ListNcs.size();i++) {
                     temp_hopper.add(ListNcs.get(i));
                 }
-                //showViewTest(CurrentHopper);
+                showViewTest(CurrentHopper);
                 
                 //Tao list Check Covering LisNCS
                 int numberOfIterations = 0;
@@ -322,8 +322,9 @@ public class Algorithm3_v1 {
                     //Lay tung phan tu cua Connect Heuristic 
                     while (!Connect_Heuristic.isEmpty()) {
                         int selected_sensor = Connect_Heuristic.get(0).getId();
-                        temp_hopper.add(selected_sensor);
+                        
                         if (!CheckNodeExit(EECCcnt, selected_sensor)) {
+                            temp_hopper.add(selected_sensor);
                             EECCcnt.add(selected_sensor);
 //                            if (numberOfIterations == 0) {
 //                                listNearSink.add(selected_sensor);
@@ -351,7 +352,7 @@ public class Algorithm3_v1 {
                         } else {
                             // Khoi tao next Hopper
                             numberOfIterations++;
-                            List<Integer> next_hopper = Hop_Finder(ListNcr, previous_hopper);
+                            List<Integer> next_hopper = Hop_Finder(ListNcr, temp_hopper);
 
                             CurrentHopper = next_hopper;
                             //showViewTest(CurrentHopper);
@@ -520,6 +521,7 @@ public class Algorithm3_v1 {
                 minWeith = weight[posEnd];
                 path.clear();
                 FindListPath(i, posEnd, back, listEECCcnt, path,N1);
+                showViewTest(path);
             }
 
             //Add to list
