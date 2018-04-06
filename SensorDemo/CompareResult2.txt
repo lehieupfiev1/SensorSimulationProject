@@ -12,3 +12,7 @@ Test case : 8
 Sensor=1059  Target=100  Sink=54  Rs=40.0  Rc=80.0  MaxHop=3
 Time Run = 60310.0 , Time Life = 1.0667410392114258E8
 
+Test case : 14
+Sensor=4030  Target=441  Sink=64  Rs=30.0  Rc=60.0  MaxHop=4
+Time Run = 524127.0 , Time Life = 0.0
+

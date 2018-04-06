@@ -293,7 +293,7 @@ public class Algorithm3_v1 {
                 for (int j = 0; j < listStart.size();j++) IsCover[j] = false;
                 
                 
-                while (!isConectivity && !ListNcr.isEmpty() && !CurrentHopper.isEmpty() && numberOfIterations < MaxHopper) {
+                while (!isConectivity && !CurrentHopper.isEmpty() && numberOfIterations < MaxHopper) {
                     previous_hopper.clear();
                     for (int i =0; i< temp_hopper.size();i++) {
                         previous_hopper.add(temp_hopper.get(i));
@@ -728,7 +728,7 @@ public class Algorithm3_v1 {
         
         
         //In ket qua
-        if (connect != -1 && weight[end] <= MaxHopper-1) {
+        if (connect != -1 && weight[end] <= MaxHopper) {
             System.out.println("Weight :" + weight[end]);
             printPath(st, end, back);
             return weight[end]+1;

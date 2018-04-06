@@ -2,3 +2,15 @@ Test case : 6
 Sensor=26  Target=3  Sink=3  Rs=20.0  Rc=40.0  MaxHop=3 TimeUnit =6.0E7
 Time Run = 16.0 , Time Life = 4.7311023E7
 
+Test case : 14
+Sensor=4030  Target=441  Sink=64  Rs=30.0  Rc=60.0  MaxHop=4 TimeUnit =6.0E7
+Time Run = 40791.0 , Time Life = 0.0
+
+Test case : 14
+Sensor=4030  Target=441  Sink=64  Rs=30.0  Rc=60.0  MaxHop=4 TimeUnit =6000000.0
+Time Run = 21339.0 , Time Life = 0.0
+
+Test case : 14
+Sensor=4030  Target=441  Sink=64  Rs=30.0  Rc=60.0  MaxHop=4 TimeUnit =600000.0
+Time Run = 194017.0 , Time Life = 4800000.0
+
