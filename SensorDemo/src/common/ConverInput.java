@@ -21,7 +21,7 @@ import model.NodeItem;
  * @author Hieu
  */
 public class ConverInput {
-    static int numberColum =1001; // Kich thuoc mang (theo cot)
+    static int numberColumn =1001; // Kich thuoc mang (theo cot)
     static int numberRow = 1001;// Kich thuoc mang (theo cot)
     static float mRsValue = 20.0f;//(bán kính sensing)	
     static float mRtValue = 40.0f;
@@ -109,7 +109,7 @@ public class ConverInput {
         File file = new File(filename);
         Scanner scanner = new Scanner(file);
         //Read width , height, RsValue, mRtValue
-//        numberColum = scanner.nextInt();
+//        numberColumn = scanner.nextInt();
 //        numberRow = scanner.nextInt();
 //        mRsValue = scanner.nextFloat();
 //        mRtValue = scanner.nextFloat();
@@ -150,7 +150,7 @@ public class ConverInput {
 
         outputWriter = new BufferedWriter(new FileWriter(file, false));
         //Write Width and height , Rs, Rt
-        outputWriter.write(numberColum + " "+ numberRow+" "+mRsValue+ " "+mRtValue);
+        outputWriter.write(numberColumn + " "+ numberRow+" "+mRsValue+ " "+mRtValue);
         outputWriter.newLine();
         //Write parameter of energy
         outputWriter.write(mRcValue + " "+ mEsValue+" "+mEtValue+ " "+mErValue+ " "+mEfsValue+" "+mEmpValue+" "+mBitValue+ " "+mMaxHopper);

@@ -31,6 +31,15 @@ public class NodeItem {
         this.group = group;
         this.status = status;
     }
+    
+    public NodeItem(NodeItem object) {
+        this.id = object.id;
+        this.x = object.x;
+        this.y = object.y;
+        this.type = object.type;
+        this.group = object.group;
+        this.status = object.status;
+    }
 
     public NodeItem(int x, int y, int type, int group, int status) {
         this.id = 0;
@@ -103,6 +112,10 @@ public class NodeItem {
 
     public void setId(int id) {
         this.id = id;
+    }
+    
+    public FloatPointItem getCoordinate() {
+        return new FloatPointItem(x, y);
     }
 
     @Override

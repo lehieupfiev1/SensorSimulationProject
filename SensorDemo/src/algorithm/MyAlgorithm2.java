@@ -149,7 +149,7 @@ public class MyAlgorithm2 {
     
     public void runAlgorithm() {
         FloatPointItem UpLeftCornerPoint = new FloatPointItem(0,0);
-        FloatPointItem DownRightCornerPoint = new FloatPointItem(SensorUtility.numberRow-1,SensorUtility.numberColum-1);
+        FloatPointItem DownRightCornerPoint = new FloatPointItem(SensorUtility.numberOfColumn-1,SensorUtility.numberOfRow-1);
         
         List<List<List<Integer>>> ListOfListX = new ArrayList<List<List<Integer>>>();
         List<List<Double>> ListOfListT = new ArrayList<>();
@@ -305,23 +305,13 @@ public class MyAlgorithm2 {
         return resultListSensor;        
     }
     
-public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> listSenSor, double valueT) {
-    List<Double> time = new ArrayList<>();
-    int m = listX.size();
-    int n = listSenSor.size();
-    //Test
-//    if (m == 1) {
-//        time.add(valueT);
-//    } else if (m == 2) {
-//        time.add(valueT);
-//        time.add(valueT);
-//    } else {
-//        time.add(valueT);
-//        time.add(valueT);
-//        time.add(valueT);
-//    }
+    public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> listSenSor, double valueT) {
+        List<Double> time = new ArrayList<>();
+        int m = listX.size();
+        int n = listSenSor.size();
+        
         int[][] a = new int[n][m];
-
+        
         //Check Input
         for (int i = 0; i < n; i++) {
             int sensor = listSenSor.get(i);
@@ -378,9 +368,9 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
                     System.out.println("time: " + cplex.getValue(T[i]));
                 }
                 System.out.println("value: " + cplex.getObjValue());
-    } else {
+            } else {
                 System.out.println("Problem not solved");
-    }
+            }
 
             cplex.end();
 

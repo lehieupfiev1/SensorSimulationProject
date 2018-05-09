@@ -43,4 +43,25 @@ public class FloatPointItem {
         this.y = y;
     }
     
+    public static boolean compare(FloatPointItem a, FloatPointItem b) {
+        if(a == null || b == null) {
+            return false;
+        }
+        return (new Float(a.getX())).equals(b.getX()) && (new Float(a.getY())).equals(b.getY());
+    }
+    
+    @Override
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (getClass() != other.getClass()) {
+            return false;
+        }
+        FloatPointItem otherPoint = (FloatPointItem)other;
+        return (new Float(this.x)).equals(otherPoint.getX()) && (new Float(this.y)).equals(otherPoint.getY());
+    }    
 }

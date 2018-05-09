@@ -26,9 +26,9 @@ import model.PathItem;
 public final class SensorUtility {
     public static int MaxColum =10001;
     public static int MaxRow =10001;
-    public static int numberColum =200;
+    public static int numberOfRow =200;
     public static int marginPanel =20;
-    public static int numberRow = 200;
+    public static int numberOfColumn = 200;
     public static float mRsValue = 20.0f;
     public static float mRtValue = 4.0f;
     public static int mNumberRobotCycle = 0;
@@ -73,7 +73,7 @@ public final class SensorUtility {
 
         outputWriter = new BufferedWriter(new FileWriter(file, false));
         //Write Width and height , Rs, Rt
-        outputWriter.write(numberColum + " "+ numberRow+" "+mRsValue+ " "+mRtValue);
+        outputWriter.write(numberOfRow + " "+ numberOfColumn+" "+mRsValue+ " "+mRtValue);
         outputWriter.newLine();
         //Write parameter of energy
         outputWriter.write(mRcValue + " "+ mEsValue+" "+mEtValue+ " "+mErValue+ " "+mEfsValue+" "+mEmpValue+" "+mBitValue+ " "+mMaxHopper+ " "+Lvalue);
@@ -160,8 +160,8 @@ public final class SensorUtility {
         File file = new File(filename);
         Scanner scanner = new Scanner(file);
         //Read width , height, RsValue, mRtValue
-        numberColum = scanner.nextInt();
-        numberRow = scanner.nextInt();
+        numberOfRow = scanner.nextInt();
+        numberOfColumn = scanner.nextInt();
         mRsValue = scanner.nextFloat();
         mRtValue = scanner.nextFloat();
         
@@ -248,8 +248,8 @@ public final class SensorUtility {
     }
         
     public static void resetSetting() {
-        numberColum =200;
-        numberRow = 200;
+        numberOfRow =200;
+        numberOfColumn = 200;
         mRsValue = 2.0f;
         mRtValue = 3.0f;
         mNumberRobotCycle = 0;

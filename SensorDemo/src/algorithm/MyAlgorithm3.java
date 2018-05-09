@@ -865,7 +865,7 @@ public class MyAlgorithm3 {
 
 
         FloatPointItem UpLeftCornerPoint = new FloatPointItem(0,0);
-        FloatPointItem DownRightCornerPoint = new FloatPointItem(SensorUtility.numberRow,SensorUtility.numberColum);
+        FloatPointItem DownRightCornerPoint = new FloatPointItem(SensorUtility.numberOfColumn,SensorUtility.numberOfRow);
         
         List<List<List<PathItem>>> ListOfListY = new ArrayList<>();
         List<List<List<Double>>> ListOfListTi = new ArrayList<>();

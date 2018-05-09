@@ -63,9 +63,9 @@ public class TempAlgorithm {
         mTimeLife = SensorUtility.LifeTimeOfSensor;
         Num = mListSensorNodes.size();
         P1 = new FloatPointItem(0.0f, 0.0f);
-        P2 = new FloatPointItem(0.0f, SensorUtility.numberColum-1);
-        P3 = new FloatPointItem(SensorUtility.numberRow-1, 0.0f);
-        P4 = new FloatPointItem(SensorUtility.numberRow-1, SensorUtility.numberColum-1);
+        P2 = new FloatPointItem(0.0f, SensorUtility.numberOfRow-1);
+        P3 = new FloatPointItem(SensorUtility.numberOfColumn-1, 0.0f);
+        P4 = new FloatPointItem(SensorUtility.numberOfColumn-1, SensorUtility.numberOfRow-1);
         Distance = new float[Num + 1][Num + 1];
 
         for (int i = 0; i < Num; i++) {

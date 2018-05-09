@@ -313,8 +313,8 @@ public class frameAddRobot extends javax.swing.JFrame {
             for (int i = 0;i < randomNumberCycle;i++) {
                 mListTempRobotNodes.add(new ArrayList<>());
                 for (int j = 0; j < randomNumberRobotPerCycle; j++) {
-                    int x = random.nextInt(SensorUtility.numberRow);
-                    int y = random.nextInt(SensorUtility.numberColum);
+                    int x = random.nextInt(SensorUtility.numberOfColumn);
+                    int y = random.nextInt(SensorUtility.numberOfRow);
                     mListTempRobotNodes.get(i).add(new NodeItem(x, y, 1, i));
                 }
             }
@@ -394,9 +394,9 @@ public class frameAddRobot extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (manualPositionXTextField.getText().equals("") || manualPositionYTextField.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Please insert Valid Number Only");
-        } else if (positionX >= SensorUtility.numberRow || positionY >= SensorUtility.numberColum){
-            int maxX = SensorUtility.numberRow-1;
-            int maxY = SensorUtility.numberColum-1;
+        } else if (positionX >= SensorUtility.numberOfColumn || positionY >= SensorUtility.numberOfRow){
+            int maxX = SensorUtility.numberOfColumn-1;
+            int maxY = SensorUtility.numberOfRow-1;
             JOptionPane.showMessageDialog(null, "Maximum positon X =" + maxX +" and Maximum positon Y =" +maxY);
         } else {
             mListTempRobotNodes.get((int)CycleSpinner.getValue()).add(new NodeItem(positionX, positionY, 1, (int)CycleSpinner.getValue()));
