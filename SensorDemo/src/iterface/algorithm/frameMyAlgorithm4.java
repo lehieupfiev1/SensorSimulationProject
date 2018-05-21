@@ -8,29 +8,99 @@ package iterface.algorithm;
 import algorithm.MyAlgorithm4;
 import common.SensorUtility;
 import static common.SensorUtility.mListSensorNodes;
+import iterface.frameMain;
+import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.Map;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import model.NodeItem;
 
 /**
  *
  * @author dauto98
  */
 public class frameMyAlgorithm4 extends javax.swing.JFrame {
+    private int sensorsThreshold;
+    private DefaultListModel sensorSetsListModel;
+    private JList SensorSetsList;
+    private ArrayList<ArrayList<NodeItem>> listOfSensorSets;
+    private ArrayList<Double> onTimeList;
 
     /**
      * Creates new form frameMyAlgorithm4
      */
     public frameMyAlgorithm4() {
         initComponents();
+        sensorsThreshold = defaultSensorsThreshold();
+        ResultPanel.setMaximumSize(new Dimension(492, 211));
+        ResultPanel.setMinimumSize(new Dimension(492, 211));
+        ResultPanel.setPreferredSize(new Dimension(492, 211));
         NumberOfSensorLabel.setText("Number of Sensor : "+mListSensorNodes.size());
+        sensorsThresholdTextField.setText(String.valueOf(defaultSensorsThreshold()));
+    }
+    
+    private int defaultSensorsThreshold() {
+        float rectangleArea = SensorUtility.numberOfColumn*SensorUtility.numberOfRow;
+        float sensorArea = SensorUtility.mRsValue*SensorUtility.mRsValue*(float)Math.PI;
+        return (int)Math.ceil(rectangleArea/sensorArea);
     }
     
     void clearData(){
-//        TimeRunningLabel.setText("TimeRunning : 0 ");
-//        dataSensorModel.clear();
-//        dataListXModel.clear();
-//        ListSensor.clear();
-//        totalTimeOnLabel.setText("Total Time ON : 0");
-//        listXLabel.setText("ListX(time) : 0");
+        resultHeader.setText("Result");
+        LifeTimeResult.setText(String.valueOf(0));
+        RunTimeResult.setText(String.valueOf(0));
+        if (sensorSetsListModel != null) {
+            sensorSetsListModel.clear();
+        }
+        SensorUtility.mListSensorNodes.forEach(node -> node.setStatus(0));
+        frameMain.coordinatePanel.refresh();
+    }
+    
+    public ListSelectionListener sensorSetsSelectionListener = new ListSelectionListener() {
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            if (!sensorSetsListModel.isEmpty()) {
+                int selectionIndex = SensorSetsList.getSelectedIndex();
+                if (selectionIndex >= 0 && selectionIndex < sensorSetsListModel.size()) {
+                    ArrayList<NodeItem> selectedSet = listOfSensorSets.get(selectionIndex);
+                    SensorUtility.mListSensorNodes.forEach(node -> node.setStatus(0));
+                    frameMain.coordinatePanel.refresh();
+                    selectedSet.forEach(node -> {
+                       SensorUtility.mListSensorNodes.get(SensorUtility.mListSensorNodes.indexOf(node)).setStatus(1);
+                    });
+                    frameMain.coordinatePanel.refresh();
+                }
+            }
+        }
+    };
+    
+    private void displayResult(Map<String, Object> result, long timeRun) {
+        if (result == null) {
+            resultHeader.setText("Result: No sensors set can cover the the area");
+        } else {
+            onTimeList = (ArrayList<Double>)result.get("onTime");
+            listOfSensorSets = (ArrayList<ArrayList<NodeItem>>)result.get("sensorSets");
+            
+            LifeTimeResult.setText(String.valueOf(onTimeList.stream().reduce(0d, (x, y) -> x+y)));
+            RunTimeResult.setText(String.format("%.2f", ((float)timeRun/1000)));
+            
+            // create display list
+            sensorSetsListModel = new DefaultListModel();
+            for (int i = 0, length = listOfSensorSets.size(); i < length; i++) {
+                sensorSetsListModel.addElement("Set " + (i+1) + ", runtime: " + onTimeList.get(i));
+            }
+            
+            SensorSetsList = new JList(sensorSetsListModel);
+            
+            SensorSetsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            ListSensorPane.setViewportView(SensorSetsList);
+            SensorSetsList.addListSelectionListener(sensorSetsSelectionListener);
+        }
     }
 
     /**
@@ -43,28 +113,25 @@ public class frameMyAlgorithm4 extends javax.swing.JFrame {
     private void initComponents() {
 
         NumberOfSensorLabel = new javax.swing.JLabel();
-        LValueText = new javax.swing.JLabel();
         LifeTimeSensorText = new javax.swing.JLabel();
-        LValueTextField = new javax.swing.JTextField();
         LifeTimeOfSensorTextField = new javax.swing.JTextField();
         runButton = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        ResultPanel = new javax.swing.JPanel();
+        resultHeader = new javax.swing.JLabel();
+        LifeTimeLabel = new javax.swing.JLabel();
+        LifeTimeResult = new javax.swing.JLabel();
+        RunTimeLabel = new javax.swing.JLabel();
+        RunTimeResult = new javax.swing.JLabel();
+        ListSensorPane = new javax.swing.JScrollPane();
+        sensorsThresholdLabel = new javax.swing.JLabel();
+        sensorsThresholdTextField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         NumberOfSensorLabel.setText("Number of sensors: ");
 
-        LValueText.setText("L value");
-
         LifeTimeSensorText.setText("Life time of the sensor(s)");
-
-        LValueTextField.setText("2");
-        LValueTextField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                LValueTextFieldKeyReleased(evt);
-            }
-        });
 
         LifeTimeOfSensorTextField.setText("3000");
         LifeTimeOfSensorTextField.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -80,48 +147,94 @@ public class frameMyAlgorithm4 extends javax.swing.JFrame {
             }
         });
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        ResultPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jLabel2.setText("Result");
+        resultHeader.setText("Result");
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jLabel2)
-                .addGap(0, 401, Short.MAX_VALUE))
+        LifeTimeLabel.setText("Life time(s): ");
+
+        LifeTimeResult.setText("0");
+
+        RunTimeLabel.setText("Run time(s): ");
+
+        RunTimeResult.setText("0");
+
+        javax.swing.GroupLayout ResultPanelLayout = new javax.swing.GroupLayout(ResultPanel);
+        ResultPanel.setLayout(ResultPanelLayout);
+        ResultPanelLayout.setHorizontalGroup(
+            ResultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ResultPanelLayout.createSequentialGroup()
+                .addComponent(resultHeader, javax.swing.GroupLayout.PREFERRED_SIZE, 316, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(ResultPanelLayout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addComponent(LifeTimeLabel)
+                .addGap(18, 18, 18)
+                .addComponent(LifeTimeResult)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(RunTimeLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(RunTimeResult)
+                .addGap(94, 94, 94))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ResultPanelLayout.createSequentialGroup()
+                .addContainerGap(36, Short.MAX_VALUE)
+                .addComponent(ListSensorPane, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(37, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jLabel2)
-                .addGap(0, 138, Short.MAX_VALUE))
+        ResultPanelLayout.setVerticalGroup(
+            ResultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ResultPanelLayout.createSequentialGroup()
+                .addComponent(resultHeader)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(ResultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(ResultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(LifeTimeResult)
+                        .addComponent(RunTimeLabel)
+                        .addComponent(RunTimeResult))
+                    .addComponent(LifeTimeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ListSensorPane, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 23, Short.MAX_VALUE))
         );
+
+        sensorsThresholdLabel.setText("Number of sensors threshold");
+
+        sensorsThresholdTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                sensorsThresholdTextFieldKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(NumberOfSensorLabel)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(LifeTimeSensorText)
-                                    .addComponent(LValueText))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(runButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(LifeTimeOfSensorTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
-                                    .addComponent(LValueTextField)))))
+                        .addComponent(NumberOfSensorLabel)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(32, Short.MAX_VALUE))
+                        .addComponent(LifeTimeSensorText)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(runButton, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(40, 40, 40)
+                                .addComponent(LifeTimeOfSensorTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(sensorsThresholdLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(sensorsThresholdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(28, Short.MAX_VALUE)
+                .addComponent(ResultPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(33, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -130,17 +243,17 @@ public class frameMyAlgorithm4 extends javax.swing.JFrame {
                 .addComponent(NumberOfSensorLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(LValueText)
-                    .addComponent(LValueTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                    .addComponent(sensorsThresholdLabel)
+                    .addComponent(sensorsThresholdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(14, 14, 14)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(LifeTimeSensorText)
-                    .addComponent(LifeTimeOfSensorTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(LifeTimeOfSensorTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(runButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addComponent(ResultPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         pack();
@@ -156,24 +269,15 @@ public class frameMyAlgorithm4 extends javax.swing.JFrame {
                 @Override
                 public void run() {
                     long begin = System.currentTimeMillis();
-                    myAlgorithm.run();
+                    Map<String, Object> result = myAlgorithm.run(sensorsThreshold);
                     long end = System.currentTimeMillis();
                     long timeRun = end-begin;
-//                    updateListX();
-//                    displayResult();
+                    displayResult(result, timeRun);
                 }
             });
             thread.start();
         }
     }//GEN-LAST:event_runButtonActionPerformed
-
-    private void LValueTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_LValueTextFieldKeyReleased
-        try {
-            SensorUtility.Lvalue = Integer.parseInt(LValueTextField.getText());
-        } catch (NumberFormatException nfe) {
-            LValueTextField.setText("");
-        }
-    }//GEN-LAST:event_LValueTextFieldKeyReleased
 
     private void LifeTimeOfSensorTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_LifeTimeOfSensorTextFieldKeyReleased
         try {
@@ -182,6 +286,14 @@ public class frameMyAlgorithm4 extends javax.swing.JFrame {
             LifeTimeOfSensorTextField.setText("");
         }
     }//GEN-LAST:event_LifeTimeOfSensorTextFieldKeyReleased
+
+    private void sensorsThresholdTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_sensorsThresholdTextFieldKeyReleased
+        try {
+            sensorsThreshold = Integer.parseInt(sensorsThresholdTextField.getText());
+        } catch (NumberFormatException nfe) {
+            LifeTimeOfSensorTextField.setText(String.valueOf(defaultSensorsThreshold()));
+        }
+    }//GEN-LAST:event_sensorsThresholdTextFieldKeyReleased
 
     /**
      * @param args the command line arguments
@@ -219,13 +331,18 @@ public class frameMyAlgorithm4 extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel LValueText;
-    private javax.swing.JTextField LValueTextField;
+    private javax.swing.JLabel LifeTimeLabel;
     private javax.swing.JTextField LifeTimeOfSensorTextField;
+    private javax.swing.JLabel LifeTimeResult;
     private javax.swing.JLabel LifeTimeSensorText;
+    private javax.swing.JScrollPane ListSensorPane;
     private javax.swing.JLabel NumberOfSensorLabel;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel ResultPanel;
+    private javax.swing.JLabel RunTimeLabel;
+    private javax.swing.JLabel RunTimeResult;
+    private javax.swing.JLabel resultHeader;
     private javax.swing.JButton runButton;
+    private javax.swing.JLabel sensorsThresholdLabel;
+    private javax.swing.JTextField sensorsThresholdTextField;
     // End of variables declaration//GEN-END:variables
 }

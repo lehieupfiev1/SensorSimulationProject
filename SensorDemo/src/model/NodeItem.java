@@ -123,4 +123,18 @@ public class NodeItem {
         return "NodeItem{" + "x=" + x + ", y=" + y + ", type=" + type + ", group=" + group + '}';
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (getClass() != other.getClass()) {
+            return false;
+        }
+        NodeItem otherNode = (NodeItem)other;
+        return this.x == otherNode.x && this.y == otherNode.y && this.type == otherNode.type;
+    }    
 }

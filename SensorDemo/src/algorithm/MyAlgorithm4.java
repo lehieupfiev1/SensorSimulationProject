@@ -10,9 +10,9 @@ import ilog.concert.IloException;
 import ilog.concert.IloLinearNumExpr;
 import ilog.concert.IloNumVar;
 import ilog.cplex.IloCplex;
+import iterface.frameMain;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -29,10 +29,15 @@ import model.NodeItem;
 public class MyAlgorithm4 {
     /**
      * the starting point to run the algorithm, called from UI class
+     * @param sensorsThreshold: during the execution of the algorithm, if the number
+     *                          of sensors left is lest than the threshold, then the algorithm terminate,
+     *                          this is used to avoid the situation such that 1 set has only 1 independent
+     *                          sensor and all the others are shared with other sets
      * @return a Map contains the result
      */
-    public Map<String, Object> run() {
+    public Map<String, Object> run(int sensorsThreshold) {
         Map<String, Object> data = readData();
+        data.put("sensorsThreshold", sensorsThreshold);
         
         return runAlgorithm(data);
     }
@@ -56,18 +61,22 @@ public class MyAlgorithm4 {
     /**
      * run the algorithm
      * @param data: the map from string to Object which is data use in the algorithm
-     * @return a map contains the result
+     * @return a map contains the result, or null if no sensor set can cover the area
      */
     private Map<String, Object> runAlgorithm(Map<String, Object> data) {
         ArrayList<ArrayList<NodeItem>> listOfSensorSets = getListOfSensorSet(data);
         
-        ArrayList<Double> listOfSensorSetsOnTime = getListOfOnTime(listOfSensorSets, (ArrayList<NodeItem>)data.get("sensorList"), (float)data.get("sensorRadius"));
-        
-        Map<String, Object> result = new HashMap<>();
-        result.put("sensorSets", listOfSensorSets);
-        result.put("onTime", listOfSensorSetsOnTime);
-        
-        return result;
+        if (listOfSensorSets == null ) {
+            return null;
+        } else {
+            ArrayList<Double> listOfSensorSetsOnTime = getListOfOnTime(listOfSensorSets, (ArrayList<NodeItem>)data.get("sensorList"), (int)data.get("sensorLifeTime"));
+            
+            Map<String, Object> result = new HashMap<>();
+            result.put("sensorSets", listOfSensorSets);
+            result.put("onTime", listOfSensorSetsOnTime);
+            
+            return result;
+        }
     }
     
     /**
@@ -83,10 +92,15 @@ public class MyAlgorithm4 {
         ArrayList<NodeItem> usedSensors = new ArrayList<>();
         ArrayList<ArrayList<NodeItem>> listOfSensorSets = new ArrayList<>();
         
+        int minPossibleSensors = (int)data.get("sensorsThreshold");
+        
+        System.out.println("Start find set with min: " + minPossibleSensors);
+        
         /**
          * run the algorithm until sensors list is empty (all sensors have been used)
+         * terminate when there are minPossibleSensors/2 unused sensors left, this is used to reduce some sets that reused to many sensor from other set
          */
-        while (sensorList.size() > 0) {
+        while (sensorList.size() > minPossibleSensors/2) {
             // Initialize uncovered edges/arcs (4 edges of the rectangle)
             ArrayList<Curve> uncoveredCurve = new ArrayList<>();
             uncoveredCurve.add(new Curve((FloatPointItem)data.get("DownRightCornerPoint"), new FloatPointItem(0, SensorUtility.numberOfRow - 1), Curve.EdgeId.BOTTOM));
@@ -96,8 +110,11 @@ public class MyAlgorithm4 {
 
             ArrayList<NodeItem> currentContructingSensorSet = new ArrayList<>();
             
+            System.out.println("____Number of sensor left: " + sensorList.size() + "___________");
+            
             // run until all arcs is covered
             while (uncoveredCurve.size() > 0) {
+                System.out.println(sensorList.size() + ". Number of curves left: " + uncoveredCurve.size());
                 // pick 1st curve, filter out all sensors that don't cover some segment of this curve
                 ArrayList<FloatPointItem> startPointArray = uncoveredCurve.stream().map(curve -> curve.getStartPoint()).collect(Collectors.toCollection(ArrayList::new));
                 ArrayList<NodeItem> nearBySensors = filterByTheNumberOfPointsCovered(sensorList, startPointArray, sensorRadius);
@@ -108,18 +125,22 @@ public class MyAlgorithm4 {
                 NodeItem chosenSensor;
                 if (nearBySensors.isEmpty()) {
                     nearBySensors = filterByTheNumberOfPointsCovered(usedSensors, startPointArray, sensorRadius);
-                    chosenSensor = randomElement(nearBySensors);
+                    // if no sensor cover the next curve, it mean that the provided sensor set doesn't cover the area
+                    if (nearBySensors.isEmpty()) {
+                        return null;
+                    } else {
+                        chosenSensor = randomElement(nearBySensors);
+                        System.out.println("used sensor");   
+                    }
                 } else {
                     chosenSensor = randomElement(nearBySensors);
                 }
                 
-                // if no sensor cover the next curve, it mean that the provided sensor set doesn't cover the area
-                if (chosenSensor == null) {
-                    return null;
-                }
-                usedSensors.add(chosenSensor);
                 sensorList.remove(chosenSensor);
                 currentContructingSensorSet.add(chosenSensor);
+                
+//                SensorUtility.mListSensorNodes.get(SensorUtility.mListSensorNodes.indexOf(chosenSensor)).setStatus(1);
+//                frameMain.coordinatePanel.refresh();
                 
                 // filter out curves which cannot intersect with the chosen sensor
                 ArrayList<Curve> nearByCurves = getCurvesNearSensor(uncoveredCurve, chosenSensor, sensorRadius);
@@ -129,6 +150,7 @@ public class MyAlgorithm4 {
                 updateCurveArray(uncoveredCurve, curveArrayModification);
             }
             listOfSensorSets.add(currentContructingSensorSet);
+            usedSensors.addAll(currentContructingSensorSet);
         }
         return listOfSensorSets;
     }
@@ -144,10 +166,10 @@ public class MyAlgorithm4 {
      * @param listOfSensorSets: the list of sensor set
      * @return the List of time correspond to the sensor set
      */
-    private ArrayList<Double> getListOfOnTime(ArrayList<ArrayList<NodeItem>> listOfSensorSets, ArrayList<NodeItem> sensorList, float sensorRadius) {
+    private ArrayList<Double> getListOfOnTime(ArrayList<ArrayList<NodeItem>> listOfSensorSets, ArrayList<NodeItem> sensorList, int sensorLifeTime) {
         ArrayList<Double> listOfOnTime = new ArrayList<>();
-        int numberOfSets = listOfSensorSets.size();
-        int numberOfSensors = sensorList.size();
+        int numberOfSets = listOfSensorSets.size(); // matrix column
+        int numberOfSensors = sensorList.size(); // matrix row
         
         // create matrix
         int a[][] = new int[numberOfSensors][numberOfSets];
@@ -185,7 +207,7 @@ public class MyAlgorithm4 {
                 for (int i = 0; i < numberOfSets; i++) {
                     totalTimeOnExpr[j].addTerm(a[j][i], T[i]);
                 }
-                cplex.addLe(totalTimeOnExpr[j], sensorRadius);
+                cplex.addLe(totalTimeOnExpr[j], sensorLifeTime);
             }
             
             cplex.setParam(IloCplex.Param.Simplex.Display, 0);
@@ -227,14 +249,19 @@ public class MyAlgorithm4 {
      * @return The array of sensor that cover the most consecutive point from the start of the input point array
      */
     private ArrayList<NodeItem> filterByTheNumberOfPointsCovered(ArrayList<NodeItem> sensorSet, ArrayList<FloatPointItem> pointArray, float radius) {
-        ArrayList<NodeItem> nextSensorSets = sensorSet;
+        ArrayList<NodeItem> nextSensorSets = sensorSet.stream().map(node -> new NodeItem(node)).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<NodeItem> result = new ArrayList<>();
         int i = 0;
-        while (!nextSensorSets.isEmpty()) {
-            sensorSet = nextSensorSets;
+        while (i < pointArray.size()) {
             nextSensorSets = getNearBySensors(nextSensorSets, pointArray.get(i), radius);
+            if (!nextSensorSets.isEmpty()) {
+                result = nextSensorSets;
+            } else {
+                break;
+            }
             i++;
         }
-        return sensorSet;
+        return result;
     }
     
     /**
@@ -254,7 +281,7 @@ public class MyAlgorithm4 {
                 // and may duplicate when finding the intersection point later, I just accept it
                 return true;
             } else {
-                return calculateDistance(curveCenter, sensor.getCoordinate()) <= radius;
+                return calculateDistance(curveCenter, sensor.getCoordinate()) <= 2*radius;
             }
         }).collect(Collectors.toCollection(ArrayList::new));
     }
@@ -473,9 +500,11 @@ public class MyAlgorithm4 {
          * 2. Traverse through the array, connect each consecutive "entry", "exit" pair, from "exit" to "entry"
          * 3. Put all of curves into the map with key == null to indicate that append all of them to the end of the array
          */
-        sortPointClockWise(intersectionPointsArray, sensor.getCoordinate());
-        ArrayList<Curve> curvesOnSensorCircle = getCurveOnSensorCircle(intersectionPointsArray, sensor.getCoordinate());
-        modification.put(null, curvesOnSensorCircle);
+        if (!intersectionPointsArray.isEmpty()) {
+            sortPointClockWise(intersectionPointsArray, sensor.getCoordinate());
+            ArrayList<Curve> curvesOnSensorCircle = getCurveOnSensorCircle(intersectionPointsArray, sensor.getCoordinate());
+            modification.put(null, curvesOnSensorCircle);   
+        }
         
         return modification;
     }
@@ -491,10 +520,15 @@ public class MyAlgorithm4 {
                 curveArray.addAll(entry.getValue());
             } else {
                 Curve oldCurve = entry.getKey();
+//                System.out.println("key: " + entry.getKey());
+//                System.out.println("value: " + entry.getValue());
                 int oldCurveIndex = curveArray.indexOf(oldCurve);
+//                System.out.println("old curve index: " + oldCurveIndex);
                 if (oldCurveIndex != -1) {
                     curveArray.remove(oldCurveIndex);
-                    curveArray.addAll(oldCurveIndex, entry.getValue());
+                    if (entry.getValue() != null) {
+                        curveArray.addAll(oldCurveIndex, entry.getValue());
+                    }
                 }
             }
         });
@@ -560,7 +594,7 @@ public class MyAlgorithm4 {
      */
     private ArrayList<FloatPointItem> getIntersectionArcCircle(Curve curve, FloatPointItem center, float radius) {
         // check if the 2 circle don't intersect
-        if (calculateDistance(curve.getCenter(), center) > radius) {
+        if (calculateDistance(curve.getCenter(), center) > 2*radius) {
             return new ArrayList<>();
         }
         
@@ -593,7 +627,7 @@ public class MyAlgorithm4 {
             /**
              * Y = [(x2^2 - x1^2 + y2^2 - y1^2)/2(y2 - y1)] - [(x2 - x1)/(y2 - y1)]*X = a - bX
              * (X - x1)^2 + (bX - a + y1)^2 = R^2
-             * (1 + b^2)*X^2 - 2[x1 - b(a - y1)]*X + x1^2 + (a - y1)^2 - R^2 = 0
+             * (1 + b^2)*X^2 + 2[-x1 - b(a - y1)]*X + x1^2 + (a - y1)^2 - R^2 = 0
              * c*X^2 + 2d*X + e = 0
              * delta = d^2 - ce
              * X = [-d +- sqrt(delta)]/c
@@ -601,7 +635,7 @@ public class MyAlgorithm4 {
             float a = (x2*x2 - x1*x1 + y2*y2 - y1*y1)/(2*(y2 - y1));
             float b = (x2 - x1)/(y2 - y1);
             float c = 1 + b*b;
-            float d = -(x1 - b*(a - y1));
+            float d = -x1 - b*(a - y1);
             float e = x1*x1 + (a - y1)*(a - y1) - radius*radius;
             
             float delta = d*d - c*e;
@@ -621,7 +655,7 @@ public class MyAlgorithm4 {
         }
         
         // remove the point lie outside the curve
-        intersectionPoints.add(curve.getStartPoint());
+        intersectionPoints.add(0, curve.getStartPoint());
         intersectionPoints.add(curve.getEndPoint());
         intersectionPoints = sortPointCounterClockWise(intersectionPoints, curve.getCenter());
         return intersectionPoints.subList(intersectionPoints.indexOf(curve.getStartPoint()) + 1, intersectionPoints.indexOf(curve.getEndPoint())).stream().collect(Collectors.toCollection(ArrayList::new));
@@ -629,16 +663,18 @@ public class MyAlgorithm4 {
     
     /**
      * Sort the point in the input array in counter clockwise order relative to the center point
+     * The y axis is pointing down, so the result is being reserve compare to normal sense
      * @param pointArray: array to be sorted
      * @param center: center point
      * @return sorted array
      */
     private ArrayList<FloatPointItem> sortPointCounterClockWise(ArrayList<FloatPointItem> pointArray, FloatPointItem center) {
         FloatPointItem firstItem = pointArray.get(0);
-        pointArray.sort((p1, p2) -> (int)(Math.atan2(p1.getY() - center.getY(), p1.getX() - center.getX()) - Math.atan2(p2.getY() - center.getY(), p2.getX() - center.getX())));
-        List<FloatPointItem> neededToBeMoved = pointArray.subList(0, pointArray.indexOf(firstItem));
-        pointArray.removeAll(neededToBeMoved);
-        pointArray.addAll(neededToBeMoved);
+        pointArray.sort((p1, p2) -> Double.compare(Math.atan2(p2.getY() - center.getY(), p2.getX() - center.getX()), Math.atan2(p1.getY() - center.getY(), p1.getX() - center.getX())));
+        for (int i = 0, end = pointArray.indexOf(firstItem); i < end; i++) {
+            pointArray.add(pointArray.get(i));
+        }
+        pointArray.subList(0, pointArray.indexOf(firstItem)).clear();
         return pointArray;
     }
     
@@ -650,10 +686,11 @@ public class MyAlgorithm4 {
      */
     private ArrayList<IntersectionPoint> sortPointClockWise(ArrayList<IntersectionPoint> pointArray, FloatPointItem center) {
         IntersectionPoint firstItem = pointArray.get(0);
-        pointArray.sort((p1, p2) -> (int)(Math.atan2(p2.getCoordinate().getY() - center.getY(), p2.getCoordinate().getX() - center.getX()) - Math.atan2(p1.getCoordinate().getY() - center.getY(), p1.getCoordinate().getX() - center.getX())));
-        List<IntersectionPoint> neededToBeMoved = pointArray.subList(0, pointArray.indexOf(firstItem));
-        pointArray.removeAll(neededToBeMoved);
-        pointArray.addAll(neededToBeMoved);
+        pointArray.sort((p1, p2) -> Double.compare(Math.atan2(p1.getCoordinate().getY() - center.getY(), p1.getCoordinate().getX() - center.getX()), Math.atan2(p2.getCoordinate().getY() - center.getY(), p2.getCoordinate().getX() - center.getX())));
+        for (int i = 0, end = pointArray.indexOf(firstItem); i < end; i++) {
+            pointArray.add(pointArray.get(i));
+        }
+        pointArray.subList(0, pointArray.indexOf(firstItem)).clear();
         return pointArray;
     }
     

@@ -168,6 +168,7 @@ public class frameMain extends javax.swing.JFrame {
         Algorithm2 = new javax.swing.JMenuItem();
         MyAlgorithm3MenuItem = new javax.swing.JMenuItem();
         Algoritm3MenuItem = new javax.swing.JMenuItem();
+        MyAlgorithm4MenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         contentsMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
@@ -445,15 +446,15 @@ public class frameMain extends javax.swing.JFrame {
         });
         AlgorithmMenu.add(Algoritm3MenuItem);
 
-        menuBar.add(AlgorithmMenu);
-        
-        MyAlgorithm4 = new JMenuItem("MyAlgorithm 4");
-        MyAlgorithm4.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		MyAlgorithm4MenuItemActionPerformed(e);
-        	}
+        MyAlgorithm4MenuItem.setText("MyAlgorithm4");
+        MyAlgorithm4MenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MyAlgorithm4MenuItemActionPerformed(evt);
+            }
         });
-        AlgorithmMenu.add(MyAlgorithm4);
+        AlgorithmMenu.add(MyAlgorithm4MenuItem);
+
+        menuBar.add(AlgorithmMenu);
 
         helpMenu.setMnemonic('h');
         helpMenu.setText("Help");
@@ -832,13 +833,13 @@ public class frameMain extends javax.swing.JFrame {
         mFrameAlgorithm.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         mFrameAlgorithm.setVisible(true);
     }//GEN-LAST:event_MyAlgorithm3MenuItemActionPerformed
-
-    private void MyAlgorithm4MenuItemActionPerformed(ActionEvent e) {
-        frameMyAlgorithm4 mFrameAlgorithm = new frameMyAlgorithm4();
-        mFrameAlgorithm.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        mFrameAlgorithm.setVisible(true);
-    }
-    
+//
+//    private void MyAlgorithm4MenuItemActionPerformed(ActionEvent e) {
+//        frameMyAlgorithm4 mFrameAlgorithm = new frameMyAlgorithm4();
+//        mFrameAlgorithm.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+//        mFrameAlgorithm.setVisible(true);
+//    }
+//    
     private void showAllPathItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showAllPathItemStateChanged
         // TODO add your handling code here:
         int state = evt.getStateChange();
@@ -849,6 +850,12 @@ public class frameMain extends javax.swing.JFrame {
         }
         coordinatePanel.refresh();
     }//GEN-LAST:event_showAllPathItemStateChanged
+
+    private void MyAlgorithm4MenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MyAlgorithm4MenuItemActionPerformed
+        frameMyAlgorithm4 mFrameAlgorithm = new frameMyAlgorithm4();
+        mFrameAlgorithm.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        mFrameAlgorithm.setVisible(true);
+    }//GEN-LAST:event_MyAlgorithm4MenuItemActionPerformed
 
     public void saveFile() {
         JFileChooser chooser = new JFileChooser();
@@ -954,6 +961,7 @@ public class frameMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem ModifyTargetMenuItem;
     private javax.swing.JMenuItem MyAlgorithm2MenuItem;
     private javax.swing.JMenuItem MyAlgorithm3MenuItem;
+    private javax.swing.JMenuItem MyAlgorithm4MenuItem;
     private javax.swing.JMenuItem MyAlgorithmMenuItem;
     private javax.swing.JMenuItem NetworkSizeMenuItem;
     private javax.swing.JMenu RobotMenu;

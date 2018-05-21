@@ -54,6 +54,7 @@ public class frameCoordinateSystemPanel extends JPanel{
     JMenuItem deleteSensorItem;
     JMenuItem deleteTargetItem;
     JMenuItem deleteSinkItem;
+    JMenuItem changeStatusSensor;
     int pointX;
     int pointY;
 
@@ -120,22 +121,27 @@ public class frameCoordinateSystemPanel extends JPanel{
                int cellY = y / sizeRect;
                if (checkPointExit(cellX, cellY) == 3) {
                    deleteSensorItem.setEnabled(true);
+                   changeStatusSensor.setEnabled(true);
                    deleteTargetItem.setEnabled(true);
                    deleteSinkItem.setEnabled(false);
                } else if (checkPointExit(cellX, cellY) == 1) {
                    deleteSensorItem.setEnabled(true);
+                   changeStatusSensor.setEnabled(true);
                    deleteTargetItem.setEnabled(false);
                    deleteSinkItem.setEnabled(false);
                } else if (checkPointExit(cellX, cellY) == 2) {
                    deleteSensorItem.setEnabled(false);
+                   changeStatusSensor.setEnabled(false);
                    deleteTargetItem.setEnabled(true);
                    deleteSinkItem.setEnabled(false);
                } else if (checkPointExit(cellX, cellY) == 4){
                    deleteSensorItem.setEnabled(false);
+                   changeStatusSensor.setEnabled(false);
                    deleteTargetItem.setEnabled(false);
                    deleteSinkItem.setEnabled(true);
                } else {
                    deleteSensorItem.setEnabled(false);
+                   changeStatusSensor.setEnabled(false);
                    deleteTargetItem.setEnabled(false);
                    deleteSinkItem.setEnabled(false);
                }
@@ -280,6 +286,31 @@ public class frameCoordinateSystemPanel extends JPanel{
             }
         });
         popup.add(deleteSinkItem);
+        
+        //(De)Activate sensor
+        changeStatusSensor = new JMenuItem("(De)Activate sensor");
+        changeStatusSensor.setMnemonic(KeyEvent.VK_F);
+        changeStatusSensor.addActionListener(new ActionListener() {
+            
+            public void actionPerformed(ActionEvent e) {
+                //JOptionPane.showMessageDialog(frame, "New File clicked!");
+                for (int i =0; i< mListSensorNodes.size(); i++) {
+                    NodeItem next = mListSensorNodes.get(i);
+                    if (next.getX() == pointX && next.getY() == pointY) {
+                        System.out.println(next.getStatus());
+                        if (next.getStatus() == 0) {
+                            mListSensorNodes.get(i).setStatus(1);
+                        } else {
+                            mListSensorNodes.get(i).setStatus(0);
+                        }
+                        break;
+                    }
+                }
+
+                refresh();
+            }
+        });
+        popup.add(changeStatusSensor);
     }
    
    int checkPointExit(int cellX, int cellY) {
@@ -659,6 +690,4 @@ public class frameCoordinateSystemPanel extends JPanel{
         }
         repaint();
     }
-    
-    
 }
