@@ -36,12 +36,12 @@ public class frameMyAlgorithm4 extends javax.swing.JFrame {
      */
     public frameMyAlgorithm4() {
         initComponents();
-        sensorsThreshold = defaultSensorsThreshold();
+        sensorsThreshold = defaultSensorsThreshold()/2;
         ResultPanel.setMaximumSize(new Dimension(492, 211));
         ResultPanel.setMinimumSize(new Dimension(492, 211));
         ResultPanel.setPreferredSize(new Dimension(492, 211));
         NumberOfSensorLabel.setText("Number of Sensor : "+mListSensorNodes.size());
-        sensorsThresholdTextField.setText(String.valueOf(defaultSensorsThreshold()));
+        sensorsThresholdTextField.setText(String.valueOf(defaultSensorsThreshold()/2));
     }
     
     private int defaultSensorsThreshold() {
@@ -89,7 +89,7 @@ public class frameMyAlgorithm4 extends javax.swing.JFrame {
             LifeTimeResult.setText(String.valueOf(onTimeList.stream().reduce(0d, (x, y) -> x+y)));
             RunTimeResult.setText(String.format("%.2f", ((float)timeRun/1000)));
             
-            // create display list
+            // create display list in the panel
             sensorSetsListModel = new DefaultListModel();
             for (int i = 0, length = listOfSensorSets.size(); i < length; i++) {
                 sensorSetsListModel.addElement("Set " + (i+1) + ", runtime: " + onTimeList.get(i));
@@ -268,11 +268,15 @@ public class frameMyAlgorithm4 extends javax.swing.JFrame {
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    runButton.setText("Running");
+                    runButton.setEnabled(false);
                     long begin = System.currentTimeMillis();
                     Map<String, Object> result = myAlgorithm.run(sensorsThreshold);
                     long end = System.currentTimeMillis();
                     long timeRun = end-begin;
                     displayResult(result, timeRun);
+                    runButton.setText("Run");
+                    runButton.setEnabled(true);
                 }
             });
             thread.start();

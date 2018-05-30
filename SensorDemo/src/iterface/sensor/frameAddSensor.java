@@ -213,10 +213,11 @@ public class frameAddSensor extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Please insert Valid Number Only");
         } else {
             Random random = new Random();
+            int previousSize = SensorUtility.mListSensorNodes.size();
             for (int i = 0;i < numberSensor;i++) {
                 int x = random.nextInt(SensorUtility.numberOfColumn);
                 int y = random.nextInt(SensorUtility.numberOfRow);
-                SensorUtility.mListSensorNodes.add(new NodeItem(x, y, 2));
+                SensorUtility.mListSensorNodes.add(new NodeItem(i + previousSize, x, y, 2, 0, 0));
             }
             JOptionPane.showMessageDialog(null, "Create new sensors success !");
             updateNumberSensor();

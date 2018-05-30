@@ -67,7 +67,7 @@ public class frameCoordinateSystemPanel extends JPanel{
        sizeHeightPanel = heightScreen -SensorUtility.marginPanel*2;
        setCoordinateSize(SensorUtility.numberOfColumn,SensorUtility.numberOfRow);
        initPopupMenu();
-       this.addMouseListener(new MouseAdapter() {
+       this.addMouseListener(new MouseAdapter() {        
            @Override
            public void mouseClicked(MouseEvent e) {
                if (SwingUtilities.isLeftMouseButton(e)) {
@@ -178,7 +178,8 @@ public class frameCoordinateSystemPanel extends JPanel{
 
             public void actionPerformed(ActionEvent e) {
                 //JOptionPane.showMessageDialog(frame, "New Project clicked!");
-                SensorUtility.mListSensorNodes.add(new NodeItem(pointX, pointY, 2));
+                int id = SensorUtility.mListSensorNodes.size();
+                SensorUtility.mListSensorNodes.add(new NodeItem(id, pointX, pointY, 2, 0, 0));
                 refresh();
             }
         });

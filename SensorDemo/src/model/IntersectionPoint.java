@@ -74,15 +74,15 @@
 package model;
 
 public class IntersectionPoint {
-    FloatPointItem coordinate;
+    DoublePoint coordinate;
     String direction; // the value can be "entry" or "exit", indicate this point is the exit point or entry point of the curve cut through the sensor circle
     
-    public IntersectionPoint(FloatPointItem coordinate, String direction) {
+    public IntersectionPoint(DoublePoint coordinate, String direction) {
         this.coordinate = coordinate;
         this.direction = direction;
     }
     
-    public FloatPointItem getCoordinate() {
+    public DoublePoint getCoordinate() {
         return this.coordinate;
     }
     

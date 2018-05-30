@@ -114,13 +114,29 @@ public class NodeItem {
         this.id = id;
     }
     
-    public FloatPointItem getCoordinate() {
-        return new FloatPointItem(x, y);
+    public DoublePoint getCoordinate() {
+        return new DoublePoint(x, y);
     }
 
     @Override
     public String toString() {
         return "NodeItem{" + "x=" + x + ", y=" + y + ", type=" + type + ", group=" + group + '}';
+    }
+    
+    /**
+     * This hash function only use x, y and type properties of this class
+     * The algorithm can be found in: https://stackoverflow.com/questions/11742593/what-is-the-hashcode-for-a-custom-class-having-just-two-int-properties
+     * The prime number is taken from: https://www.bigprimes.net/cruncher/104743/
+     * @return hashcode
+     */
+    @Override
+    public int hashCode() {
+        int prime = 104743 ;
+        int hash = 1;
+        hash = hash*prime + x;
+        hash = hash*prime + y;
+        hash = hash*prime + type;
+        return hash;
     }
 
     @Override

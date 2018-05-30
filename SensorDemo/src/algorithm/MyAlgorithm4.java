@@ -11,14 +11,20 @@ import ilog.concert.IloLinearNumExpr;
 import ilog.concert.IloNumVar;
 import ilog.cplex.IloCplex;
 import iterface.frameMain;
+import java.awt.Graphics2D;
+import java.awt.geom.Arc2D;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import model.Curve;
-import model.FloatPointItem;
+import model.DoublePoint;
 import model.IntersectionPoint;
 import model.NodeItem;
 
@@ -39,7 +45,15 @@ public class MyAlgorithm4 {
         Map<String, Object> data = readData();
         data.put("sensorsThreshold", sensorsThreshold);
         
+        Set<NodeItem> test = new HashSet<>(SensorUtility.mListSensorNodes);
+        System.out.println(test.size());
+//        Arc2D.double test = new Arc2D.double(50, 50, 30, 30, (double)Math.PI/4, (double)Math.PI, Arc2D.OPEN);
+//        ((Graphics2D)frameMain.coordinatePanel.getGraphics()).draw(test);
+//        frameMain.coordinatePanel.refresh();
+
         return runAlgorithm(data);
+//        System.out.println(SensorUtility.mListSensorNodes.size());
+//        return null;
     }
     
     /**
@@ -49,11 +63,17 @@ public class MyAlgorithm4 {
      */
     private Map<String, Object> readData() {
         Map<String,Object> data = new HashMap<>();
-        data.put("sensorRadius", SensorUtility.mRsValue);
+        data.put("sensorRadius", (double)SensorUtility.mRsValue);
         data.put("sensorLifeTime", SensorUtility.LifeTimeOfSensor);
-        data.put("sensorList", SensorUtility.mListSensorNodes.stream().map(node -> new NodeItem(node)).collect(Collectors.toCollection(ArrayList::new)));
-        data.put("UpLeftCornerPoint", new FloatPointItem(0, 0));
-        data.put("DownRightCornerPoint", new FloatPointItem(SensorUtility.numberOfColumn - 1, SensorUtility.numberOfRow - 1));
+        // since saved sensor list doesn't assign id for each sensor, so that the below function assign each sensor with
+        // an id equals to its index in the array in order to distinguish sensors located at the same coordinate
+        ArrayList<NodeItem> test = (new HashSet<>(SensorUtility.mListSensorNodes)).stream().collect(Collectors.toCollection(ArrayList::new));
+        data.put("sensorList", IntStream.range(0, test.size()).mapToObj(i -> {
+            NodeItem node = test.get(i);
+            return new NodeItem(i, node.getX(), node.getY(), 2, 0, 0);
+        }).collect(Collectors.toCollection(ArrayList::new)));
+        data.put("UpLeftCornerPoint", new DoublePoint(0, 0));
+        data.put("DownRightCornerPoint", new DoublePoint(SensorUtility.numberOfColumn - 1, SensorUtility.numberOfRow - 1));
         
         return data;
     }
@@ -87,7 +107,7 @@ public class MyAlgorithm4 {
     private ArrayList<ArrayList<NodeItem>> getListOfSensorSet(Map<String, Object> data) {
         // deep copy sensor list to ensure immutability
         ArrayList<NodeItem> sensorList = ((ArrayList<NodeItem>)data.get("sensorList")).stream().map(sensor -> new NodeItem(sensor)).collect(Collectors.toCollection(ArrayList::new));
-        float sensorRadius = (float)data.get("sensorRadius");
+        double sensorRadius = (double) data.get("sensorRadius");
         
         ArrayList<NodeItem> usedSensors = new ArrayList<>();
         ArrayList<ArrayList<NodeItem>> listOfSensorSets = new ArrayList<>();
@@ -100,43 +120,56 @@ public class MyAlgorithm4 {
          * run the algorithm until sensors list is empty (all sensors have been used)
          * terminate when there are minPossibleSensors/2 unused sensors left, this is used to reduce some sets that reused to many sensor from other set
          */
-        while (sensorList.size() > minPossibleSensors/2) {
+        while (sensorList.size() > minPossibleSensors) {
             // Initialize uncovered edges/arcs (4 edges of the rectangle)
             ArrayList<Curve> uncoveredCurve = new ArrayList<>();
-            uncoveredCurve.add(new Curve((FloatPointItem)data.get("DownRightCornerPoint"), new FloatPointItem(0, SensorUtility.numberOfRow - 1), Curve.EdgeId.BOTTOM));
-            uncoveredCurve.add(new Curve(new FloatPointItem(0, SensorUtility.numberOfRow - 1), (FloatPointItem)data.get("UpLeftCornerPoint"), Curve.EdgeId.LEFT));
-            uncoveredCurve.add(new Curve((FloatPointItem)data.get("UpLeftCornerPoint"), new FloatPointItem(SensorUtility.numberOfColumn - 1, 0), Curve.EdgeId.TOP));
-            uncoveredCurve.add(new Curve(new FloatPointItem(SensorUtility.numberOfColumn - 1, 0), (FloatPointItem)data.get("DownRightCornerPoint"), Curve.EdgeId.RIGHT));
+            uncoveredCurve.add(new Curve((DoublePoint)data.get("DownRightCornerPoint"), new DoublePoint(0, SensorUtility.numberOfRow - 1), Curve.EdgeId.BOTTOM));
+            uncoveredCurve.add(new Curve(new DoublePoint(0, SensorUtility.numberOfRow - 1), (DoublePoint)data.get("UpLeftCornerPoint"), Curve.EdgeId.LEFT));
+            uncoveredCurve.add(new Curve((DoublePoint)data.get("UpLeftCornerPoint"), new DoublePoint(SensorUtility.numberOfColumn - 1, 0), Curve.EdgeId.TOP));
+            uncoveredCurve.add(new Curve(new DoublePoint(SensorUtility.numberOfColumn - 1, 0), (DoublePoint)data.get("DownRightCornerPoint"), Curve.EdgeId.RIGHT));
 
-            ArrayList<NodeItem> currentContructingSensorSet = new ArrayList<>();
+            HashSet<NodeItem> currentContructingSensorSet = new HashSet<>();
             
             System.out.println("____Number of sensor left: " + sensorList.size() + "___________");
+//            SensorUtility.mListSensorNodes.forEach(node -> node.setStatus(0));
+//            frameMain.coordinatePanel.refresh();
             
             // run until all arcs is covered
             while (uncoveredCurve.size() > 0) {
-                System.out.println(sensorList.size() + ". Number of curves left: " + uncoveredCurve.size());
+                System.out.println(sensorList.size() + ", (" + currentContructingSensorSet.size() + "). Number of curves left: " + uncoveredCurve.size());
                 // pick 1st curve, filter out all sensors that don't cover some segment of this curve
-                ArrayList<FloatPointItem> startPointArray = uncoveredCurve.stream().map(curve -> curve.getStartPoint()).collect(Collectors.toCollection(ArrayList::new));
+                ArrayList<DoublePoint> startPointArray = uncoveredCurve.stream().map(curve -> curve.getStartPoint()).collect(Collectors.toCollection(ArrayList::new));
                 ArrayList<NodeItem> nearBySensors = filterByTheNumberOfPointsCovered(sensorList, startPointArray, sensorRadius);
-                
+                Optional optionalSensor = nearBySensors.stream().filter(sensor -> !currentContructingSensorSet.contains(sensor)).findAny();
+
                 /**
                  * random sensor from set, if no unused sensor covers the 1st curve, then random from used sensors
+                 * multiple sensor can be located at the same location, so that we use hashSet to construct new cover set, since using 2 sensor in 
+                 * the same location has no meaning
+                 * In the NodeItem hashCode and equals implementation, I only care about the coordinate and the type of node
+                 * so that 2 node of the same type and same location, but different id, status will be consider the same one
                  */
                 NodeItem chosenSensor;
-                if (nearBySensors.isEmpty()) {
+                if (!optionalSensor.isPresent()) {
+                    // get sensor from used sensor list
                     nearBySensors = filterByTheNumberOfPointsCovered(usedSensors, startPointArray, sensorRadius);
+                    optionalSensor = nearBySensors.stream().filter(sensor -> !currentContructingSensorSet.contains(sensor)).findAny();
                     // if no sensor cover the next curve, it mean that the provided sensor set doesn't cover the area
-                    if (nearBySensors.isEmpty()) {
+                    if (!optionalSensor.isPresent()) {
+                        SensorUtility.mListSensorNodes.forEach(node -> node.setStatus(0));
+                        currentContructingSensorSet.forEach((node) -> SensorUtility.mListSensorNodes.get(SensorUtility.mListSensorNodes.indexOf(node)).setStatus(1));
+                        frameMain.coordinatePanel.refresh();
                         return null;
                     } else {
-                        chosenSensor = randomElement(nearBySensors);
+                        chosenSensor = (NodeItem)optionalSensor.get();
+                        usedSensors.remove(chosenSensor);
                         System.out.println("used sensor");   
                     }
                 } else {
-                    chosenSensor = randomElement(nearBySensors);
+                    chosenSensor = (NodeItem)optionalSensor.get();
+                    sensorList.remove(chosenSensor);
                 }
                 
-                sensorList.remove(chosenSensor);
                 currentContructingSensorSet.add(chosenSensor);
                 
 //                SensorUtility.mListSensorNodes.get(SensorUtility.mListSensorNodes.indexOf(chosenSensor)).setStatus(1);
@@ -148,10 +181,18 @@ public class MyAlgorithm4 {
                 HashMap<Curve, ArrayList<Curve>> curveArrayModification = getCurveModification(chosenSensor, nearByCurves, sensorRadius);
                 
                 updateCurveArray(uncoveredCurve, curveArrayModification);
+//                // use for debugging
+//                if (uncoveredCurve.size() <= 2 && uncoveredCurve.size() > 0) {
+//                    SensorUtility.mListSensorNodes.forEach(node -> node.setStatus(0));
+//                    currentContructingSensorSet.forEach((node) -> SensorUtility.mListSensorNodes.get(SensorUtility.mListSensorNodes.indexOf(node)).setStatus(1));
+//                    frameMain.coordinatePanel.refresh();
+//                }
+                System.out.println();
             }
-            listOfSensorSets.add(currentContructingSensorSet);
+            listOfSensorSets.add(currentContructingSensorSet.stream().collect(Collectors.toCollection(ArrayList::new)));
             usedSensors.addAll(currentContructingSensorSet);
         }
+        System.out.println("unused sensors: " + sensorList.size());
         return listOfSensorSets;
     }
     
@@ -177,7 +218,7 @@ public class MyAlgorithm4 {
             ArrayList<NodeItem> set = listOfSensorSets.get(i);
             int length = set.size();
             for (int j = 0; j < length; j++) {
-                a[sensorList.indexOf(set.get(j))][i] = 1;
+                a[set.get(j).getId()][i] = 1; // since the id is also the index of sensor in the original list
             }
         }
         
@@ -237,7 +278,7 @@ public class MyAlgorithm4 {
      * @param radius: Sensor radius
      * @return The array of sensor that cover the input point
      */
-    private ArrayList<NodeItem> getNearBySensors(ArrayList<NodeItem> sensorList, FloatPointItem point, float radius) {
+    private ArrayList<NodeItem> getNearBySensors(ArrayList<NodeItem> sensorList, DoublePoint point, double radius) {
          return sensorList.stream().filter(sensor -> calculateDistance(point, sensor.getCoordinate()) < radius).collect(Collectors.toCollection(ArrayList::new));
     }
     
@@ -248,7 +289,7 @@ public class MyAlgorithm4 {
      * @param radius: sensor radius
      * @return The array of sensor that cover the most consecutive point from the start of the input point array
      */
-    private ArrayList<NodeItem> filterByTheNumberOfPointsCovered(ArrayList<NodeItem> sensorSet, ArrayList<FloatPointItem> pointArray, float radius) {
+    private ArrayList<NodeItem> filterByTheNumberOfPointsCovered(ArrayList<NodeItem> sensorSet, ArrayList<DoublePoint> pointArray, double radius) {
         ArrayList<NodeItem> nextSensorSets = sensorSet.stream().map(node -> new NodeItem(node)).collect(Collectors.toCollection(ArrayList::new));
         ArrayList<NodeItem> result = new ArrayList<>();
         int i = 0;
@@ -265,6 +306,19 @@ public class MyAlgorithm4 {
     }
     
     /**
+     * this function is used with usedSensors, which is a hashSet
+     * it convert set to arraylist then call the above function
+     * @param usedSensors
+     * @param pointArray
+     * @param radius
+     * @return 
+     */
+    private ArrayList<NodeItem> filterByTheNumberOfPointsCovered(Set<NodeItem> usedSensors, ArrayList<DoublePoint> pointArray, double radius) {
+        ArrayList<NodeItem> usedSensorList = new ArrayList<>(usedSensors);
+        return filterByTheNumberOfPointsCovered(usedSensorList, pointArray, radius);
+    }
+    
+    /**
      * Find the curves/edges that MAY intersect with the sensor circle
      * The resulting curves/edges is NOT guarantee to intersect with the sensor circle
      * since the calculation is math-heavy and may duplicate with the "find the intersection" function
@@ -273,9 +327,9 @@ public class MyAlgorithm4 {
      * @param radius: sensor radius
      * @return The array of curves/edges that MAY intersect with the sensor circle
      */
-    private ArrayList<Curve> getCurvesNearSensor(ArrayList<Curve> curveArray, NodeItem sensor, float radius) {
+    private ArrayList<Curve> getCurvesNearSensor(ArrayList<Curve> curveArray, NodeItem sensor, double radius) {
         return curveArray.stream().filter(curve -> {
-            FloatPointItem curveCenter = curve.getCenter();
+            DoublePoint curveCenter = curve.getCenter();
             if (curveCenter == null) {
                 // since find out whether the line segment intersect with the sensor circle involve lots of math computation
                 // and may duplicate when finding the intersection point later, I just accept it
@@ -302,8 +356,8 @@ public class MyAlgorithm4 {
      * @param point2
      * @return The distance
      */
-    private float calculateDistance(FloatPointItem point1, FloatPointItem point2) {
-        return (float) Math.sqrt(Math.pow(point1.getX() - point2.getX(), 2) + Math.pow(point1.getY() - point2.getY(), 2));
+    private double calculateDistance(DoublePoint point1, DoublePoint point2) {
+        return Math.sqrt(Math.pow(point1.getX() - point2.getX(), 2) + Math.pow(point1.getY() - point2.getY(), 2));
     }
     
     /**
@@ -316,13 +370,13 @@ public class MyAlgorithm4 {
      * @param sensorRadius: sensor radius
      * @return The Modification map
      */
-    private HashMap<Curve, ArrayList<Curve>> getCurveModification(NodeItem sensor, ArrayList<Curve> nearByCurves, float sensorRadius) {
+    private HashMap<Curve, ArrayList<Curve>> getCurveModification(NodeItem sensor, ArrayList<Curve> nearByCurves, double sensorRadius) {
         HashMap<Curve, ArrayList<Curve>> modification = new HashMap<>();
         ArrayList<IntersectionPoint> intersectionPointsArray = new ArrayList<>();
         
         nearByCurves.forEach(curve -> {
             if (curve.getCenter() == null) { // if curve is an edge
-                ArrayList<FloatPointItem> intersectionPoints = getIntersectionLineCircle(curve.getStartPoint(), curve.getEndPoint(), sensor.getCoordinate(), sensorRadius);
+                ArrayList<DoublePoint> intersectionPoints = getIntersectionLineCircle(curve.getStartPoint(), curve.getEndPoint(), sensor.getCoordinate(), sensorRadius);
                 ArrayList<Curve> newLine = new ArrayList<>();
                 switch (intersectionPoints.size()) {
                     case 0: {
@@ -354,8 +408,8 @@ public class MyAlgorithm4 {
                         // the circle cut the line segment at the middle
                         newLine.clear();
                         // find out what part of the line is covered
-                        float startPointDistance = calculateDistance(curve.getStartPoint(), sensor.getCoordinate());
-                        float endPointDistance = calculateDistance(curve.getEndPoint(), sensor.getCoordinate());
+                        double startPointDistance = calculateDistance(curve.getStartPoint(), sensor.getCoordinate());
+                        double endPointDistance = calculateDistance(curve.getEndPoint(), sensor.getCoordinate());
                         
                         if (startPointDistance > sensorRadius && endPointDistance < sensorRadius) {
                             newLine.add(new Curve(curve.getStartPoint(), intersectionPoints.get(0), curve.getEdgeId()));
@@ -376,12 +430,12 @@ public class MyAlgorithm4 {
                     }
                     case 2: {
                         newLine.clear();
-                        float startPointDistance = calculateDistance(curve.getStartPoint(), sensor.getCoordinate());
-                        float endPointDistance = calculateDistance(curve.getEndPoint(), sensor.getCoordinate());
+                        double startPointDistance = calculateDistance(curve.getStartPoint(), sensor.getCoordinate());
+                        double endPointDistance = calculateDistance(curve.getEndPoint(), sensor.getCoordinate());
                         
-                        if ((new Float(startPointDistance)).equals(sensorRadius)) {
+                        if ((new Double(startPointDistance)).equals(sensorRadius)) {
                             intersectionPointsArray.add(new IntersectionPoint(intersectionPoints.get(0), "entry"));
-                            if ((new Float(endPointDistance)).equals(sensorRadius)) {
+                            if ((new Double(endPointDistance)).equals(sensorRadius)) {
                                 modification.put(curve, null);
                             } else if (endPointDistance > sensorRadius) {
                                 newLine.add(new Curve(intersectionPoints.get(1), curve.getEndPoint(), curve.getEdgeId()));
@@ -389,7 +443,7 @@ public class MyAlgorithm4 {
                             }
                         } else {
                             newLine.add(new Curve(curve.getStartPoint(), intersectionPoints.get(0), curve.getEdgeId()));
-                            if ((new Float(endPointDistance)).equals(sensorRadius)) {
+                            if ((new Double(endPointDistance)).equals(sensorRadius)) {
                                 intersectionPointsArray.add(new IntersectionPoint(intersectionPoints.get(0), "entry"));
                             } else {
                                 newLine.add(new Curve(intersectionPoints.get(1), curve.getEndPoint(), curve.getEdgeId()));
@@ -402,14 +456,16 @@ public class MyAlgorithm4 {
                     }
                 }
             } else { // if curve is a curve
-                ArrayList<FloatPointItem> intersectionPoints = getIntersectionArcCircle(curve, sensor.getCoordinate(), sensorRadius);
+                ArrayList<DoublePoint> intersectionPoints = getIntersectionArcCircle(curve, sensor.getCoordinate(), sensorRadius);
                 ArrayList<Curve> newCurve = new ArrayList<>();
                 switch (intersectionPoints.size()) {
                     case 0: {
                         if (calculateDistance(curve.getStartPoint(), sensor.getCoordinate()) < sensorRadius) {
                             // the curve is covered entirely by the sensor, so remove it
                             modification.put(curve, null);
+//                            System.out.println("___--intersect: 0, in--___");
                         } // else, the curve is outside of the sensor
+//                        System.out.println("___--intersect: 0, out--___");
                         break;
                     }
                     case 1: {
@@ -418,8 +474,10 @@ public class MyAlgorithm4 {
                             if (calculateDistance(curve.getEndPoint(), sensor.getCoordinate()) < sensorRadius) {
                                 modification.put(curve, null);
                                 intersectionPointsArray.add(new IntersectionPoint(intersectionPoints.get(0), "entry"));
+//                                System.out.println("___--intersect: 1, in--___");
                             } else {
                                 intersectionPointsArray.add(new IntersectionPoint(intersectionPoints.get(0), "exit"));
+//                                System.out.println("___--intersect: 1, in--___");
                             }
                             break;
                         }
@@ -433,8 +491,8 @@ public class MyAlgorithm4 {
                         // the circle cut the line segment at the middle
                         newCurve.clear();
                         // find out what part of the line is covered
-                        float startPointDistance = calculateDistance(curve.getStartPoint(), sensor.getCoordinate());
-                        float endPointDistance = calculateDistance(curve.getEndPoint(), sensor.getCoordinate());
+                        double startPointDistance = calculateDistance(curve.getStartPoint(), sensor.getCoordinate());
+                        double endPointDistance = calculateDistance(curve.getEndPoint(), sensor.getCoordinate());
                         
                         if (startPointDistance > sensorRadius && endPointDistance < sensorRadius) {
                             newCurve.add(new Curve(curve.getStartPoint(), intersectionPoints.get(0), curve.getCenter()));
@@ -455,11 +513,11 @@ public class MyAlgorithm4 {
                     }
                     case 2: {
                         newCurve.clear();
-                        float startPointDistance = calculateDistance(curve.getStartPoint(), sensor.getCoordinate());
-                        float endPointDistance = calculateDistance(curve.getEndPoint(), sensor.getCoordinate());
+                        double startPointDistance = calculateDistance(curve.getStartPoint(), sensor.getCoordinate());
+                        double endPointDistance = calculateDistance(curve.getEndPoint(), sensor.getCoordinate());
                         
-                        if ((new Float(startPointDistance)).equals(sensorRadius)) {
-                            if ((new Float(endPointDistance)).equals(sensorRadius)) {
+                        if ((new Double(startPointDistance)).equals(sensorRadius)) {
+                            if ((new Double(endPointDistance)).equals(sensorRadius)) {
                                 modification.put(curve, null);
                                 intersectionPointsArray.add(new IntersectionPoint(intersectionPoints.get(0), "entry"));
                             } else if (endPointDistance > sensorRadius) {
@@ -473,7 +531,7 @@ public class MyAlgorithm4 {
                             }
                         } else if (startPointDistance < sensorRadius) {
                             newCurve.add(new Curve(intersectionPoints.get(0), intersectionPoints.get(1), curve.getCenter()));
-                            if ((new Float(endPointDistance)).equals(sensorRadius)) {
+                            if ((new Double(endPointDistance)).equals(sensorRadius)) {
                                 intersectionPointsArray.add(new IntersectionPoint(intersectionPoints.get(0), "exit"));
                             } else {
                                 intersectionPointsArray.add(new IntersectionPoint(intersectionPoints.get(0), "exit"));
@@ -545,41 +603,41 @@ public class MyAlgorithm4 {
      * @param radius: The circle radius
      * @return The arrayList contains the intersection points
      */
-    private ArrayList<FloatPointItem> getIntersectionLineCircle(FloatPointItem startPoint, FloatPointItem endPoint, FloatPointItem center, float radius) {
-        float h = center.getX();
-        float k = center.getY();
-        float x0 = startPoint.getX();
-        float y0 = startPoint.getY();
-        float x1 = endPoint.getX();
-        float y1 = endPoint.getY();
+    private ArrayList<DoublePoint> getIntersectionLineCircle(DoublePoint startPoint, DoublePoint endPoint, DoublePoint center, double radius) {
+        double h = center.getX();
+        double k = center.getY();
+        double x0 = startPoint.getX();
+        double y0 = startPoint.getY();
+        double x1 = endPoint.getX();
+        double y1 = endPoint.getY();
         
-        float a = (x1 - x0)*(x1 - x0) + (y1 - y0)*(y1 - y0);
-        float b = 2*(x1 - x0)*(x0 - h) + 2*(y1 - y0)*(y0 - k);
-        float c = (x0 - h)*(x0 - h) + (y0 - k)*(y0 - k) - radius*radius;
+        double a = (x1 - x0)*(x1 - x0) + (y1 - y0)*(y1 - y0);
+        double b = 2*(x1 - x0)*(x0 - h) + 2*(y1 - y0)*(y0 - k);
+        double c = (x0 - h)*(x0 - h) + (y0 - k)*(y0 - k) - radius*radius;
         
-        float d = b*b - 4*a*c;
+        double d = b*b - 4*a*c;
         if (d < 0) {
             return new ArrayList<>();
         }
         if (d == 0) {
-            float t = -b/(2*a);
+            double t = -b/(2*a);
             if (0 <= t && t <= 1) {
-                FloatPointItem point = new FloatPointItem(x0 + (x1 - x0)*t, y0 + (y1 - y0)*t);
+                DoublePoint point = new DoublePoint(x0 + (x1 - x0)*t, y0 + (y1 - y0)*t);
                 return Stream.of(point).collect(Collectors.toCollection(ArrayList::new));
             }
         }
         // d > 0
-        float delta = (float)Math.sqrt(d);
+        double delta = (double)Math.sqrt(d);
         
-        float t1 = (-b - delta)/(2*a);
-        float t2 = (-b + delta)/(2*a);
+        double t1 = (-b - delta)/(2*a);
+        double t2 = (-b + delta)/(2*a);
         
-        ArrayList<FloatPointItem> result = new ArrayList<>();
+        ArrayList<DoublePoint> result = new ArrayList<>();
         if (0 <= t1 && t1 <= 1) {
-            result.add(new FloatPointItem(x0 + (x1 - x0)*t1, y0 + (y1 - y0)*t1));
+            result.add(new DoublePoint(x0 + (x1 - x0)*t1, y0 + (y1 - y0)*t1));
         }
         if (0 <= t2 && t2 <= 1) {
-            result.add(new FloatPointItem(x0 + (x1 - x0)*t2, y0 + (y1 - y0)*t2));
+            result.add(new DoublePoint(x0 + (x1 - x0)*t2, y0 + (y1 - y0)*t2));
         }
         return result;
     }
@@ -592,65 +650,82 @@ public class MyAlgorithm4 {
      * @param radius: the radius of the circle
      * @return Array list of intersectionPoint
      */
-    private ArrayList<FloatPointItem> getIntersectionArcCircle(Curve curve, FloatPointItem center, float radius) {
+    private ArrayList<DoublePoint> getIntersectionArcCircle(Curve curve, DoublePoint center, double radius) {
+        ArrayList<DoublePoint> intersectionPoints = new ArrayList<>();
+
         // check if the 2 circle don't intersect
         if (calculateDistance(curve.getCenter(), center) > 2*radius) {
             return new ArrayList<>();
-        }
-        
-        ArrayList<FloatPointItem> intersectionPoints = new ArrayList<>();
-        
-        //2(x2-x1)*X + 2(y2-y1)*Y = x2^2 - x1^2  + y2^2 - y1^2
-        //(X-x1)^2+ (Y-y1)^2 = R^2
-        float x1 = curve.getCenter().getX();
-        float y1 = curve.getCenter().getY();
-        float x2 = center.getX();
-        float y2 = center.getY();
-        
-        /**
-         * y2 = y1
-         * X = [x2^2 - x1^2]/[2(x2 - x1)]
-         * Y = +- sqrt[R^2 - (X - x1)^2] + y1
-         */
-        if (y2 == y1) {
-            float X = (x2*x2 - x1*x1)/(2*(x2 - x1));
-            float sqrt = (float) Math.sqrt(radius*radius - (X - x1)*(X - x1));
-            float Y1 = sqrt + y1;
-            float Y2 = -sqrt + y2;
-            if (new Float(Y1).equals(Y2)) {
-                intersectionPoints.add(new FloatPointItem(X, Y1));
-            } else {
-                intersectionPoints.add(new FloatPointItem(X, Y1));
-                intersectionPoints.add(new FloatPointItem(X, Y2));   
-            }
+        } else if (calculateDistance(curve.getCenter(), center) == 2*radius) {
+            /**
+             * This function separately handle this case because calculate this case using normal math (below)
+             * will come to delta == 0, but due to the double precision limitation, the delta is hard to be 0
+             * (usually < 10^(-9) in value, but never be exact zero) >
+             * **************
+             * The intersection point is the midpoint of the line segment with 2 center point at 2 end
+             */
+            double x1 = curve.getCenter().getX();
+            double y1 = curve.getCenter().getY();
+            double x2 = center.getX();
+            double y2 = center.getY();
+            
+            intersectionPoints.add(new DoublePoint((x1 + x2)/2, (y1 + y2)/2));
         } else {
             /**
-             * Y = [(x2^2 - x1^2 + y2^2 - y1^2)/2(y2 - y1)] - [(x2 - x1)/(y2 - y1)]*X = a - bX
-             * (X - x1)^2 + (bX - a + y1)^2 = R^2
-             * (1 + b^2)*X^2 + 2[-x1 - b(a - y1)]*X + x1^2 + (a - y1)^2 - R^2 = 0
-             * c*X^2 + 2d*X + e = 0
-             * delta = d^2 - ce
-             * X = [-d +- sqrt(delta)]/c
+             * distance < 2*radius
              */
-            float a = (x2*x2 - x1*x1 + y2*y2 - y1*y1)/(2*(y2 - y1));
-            float b = (x2 - x1)/(y2 - y1);
-            float c = 1 + b*b;
-            float d = -x1 - b*(a - y1);
-            float e = x1*x1 + (a - y1)*(a - y1) - radius*radius;
+            //2(x2-x1)*X + 2(y2-y1)*Y = x2^2 - x1^2  + y2^2 - y1^2
+            //(X-x1)^2+ (Y-y1)^2 = R^2
+            double x1 = curve.getCenter().getX();
+            double y1 = curve.getCenter().getY();
+            double x2 = center.getX();
+            double y2 = center.getY();
             
-            float delta = d*d - c*e;
-            
-            float X1 = (-d + (float)Math.sqrt(delta))/c;
-            float Y1 = a - b*X1;
-            
-            float X2 = (-d - (float)Math.sqrt(delta))/c;
-            float Y2 = a - b*X2;
-            
-            if (new Float(Y1).equals(Y2) && new Float(X1).equals(X2)) {
-                intersectionPoints.add(new FloatPointItem(X1, Y1));
+            /**
+             * y2 = y1
+             * X = [x2^2 - x1^2]/[2(x2 - x1)]
+             * Y = +- sqrt[R^2 - (X - x1)^2] + y1
+             */
+            if (y2 == y1) {
+                double X = (x2*x2 - x1*x1)/(2*(x2 - x1));
+                double sqrt = Math.sqrt(radius*radius - (X - x1)*(X - x1));
+                double Y1 = sqrt + y1;
+                double Y2 = -sqrt + y2;
+                if (new Double(Y1).equals(Y2)) {
+                    intersectionPoints.add(new DoublePoint(X, Y1));
+                } else {
+                    intersectionPoints.add(new DoublePoint(X, Y1));
+                    intersectionPoints.add(new DoublePoint(X, Y2));
+                }
             } else {
-                intersectionPoints.add(new FloatPointItem(X1, Y1));
-                intersectionPoints.add(new FloatPointItem(X2, Y2));
+                /**
+                 * Y = [(x2^2 - x1^2 + y2^2 - y1^2)/2(y2 - y1)] - [(x2 - x1)/(y2 - y1)]*X = a - bX
+                 * (X - x1)^2 + (bX - a + y1)^2 = R^2
+                 * (1 + b^2)*X^2 + 2[-x1 - b(a - y1)]*X + x1^2 + (a - y1)^2 - R^2 = 0
+                 * c*X^2 + 2d*X + e = 0
+                 * delta = d^2 - ce
+                 * X = [-d +- sqrt(delta)]/c
+                 */
+                double a = (x2*x2 - x1*x1 + y2*y2 - y1*y1)/(2*(y2 - y1));
+                double b = (x2 - x1)/(y2 - y1);
+                double c = 1 + b*b;
+                double d = -x1 - b*(a - y1);
+                double e = x1*x1 + (a - y1)*(a - y1) - radius*radius;
+                
+                double delta = d*d - c*e;
+                
+                double X1 = (-d + (double)Math.sqrt(delta))/c;
+                double Y1 = a - b*X1;
+                
+                double X2 = (-d - (double)Math.sqrt(delta))/c;
+                double Y2 = a - b*X2;
+                
+                if (new Double(Y1).equals(Y2) && new Double(X1).equals(X2)) {
+                    intersectionPoints.add(new DoublePoint(X1, Y1));
+                } else {
+                    intersectionPoints.add(new DoublePoint(X1, Y1));
+                    intersectionPoints.add(new DoublePoint(X2, Y2));
+                }
             }
         }
         
@@ -668,8 +743,8 @@ public class MyAlgorithm4 {
      * @param center: center point
      * @return sorted array
      */
-    private ArrayList<FloatPointItem> sortPointCounterClockWise(ArrayList<FloatPointItem> pointArray, FloatPointItem center) {
-        FloatPointItem firstItem = pointArray.get(0);
+    private ArrayList<DoublePoint> sortPointCounterClockWise(ArrayList<DoublePoint> pointArray, DoublePoint center) {
+        DoublePoint firstItem = pointArray.get(0);
         pointArray.sort((p1, p2) -> Double.compare(Math.atan2(p2.getY() - center.getY(), p2.getX() - center.getX()), Math.atan2(p1.getY() - center.getY(), p1.getX() - center.getX())));
         for (int i = 0, end = pointArray.indexOf(firstItem); i < end; i++) {
             pointArray.add(pointArray.get(i));
@@ -684,7 +759,7 @@ public class MyAlgorithm4 {
      * @param center: center point
      * @return sorted array
      */
-    private ArrayList<IntersectionPoint> sortPointClockWise(ArrayList<IntersectionPoint> pointArray, FloatPointItem center) {
+    private ArrayList<IntersectionPoint> sortPointClockWise(ArrayList<IntersectionPoint> pointArray, DoublePoint center) {
         IntersectionPoint firstItem = pointArray.get(0);
         pointArray.sort((p1, p2) -> Double.compare(Math.atan2(p1.getCoordinate().getY() - center.getY(), p1.getCoordinate().getX() - center.getX()), Math.atan2(p2.getCoordinate().getY() - center.getY(), p2.getCoordinate().getX() - center.getX())));
         for (int i = 0, end = pointArray.indexOf(firstItem); i < end; i++) {
@@ -701,8 +776,8 @@ public class MyAlgorithm4 {
      * @param center: sensor coordinate
      * @return arraylist of new curves
      */
-    private ArrayList<Curve> getCurveOnSensorCircle(ArrayList<IntersectionPoint> intersectionPointsArray, FloatPointItem center) {
-        FloatPointItem pendingPoint = null;
+    private ArrayList<Curve> getCurveOnSensorCircle(ArrayList<IntersectionPoint> intersectionPointsArray, DoublePoint center) {
+        DoublePoint pendingPoint = null;
         ArrayList<Curve> newCurve = new ArrayList<>();
         for (int i = 0, length = intersectionPointsArray.size(); i < length; i++) {
             String direction = intersectionPointsArray.get(i).getDirection();
