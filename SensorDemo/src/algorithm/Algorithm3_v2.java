@@ -183,7 +183,7 @@ public class Algorithm3_v2 {
             int a = 0;
 
         }
-        List<Integer> mListSrsd = findListSrsd(mListDs, listSensor);
+        List<Integer> mListSrsd = findListSrsd(listSensor);
 
         //Vong lap lay tung Ci
         for (int i = 0; i < mListDs.size(); i++) {
@@ -305,8 +305,9 @@ public class Algorithm3_v2 {
     boolean checkEnoughEnergy(List<Integer> tempListSensor , float ListEnergyUse[]) {
         for (int i =0; i < tempListSensor.size(); i++) {
             int idSen = tempListSensor.get(i);
-            float temp = ListEnergySensor[idSen] - (SensorUtility.mUnitTime * ListEnergyUse[idSen]);
+            float temp = ListEnergySensor[idSen] - (SensorUtility.mUnitTime * ListEnergyUse[idSen]);       
             if (temp < 0) {
+                System.out.println("Minum Time Unit :" +ListEnergySensor[idSen]/ListEnergyUse[idSen]);
                 return false;
             }
         }
@@ -572,7 +573,7 @@ public class Algorithm3_v2 {
             prebst_node = -1;
             for (int i = 0; i < listSnei.size(); i++) {
                 int sensor = listSnei.get(i);
-                int numCover = calculateCombineCover(listW, sensor, listIu, listPloss);
+                int numCover = calculateCombineCover2(listW,prebst_node, sensor, listIu, listPloss);
                 int numPrebst = calculateCover(prebst_Iu.getListCoverage(), listIu, listPloss);
                 //TH number coverTarget increase
                 if (numCover > numPrebst) {
@@ -656,7 +657,7 @@ public class Algorithm3_v2 {
                 prebst_node = -1;
                 for (int i =0; i< listSa.size(); i++) {
                     int sensor = listSa.get(i);
-                    int numCover = calculateCombineCover(listCi,sensor,listIu,listP);
+                    int numCover = calculateCombineCover2(listCi,prebst_node,sensor,listIu,listP);
                     int numPrebst = calculateCover(prebst_Iu.getListCoverage(),listIu,listP);
                     //TH number coverTarget increase
                     if (numCover > numPrebst) {
@@ -764,6 +765,43 @@ public class Algorithm3_v2 {
         return result;
         
     }
+    int calculateCombineCover2(List<Integer> listCii,int prebst,int sensor, List<CoverageItem> listIu,List<Integer> listP) {
+        int result =0;
+        List<Integer> listCi = new ArrayList<>();
+        
+        for (int i =0; i < listCii.size(); i++) {
+            if (listCii.get(i) != prebst) {
+                listCi.add(listCii.get(i));
+            }
+        }
+        boolean Check[] = new boolean[T];
+        for (int i=0; i < T;i++) {
+            Check[i] = false;
+        }
+        //Check ListCi
+        for (int i =0; i< listCi.size(); i++) {
+            int sensorId = listCi.get(i);
+            CoverageItem coverageItem = listIu.get(sensorId);
+            List<Integer> listId = coverageItem.getListCoverage();
+            for (int j =0 ; j<listId.size();j++ ) {
+                int id = listId.get(j);
+                Check[id] = true;
+            }
+        }
+        //Check Add sensor
+        List<Integer> listIds = listIu.get(sensor).getListCoverage();
+        for (int j =0 ; j<listIds.size();j++ ) {
+                int id = listIds.get(j);
+                Check[id] = true;
+        }
+        
+        for (int i =0; i< listP.size(); i++) {
+            int idtarget = listP.get(i);
+            if (Check[idtarget]) result++;
+        }
+        return result;
+        
+    }
     
     int calculateCover(List<Integer> listCi, List<CoverageItem> listIu,List<Integer> listP) {
         int result =0;
@@ -837,25 +875,12 @@ public class Algorithm3_v2 {
         return listSa;
     }
     
-    public List<Integer> findListSrsd (List<List<Integer>> listDs, List<Integer> listSensor) {
+    public List<Integer> findListSrsd (List<Integer> listSensor) {
         List<Integer> listSrsd = new ArrayList<>();
-        int N1 = listSensor.size();
-        boolean Check[] = new boolean[N1];
-        for (int i=0; i < N1 ;i++) {
-            Check[i] = false;
-        }
-        
-        for (int i =0; i< listDs.size(); i++) {
-            List<Integer> listCi = listDs.get(i);
-            for (int j =0; j < listCi.size(); j++) {
-                int sensor = listCi.get(j);
-                Check[sensor] = true;
-            }
-        }
-        
+       
         for (int i =0; i < listSensor.size(); i++) {
             int id = listSensor.get(i);
-            if (!Check[id]) listSrsd.add(id);
+            listSrsd.add(id);
         }
         
         return listSrsd;
@@ -879,6 +904,7 @@ public class Algorithm3_v2 {
         List<Integer> listParent1 = new ArrayList<>();
         int num = 0;
         for (int i = 0; i < listSrd.size(); i++) {
+            if (StartSensor == listSrd.get(i)) continue;
             if (Distance[StartSensor][listSrd.get(i)] <= Rc) {
                 List<Integer> list = new ArrayList<>();
                 list.add(listSrd.get(i));
@@ -919,6 +945,7 @@ public class Algorithm3_v2 {
                 }
                 int count = 0;
                 for (int i = 0; i < listSrd.size(); i++) {
+                    if (StartSensor == listSrd.get(i)) continue;
                     if (lastSensor != listSrd.get(i) && Distance[lastSensor][listSrd.get(i)] <= Rc) {
 
                         if (!checkPointExitInList(listSrd.get(i), headParent)) {
@@ -975,7 +1002,7 @@ public class Algorithm3_v2 {
                 continue;
             }
             List<List<Integer>> mListToSink = Finding_AllList_ToSink(senSing, mListSrsd);
-            System.out.println("  List path to sink "+mListToSink.size());
+            System.out.println("  List path of sensor id ="+ senSing +" to sink size ="+mListToSink.size());
             //Find List Snei
             List<Integer> mListSnei = new ArrayList<>();
             for (int j = 0; j< mListToSink.size(); j++) {
@@ -988,7 +1015,9 @@ public class Algorithm3_v2 {
             List<LoadBalanceItem> mListNeighborSensing = FindLoadBalanceSensing2(senSing,mListSnei);
             LoadBalanceItem item = getRanDomItem(mListNeighborSensing);
             
-            if(item == null) break;
+            if(item == null) {
+                break;
+            }
             int nextNode = item.getIdSr();
             float loadNextNode = 1;
             path.add(nextNode);
@@ -1139,6 +1168,6 @@ public class Algorithm3_v2 {
         Distance = null;
         ListEnergySensor = null;
     }
-
+    
     
 }
