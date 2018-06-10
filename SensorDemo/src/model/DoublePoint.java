@@ -10,6 +10,8 @@ package model;
  * @author sev_user
  */
 public class DoublePoint {
+    private static final double EPSILON = 0.00001d;
+    
     double x;
     double y;
     
@@ -43,11 +45,12 @@ public class DoublePoint {
         this.y = y;
     }
     
+    //compare using epsilon to avoid double rounding precision problem
     public static boolean compare(DoublePoint a, DoublePoint b) {
         if(a == null || b == null) {
             return false;
         }
-        return (new Double(a.getX())).equals(b.getX()) && (new Double(a.getY())).equals(b.getY());
+        return Math.abs(a.getX() - b.getX()) < EPSILON && Math.abs(a.getY() - b.getY()) < EPSILON;
     }
     
     /**
@@ -73,6 +76,6 @@ public class DoublePoint {
             return false;
         }
         DoublePoint otherPoint = (DoublePoint)other;
-        return (new Double(this.x)).equals(otherPoint.getX()) && (new Double(this.y)).equals(otherPoint.getY());
+        return Math.abs(this.getX() - otherPoint.getX()) < EPSILON && Math.abs(this.getY() - otherPoint.getY()) < EPSILON;
     }    
 }

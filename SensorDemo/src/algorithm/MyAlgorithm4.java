@@ -11,8 +11,6 @@ import ilog.concert.IloLinearNumExpr;
 import ilog.concert.IloNumVar;
 import ilog.cplex.IloCplex;
 import iterface.frameMain;
-import java.awt.Graphics2D;
-import java.awt.geom.Arc2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -45,20 +43,22 @@ public class MyAlgorithm4 {
         Map<String, Object> data = readData();
         data.put("sensorsThreshold", sensorsThreshold);
         
-        Set<NodeItem> test = new HashSet<>(SensorUtility.mListSensorNodes);
-        System.out.println(test.size());
-//        Arc2D.double test = new Arc2D.double(50, 50, 30, 30, (double)Math.PI/4, (double)Math.PI, Arc2D.OPEN);
-//        ((Graphics2D)frameMain.coordinatePanel.getGraphics()).draw(test);
-//        frameMain.coordinatePanel.refresh();
-
         return runAlgorithm(data);
-//        System.out.println(SensorUtility.mListSensorNodes.size());
-//        return null;
     }
     
     /**
      * Read data used in the algorithm from SensorUtility class
      * This function deep clone all the data to prevent accidental modification
+     * A map object is used to avoid global variables and make the input parameter clearer
+     * data is a Map<String, Objec> = {
+     *      sensorRadius : SensorUtility.mRsValue,
+     *      sensorLifeTime : SensorUtility.LifeTimeOfSensor,
+     *      sensorList : a uniquified sensor list
+     *      UpperLeftCornerPoint : (0, 0)
+     *      DownRightCorverPoint : the name is obvious, use to identify the area
+     *      sensorsThreshold : the number of sensor that when the algorithm run, if the number of unprocessed sensor drop 
+     *                          below this threshold, the algorithm terminate, since continue to run may not produce a better result
+     * }
      * @return a Map contains data
      */
     private Map<String, Object> readData() {
@@ -67,9 +67,9 @@ public class MyAlgorithm4 {
         data.put("sensorLifeTime", SensorUtility.LifeTimeOfSensor);
         // since saved sensor list doesn't assign id for each sensor, so that the below function assign each sensor with
         // an id equals to its index in the array in order to distinguish sensors located at the same coordinate
-        ArrayList<NodeItem> test = (new HashSet<>(SensorUtility.mListSensorNodes)).stream().collect(Collectors.toCollection(ArrayList::new));
-        data.put("sensorList", IntStream.range(0, test.size()).mapToObj(i -> {
-            NodeItem node = test.get(i);
+        ArrayList<NodeItem> uniqNodeList = (new HashSet<>(SensorUtility.mListSensorNodes)).stream().collect(Collectors.toCollection(ArrayList::new));
+        data.put("sensorList", IntStream.range(0, uniqNodeList.size()).mapToObj(i -> {
+            NodeItem node = uniqNodeList.get(i);
             return new NodeItem(i, node.getX(), node.getY(), 2, 0, 0);
         }).collect(Collectors.toCollection(ArrayList::new)));
         data.put("UpLeftCornerPoint", new DoublePoint(0, 0));
@@ -82,6 +82,10 @@ public class MyAlgorithm4 {
      * run the algorithm
      * @param data: the map from string to Object which is data use in the algorithm
      * @return a map contains the result, or null if no sensor set can cover the area
+     * result is a Map<String, Object> = {
+     *      sensorSets : list of sensor sets that cover the area
+     *      onTime : list of double values which is the turn on time corresponding to the sensor sets with the same index in sensorSets
+     * }
      */
     private Map<String, Object> runAlgorithm(Map<String, Object> data) {
         ArrayList<ArrayList<NodeItem>> listOfSensorSets = getListOfSensorSet(data);
@@ -187,7 +191,26 @@ public class MyAlgorithm4 {
 //                    currentContructingSensorSet.forEach((node) -> SensorUtility.mListSensorNodes.get(SensorUtility.mListSensorNodes.indexOf(node)).setStatus(1));
 //                    frameMain.coordinatePanel.refresh();
 //                }
-                System.out.println();
+//                boolean isBug = false;
+//                ArrayList<DoublePoint> diffHere = new ArrayList<>();
+//                startPointArray = uncoveredCurve.stream().map(curve -> curve.getStartPoint()).collect(Collectors.toCollection(ArrayList::new));
+//                ArrayList<DoublePoint> endPointArray = uncoveredCurve.stream().map(curve -> curve.getEndPoint()).collect(Collectors.toCollection(ArrayList::new));
+//                for (int i = 0, length = endPointArray.size(); i < length; i++) {
+//                    if (!startPointArray.remove(endPointArray.get(i))) {
+//                        diffHere.add(endPointArray.get(i));
+//                        isBug = true;
+//                    }
+//                }
+//                if (startPointArray.size() > 0) {
+//                    isBug = true;
+//                }
+//                if (isBug || (uncoveredCurve.size() <= 2 && uncoveredCurve.size() > 0)) {
+//                    SensorUtility.mListSensorNodes.forEach(node -> node.setStatus(0));
+//                    currentContructingSensorSet.forEach((node) -> SensorUtility.mListSensorNodes.get(SensorUtility.mListSensorNodes.indexOf(node)).setStatus(1));
+//                    frameMain.coordinatePanel.refresh();
+//                }
+//                System.out.println();
+//                System.out.println();
             }
             listOfSensorSets.add(currentContructingSensorSet.stream().collect(Collectors.toCollection(ArrayList::new)));
             usedSensors.addAll(currentContructingSensorSet);
@@ -745,7 +768,7 @@ public class MyAlgorithm4 {
      */
     private ArrayList<DoublePoint> sortPointCounterClockWise(ArrayList<DoublePoint> pointArray, DoublePoint center) {
         DoublePoint firstItem = pointArray.get(0);
-        pointArray.sort((p1, p2) -> Double.compare(Math.atan2(p2.getY() - center.getY(), p2.getX() - center.getX()), Math.atan2(p1.getY() - center.getY(), p1.getX() - center.getX())));
+        pointArray.sort((p1, p2) -> compareAngle(Math.atan2(p2.getY() - center.getY(), p2.getX() - center.getX()), Math.atan2(p1.getY() - center.getY(), p1.getX() - center.getX())));
         for (int i = 0, end = pointArray.indexOf(firstItem); i < end; i++) {
             pointArray.add(pointArray.get(i));
         }
@@ -755,13 +778,19 @@ public class MyAlgorithm4 {
     
     /**
      * Sort the point in the input array in clockwise order relative to the center point
+     * The first point in the output array is always the "exit" point, or the getCurveOnSensorCircle function will behave incorrectly
      * @param pointArray: array to be sorted
      * @param center: center point
      * @return sorted array
      */
     private ArrayList<IntersectionPoint> sortPointClockWise(ArrayList<IntersectionPoint> pointArray, DoublePoint center) {
         IntersectionPoint firstItem = pointArray.get(0);
-        pointArray.sort((p1, p2) -> Double.compare(Math.atan2(p1.getCoordinate().getY() - center.getY(), p1.getCoordinate().getX() - center.getX()), Math.atan2(p2.getCoordinate().getY() - center.getY(), p2.getCoordinate().getX() - center.getX())));
+        int j = 0;
+        while (!firstItem.getDirection().equals("exit") && j < pointArray.size()) {
+            firstItem = pointArray.get(j);
+            j++;
+        }
+        pointArray.sort((p1, p2) -> compareAngle(Math.atan2(p1.getCoordinate().getY() - center.getY(), p1.getCoordinate().getX() - center.getX()), Math.atan2(p2.getCoordinate().getY() - center.getY(), p2.getCoordinate().getX() - center.getX())));
         for (int i = 0, end = pointArray.indexOf(firstItem); i < end; i++) {
             pointArray.add(pointArray.get(i));
         }
@@ -789,6 +818,22 @@ public class MyAlgorithm4 {
             }
         }
         return newCurve;
+    }
+    
+    /**
+     * compare 2 angle in double value using epsilon to avoid precision problem
+     * @param angle1
+     * @param angle2
+     * @return 
+     */
+    private int compareAngle(double angle1, double angle2) {
+        double EPSILON = 0.00001d;
+        double diff = Math.abs(angle1 - angle2);
+        if (diff < EPSILON || (diff < 2*Math.PI + EPSILON/2 && diff > 2*Math.PI - EPSILON/2)) {
+            return 0;
+        } else {
+            return Double.compare(angle1, angle2);
+        }
     }
         
     public static void main(String[] args) {
