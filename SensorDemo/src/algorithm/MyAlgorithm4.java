@@ -10,14 +10,11 @@ import ilog.concert.IloException;
 import ilog.concert.IloLinearNumExpr;
 import ilog.concert.IloNumVar;
 import ilog.cplex.IloCplex;
-import iterface.frameMain;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -148,8 +145,7 @@ public class MyAlgorithm4 {
 
                 /**
                  * random sensor from set, if no unused sensor covers the 1st curve, then random from used sensors
-                 * multiple sensor can be located at the same location, so that we use hashSet to construct new cover set, since using 2 sensor in 
-                 * the same location has no meaning
+                 * multiple sensor located in the same coordinate could break the below code, so the list is uniquified before hand
                  * In the NodeItem hashCode and equals implementation, I only care about the coordinate and the type of node
                  * so that 2 node of the same type and same location, but different id, status will be consider the same one
                  */
@@ -160,9 +156,6 @@ public class MyAlgorithm4 {
                     optionalSensor = nearBySensors.stream().filter(sensor -> !currentContructingSensorSet.contains(sensor)).findAny();
                     // if no sensor cover the next curve, it mean that the provided sensor set doesn't cover the area
                     if (!optionalSensor.isPresent()) {
-                        SensorUtility.mListSensorNodes.forEach(node -> node.setStatus(0));
-                        currentContructingSensorSet.forEach((node) -> SensorUtility.mListSensorNodes.get(SensorUtility.mListSensorNodes.indexOf(node)).setStatus(1));
-                        frameMain.coordinatePanel.refresh();
                         return null;
                     } else {
                         chosenSensor = (NodeItem)optionalSensor.get();
@@ -175,42 +168,13 @@ public class MyAlgorithm4 {
                 }
                 
                 currentContructingSensorSet.add(chosenSensor);
-                
-//                SensorUtility.mListSensorNodes.get(SensorUtility.mListSensorNodes.indexOf(chosenSensor)).setStatus(1);
-//                frameMain.coordinatePanel.refresh();
-                
+
                 // filter out curves which cannot intersect with the chosen sensor
                 ArrayList<Curve> nearByCurves = getCurvesNearSensor(uncoveredCurve, chosenSensor, sensorRadius);
                 
                 HashMap<Curve, ArrayList<Curve>> curveArrayModification = getCurveModification(chosenSensor, nearByCurves, sensorRadius);
                 
                 updateCurveArray(uncoveredCurve, curveArrayModification);
-//                // use for debugging
-//                if (uncoveredCurve.size() <= 2 && uncoveredCurve.size() > 0) {
-//                    SensorUtility.mListSensorNodes.forEach(node -> node.setStatus(0));
-//                    currentContructingSensorSet.forEach((node) -> SensorUtility.mListSensorNodes.get(SensorUtility.mListSensorNodes.indexOf(node)).setStatus(1));
-//                    frameMain.coordinatePanel.refresh();
-//                }
-//                boolean isBug = false;
-//                ArrayList<DoublePoint> diffHere = new ArrayList<>();
-//                startPointArray = uncoveredCurve.stream().map(curve -> curve.getStartPoint()).collect(Collectors.toCollection(ArrayList::new));
-//                ArrayList<DoublePoint> endPointArray = uncoveredCurve.stream().map(curve -> curve.getEndPoint()).collect(Collectors.toCollection(ArrayList::new));
-//                for (int i = 0, length = endPointArray.size(); i < length; i++) {
-//                    if (!startPointArray.remove(endPointArray.get(i))) {
-//                        diffHere.add(endPointArray.get(i));
-//                        isBug = true;
-//                    }
-//                }
-//                if (startPointArray.size() > 0) {
-//                    isBug = true;
-//                }
-//                if (isBug || (uncoveredCurve.size() <= 2 && uncoveredCurve.size() > 0)) {
-//                    SensorUtility.mListSensorNodes.forEach(node -> node.setStatus(0));
-//                    currentContructingSensorSet.forEach((node) -> SensorUtility.mListSensorNodes.get(SensorUtility.mListSensorNodes.indexOf(node)).setStatus(1));
-//                    frameMain.coordinatePanel.refresh();
-//                }
-//                System.out.println();
-//                System.out.println();
             }
             listOfSensorSets.add(currentContructingSensorSet.stream().collect(Collectors.toCollection(ArrayList::new)));
             usedSensors.addAll(currentContructingSensorSet);
@@ -295,7 +259,7 @@ public class MyAlgorithm4 {
     }
     
     /**
-     * Find the sensors in the input list that the point lie within
+     * Find the sensors in the input list that the point lie within (remove the == radius case to simplify the algorithm)
      * @param sensorListL: The input sensor list to filter from
      * @param point: The point that the sensor must cover it
      * @param radius: Sensor radius
@@ -329,19 +293,6 @@ public class MyAlgorithm4 {
     }
     
     /**
-     * this function is used with usedSensors, which is a hashSet
-     * it convert set to arraylist then call the above function
-     * @param usedSensors
-     * @param pointArray
-     * @param radius
-     * @return 
-     */
-    private ArrayList<NodeItem> filterByTheNumberOfPointsCovered(Set<NodeItem> usedSensors, ArrayList<DoublePoint> pointArray, double radius) {
-        ArrayList<NodeItem> usedSensorList = new ArrayList<>(usedSensors);
-        return filterByTheNumberOfPointsCovered(usedSensorList, pointArray, radius);
-    }
-    
-    /**
      * Find the curves/edges that MAY intersect with the sensor circle
      * The resulting curves/edges is NOT guarantee to intersect with the sensor circle
      * since the calculation is math-heavy and may duplicate with the "find the intersection" function
@@ -361,16 +312,6 @@ public class MyAlgorithm4 {
                 return calculateDistance(curveCenter, sensor.getCoordinate()) <= 2*radius;
             }
         }).collect(Collectors.toCollection(ArrayList::new));
-    }
-    
-    /**
-     * Get random element in the input array
-     * @param array: the array to get random element
-     * @return The random element from the array
-     */
-    private NodeItem randomElement(ArrayList<NodeItem> array) {
-        Random rand = new Random();
-        return array.get(rand.nextInt(array.size()));
     }
     
     /**
