@@ -129,55 +129,15 @@ public class MyAlgorithm4 {
             uncoveredCurve.add(new Curve((DoublePoint)data.get("UpLeftCornerPoint"), new DoublePoint(SensorUtility.numberOfColumn - 1, 0), Curve.EdgeId.TOP));
             uncoveredCurve.add(new Curve(new DoublePoint(SensorUtility.numberOfColumn - 1, 0), (DoublePoint)data.get("DownRightCornerPoint"), Curve.EdgeId.RIGHT));
 
-            HashSet<NodeItem> currentContructingSensorSet = new HashSet<>();
-            
             System.out.println("____Number of sensor left: " + sensorList.size() + "___________");
-//            SensorUtility.mListSensorNodes.forEach(node -> node.setStatus(0));
-//            frameMain.coordinatePanel.refresh();
-            
-            // run until all arcs is covered
-            while (uncoveredCurve.size() > 0) {
-                System.out.println(sensorList.size() + ", (" + currentContructingSensorSet.size() + "). Number of curves left: " + uncoveredCurve.size());
-                // pick 1st curve, filter out all sensors that don't cover some segment of this curve
-                ArrayList<DoublePoint> startPointArray = uncoveredCurve.stream().map(curve -> curve.getStartPoint()).collect(Collectors.toCollection(ArrayList::new));
-                ArrayList<NodeItem> nearBySensors = filterByTheNumberOfPointsCovered(sensorList, startPointArray, sensorRadius);
-                Optional optionalSensor = nearBySensors.stream().filter(sensor -> !currentContructingSensorSet.contains(sensor)).findAny();
 
-                /**
-                 * random sensor from set, if no unused sensor covers the 1st curve, then random from used sensors
-                 * multiple sensor located in the same coordinate could break the below code, so the list is uniquified before hand
-                 * In the NodeItem hashCode and equals implementation, I only care about the coordinate and the type of node
-                 * so that 2 node of the same type and same location, but different id, status will be consider the same one
-                 */
-                NodeItem chosenSensor;
-                if (!optionalSensor.isPresent()) {
-                    // get sensor from used sensor list
-                    nearBySensors = filterByTheNumberOfPointsCovered(usedSensors, startPointArray, sensorRadius);
-                    optionalSensor = nearBySensors.stream().filter(sensor -> !currentContructingSensorSet.contains(sensor)).findAny();
-                    // if no sensor cover the next curve, it mean that the provided sensor set doesn't cover the area
-                    if (!optionalSensor.isPresent()) {
-                        return null;
-                    } else {
-                        chosenSensor = (NodeItem)optionalSensor.get();
-                        usedSensors.remove(chosenSensor);
-                        System.out.println("used sensor");   
-                    }
-                } else {
-                    chosenSensor = (NodeItem)optionalSensor.get();
-                    sensorList.remove(chosenSensor);
-                }
-                
-                currentContructingSensorSet.add(chosenSensor);
+            ArrayList<NodeItem> currentConstructingSensorSet = new ArrayList<>();
+            currentConstructingSensorSet = getSensorSet(uncoveredCurve, sensorList, usedSensors, sensorRadius);
 
-                // filter out curves which cannot intersect with the chosen sensor
-                ArrayList<Curve> nearByCurves = getCurvesNearSensor(uncoveredCurve, chosenSensor, sensorRadius);
-                
-                HashMap<Curve, ArrayList<Curve>> curveArrayModification = getCurveModification(chosenSensor, nearByCurves, sensorRadius);
-                
-                updateCurveArray(uncoveredCurve, curveArrayModification);
+            if (currentConstructingSensorSet == null) {
+                return null;
             }
-            listOfSensorSets.add(currentContructingSensorSet.stream().collect(Collectors.toCollection(ArrayList::new)));
-            usedSensors.addAll(currentContructingSensorSet);
+            listOfSensorSets.add(currentConstructingSensorSet);
         }
         System.out.println("unused sensors: " + sensorList.size());
         return listOfSensorSets;
@@ -256,6 +216,66 @@ public class MyAlgorithm4 {
         }
         
         return listOfOnTime;
+    }
+    
+    /**
+     * compute ONE sensor sets that cover the area described by "uncoveredCurve", using sensor in "sensorList",
+     * if some area is not covered by any sensor in "sensorList" then the function looking at "usedSensor",
+     * if no sensor satisfied, null is returned, otherwise, a arraylist of sensor is returned
+     * @param uncoveredCurve an array of cure describing the covering area
+     * @param sensorList the first list to looking for sensor, in this algorithm, those are unused sensor
+     * @param usedSensors the second list to looking for sensor, those are used sensor
+     * @param sensorRadius the sensing radius
+     * @return 
+     */
+    private ArrayList<NodeItem> getSensorSet(ArrayList<Curve> uncoveredCurve, ArrayList<NodeItem> sensorList, ArrayList<NodeItem> usedSensors, double sensorRadius) {
+        HashSet<NodeItem> currentConstructingSensorSet = new HashSet<>();
+
+        // run until all arcs is covered
+        while (uncoveredCurve.size() > 0) {
+            System.out.println(sensorList.size() + ", (" + currentConstructingSensorSet.size() + "). Number of curves left: " + uncoveredCurve.size());
+            // pick 1st curve, filter out all sensors that don't cover some segment of this curve
+            ArrayList<DoublePoint> startPointArray = uncoveredCurve.stream().map(curve -> curve.getStartPoint()).collect(Collectors.toCollection(ArrayList::new));
+            ArrayList<NodeItem> nearBySensors = filterByTheNumberOfPointsCovered(sensorList, startPointArray, sensorRadius);
+            Optional optionalSensor = nearBySensors.stream().filter(sensor -> !currentConstructingSensorSet.contains(sensor)).findAny();
+            
+            /**
+             * random sensor from set, if no unused sensor covers the 1st curve, then random from used sensors
+             * multiple sensor located in the same coordinate could break the below code, so the list is uniquified before hand
+             * In the NodeItem hashCode and equals implementation, I only care about the coordinate and the type of node
+             * so that 2 node of the same type and same location, but different id, status will be consider the same one
+             */
+            NodeItem chosenSensor;
+            if (!optionalSensor.isPresent()) {
+                // get sensor from used sensor list
+                nearBySensors = filterByTheNumberOfPointsCovered(usedSensors, startPointArray, sensorRadius);
+                optionalSensor = nearBySensors.stream().filter(sensor -> !currentConstructingSensorSet.contains(sensor)).findAny();
+                // if no sensor cover the next curve, it mean that the provided sensor set doesn't cover the area
+                if (!optionalSensor.isPresent()) {
+                    return null;
+                } else {
+                    chosenSensor = (NodeItem)optionalSensor.get();
+                    usedSensors.remove(chosenSensor);
+                    System.out.println("used sensor");
+                }
+            } else {
+                chosenSensor = (NodeItem)optionalSensor.get();
+                sensorList.remove(chosenSensor);
+            }
+            
+            currentConstructingSensorSet.add(chosenSensor);
+            
+            // filter out curves which cannot intersect with the chosen sensor
+            ArrayList<Curve> nearByCurves = getCurvesNearSensor(uncoveredCurve, chosenSensor, sensorRadius);
+            
+            HashMap<Curve, ArrayList<Curve>> curveArrayModification = getCurveModification(chosenSensor, nearByCurves, sensorRadius);
+            
+            updateCurveArray(uncoveredCurve, curveArrayModification);
+        }
+        
+        usedSensors.addAll(currentConstructingSensorSet);
+        
+        return currentConstructingSensorSet.stream().collect(Collectors.toCollection(ArrayList::new));
     }
     
     /**
