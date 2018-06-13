@@ -4,7 +4,10 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/home/dauto98/ICT/lab/SensorSimulationProject/SensorDemo/src/algorithm/MyAlgorithm4.java</file>
+<<<<<<< OURS
+=======
             <file>file:/home/dauto98/ICT/lab/SensorSimulationProject/SensorDemo/src/common/SensorUtility.java</file>
+>>>>>>> THEIRS
         </group>
     </open-files>
 </project-private>
