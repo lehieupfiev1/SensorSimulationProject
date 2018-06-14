@@ -455,14 +455,6 @@ public class frameMain extends javax.swing.JFrame {
         });
         AlgorithmMenu.add(Algorithm3_v2MenuItem);
 
-        MyAlgorithm4MenuItem.setText("MyAlgorithm4");
-        MyAlgorithm4MenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                MyAlgorithm4MenuItemActionPerformed(evt);
-            }
-        });
-        AlgorithmMenu.add(MyAlgorithm4MenuItem);
-
         menuBar.add(AlgorithmMenu);
 
         helpMenu.setMnemonic('h');
@@ -978,7 +970,6 @@ public class frameMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem ModifyTargetMenuItem;
     private javax.swing.JMenuItem MyAlgorithm2MenuItem;
     private javax.swing.JMenuItem MyAlgorithm3MenuItem;
-    private javax.swing.JMenuItem MyAlgorithm4MenuItem;
     private javax.swing.JMenuItem MyAlgorithmMenuItem;
     private javax.swing.JMenuItem NetworkSizeMenuItem;
     private javax.swing.JMenu RobotMenu;

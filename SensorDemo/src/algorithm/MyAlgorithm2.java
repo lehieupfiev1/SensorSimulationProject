@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import model.CountItem;
 import model.Curve;
@@ -1520,16 +1521,21 @@ public class MyAlgorithm2 {
     }
     
     public void FindSetXi(List<Integer> ListSensor,FloatPointItem UpLeftCornerPoint, FloatPointItem DownRightCornerPoint, List<List<Integer>> ListResultXi) {
-        // convert data to be compatible with the function parameters
+        // convert data to be compatible with the function parameters, for more infor
+        // on what does each key-value pairs mean, looking at the comment in MyAlgorithm4
         Map<String,Object> data = new HashMap<>();
         data.put("sensorRadius", (double)SensorUtility.mRsValue);
         data.put("sensorLifeTime", SensorUtility.LifeTimeOfSensor);
         data.put("sensorList", ListSensor.stream().map(i -> {
             NodeItem node = SensorUtility.mListSensorNodes.get(i);
             return new NodeItem(i, node.getX(), node.getY(), 2, 0, 0);
-        }));
+        }).collect(Collectors.toCollection(ArrayList::new)));
         data.put("UpLeftCornerPoint", new DoublePoint(UpLeftCornerPoint.getX(), UpLeftCornerPoint.getY()));
         data.put("DownRightCornerPoint", new DoublePoint(DownRightCornerPoint.getX(), DownRightCornerPoint.getY()));
+        
+        float rectangleArea = (DownRightCornerPoint.getX() - UpLeftCornerPoint.getX())*(DownRightCornerPoint.getY() - UpLeftCornerPoint.getY());
+        float sensorArea = SensorUtility.mRsValue*SensorUtility.mRsValue*(float)Math.PI;
+        data.put("sensorsThreshold", (int)Math.ceil(rectangleArea/(2*sensorArea)));
         
         ArrayList<ArrayList<NodeItem>> ListSensorSets = getListOfSensorSet(data);
         // convert back to integer
