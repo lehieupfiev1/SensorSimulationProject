@@ -50,14 +50,14 @@ public class ConverInput {
      public static void main(String[] args) {
          
         try {
-            readSensorFile("E:\\HIEU\\CAO HOC\\Hoc May\\sensor.txt"); //Add URL sensor file with format (
-            readTargetFile("E:\\HIEU\\CAO HOC\\Hoc May\\target.txt");//Add URL target file
-            readSinkFile("E:\\HIEU\\CAO HOC\\Hoc May\\sink.txt");//Add URL Sink file
+            readSensorFile("E:\\HIEU\\CAO HOC\\Hoc May\\sensor600.txt"); //Add URL sensor file with format (
+            readTargetFile("E:\\HIEU\\CAO HOC\\Hoc May\\target30.txt");//Add URL target file
+            readSinkFile("E:\\HIEU\\CAO HOC\\Hoc May\\sink1.txt");//Add URL Sink file
         } catch (IOException ex) {
             Logger.getLogger(ConverInput.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
-            writeFile("E:\\HIEU\\CAO HOC\\Hoc May\\inputnew.INP"); //Url luu file input duoc sinh ra
+            writeFile("E:\\HIEU\\CAO HOC\\Hoc May\\input600.INP"); //Url luu file input duoc sinh ra
         } catch (IOException ex) {
             Logger.getLogger(ConverInput.class.getName()).log(Level.SEVERE, null, ex);
         }

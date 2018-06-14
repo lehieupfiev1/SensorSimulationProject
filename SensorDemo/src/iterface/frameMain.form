@@ -294,7 +294,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="MyAlgorithm3MenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="MyAlgorithm3"/>
+                <Property name="text" type="java.lang.String" value="NDST Algorithm"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="MyAlgorithm3MenuItemActionPerformed"/>
@@ -302,18 +302,18 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="Algoritm3MenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Algorithm3"/>
+                <Property name="text" type="java.lang.String" value="EECC Algorithm"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Algoritm3MenuItemActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="MyAlgorithm4MenuItem">
+            <MenuItem class="javax.swing.JMenuItem" name="Algorithm3_v2MenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="MyAlgorithm4"/>
+                <Property name="text" type="java.lang.String" value="MCLCT Algorithm"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="MyAlgorithm4MenuItemActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Algorithm3_v2MenuItemActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>

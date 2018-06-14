@@ -1,0 +1,136 @@
+Test case : 6
+Sensor=26  Target=3  Sink=3  Rs=20.0  Rc=40.0  MaxHop=3  L=2
+Time Run = 1881.0 , Time Life = 1.2395344826874669E8
+
+Test case : 6
+Sensor=26  Target=3  Sink=3  Rs=20.0  Rc=40.0  MaxHop=3  L=2
+Time Run = 233.0 , Time Life = 1.2395344826874669E8
+
+Test case : 9
+Sensor=1059  Target=100  Sink=54  Rs=30.0  Rc=60.0  MaxHop=3  L=2
+Time Run = 10928.0 , Time Life = 0.0
+
+Test case : 9
+Sensor=1059  Target=100  Sink=54  Rs=30.0  Rc=60.0  MaxHop=3  L=2
+Time Run = 19303.0 , Time Life = 9.549572981606731E7
+
+Test case : 6
+Sensor=26  Target=3  Sink=3  Rs=20.0  Rc=40.0  MaxHop=3  L=2
+Time Run = 525.0 , Time Life = 1.2395344826874669E8
+
+Test case : 6
+Sensor=26  Target=3  Sink=3  Rs=20.0  Rc=40.0  MaxHop=3  L=2
+Time Run = 296.0 , Time Life = 1.2395344826874669E8
+
+Test case : 7
+Sensor=6  Target=3  Sink=5  Rs=10.0  Rc=10.0  MaxHop=2  L=2
+Time Run = 240.0 , Time Life = 6.630860129889419E7
+
+Test case : 8
+Sensor=1059  Target=100  Sink=54  Rs=40.0  Rc=80.0  MaxHop=3  L=2
+Time Run = 81095.0 , Time Life = 1.665366629687009E8
+
+Test case : 8
+Sensor=1059  Target=100  Sink=54  Rs=40.0  Rc=80.0  MaxHop=3  L=1
+Time Run = 78588.0 , Time Life = 1.0336851869891857E8
+
+Test case : 7
+Sensor=6  Target=3  Sink=5  Rs=10.0  Rc=10.0  MaxHop=2  L=2
+Time Run = 687.0 , Time Life = 6.630860129889419E7
+
+Test case : 6
+Sensor=26  Target=3  Sink=3  Rs=20.0  Rc=40.0  MaxHop=3  L=2
+Time Run = 234.0 , Time Life = 1.2395344826874669E8
+
+Test case : 6
+Sensor=26  Target=3  Sink=3  Rs=20.0  Rc=40.0  MaxHop=3  L=2
+Time Run = 234.0 , Time Life = 1.2395344826874669E8
+
+Test case : 6
+Sensor=26  Target=3  Sink=3  Rs=20.0  Rc=40.0  MaxHop=3  L=2
+Time Run = 1068.0 , Time Life = 1.2395344826874669E8
+
+Test case : 8
+Sensor=1059  Target=100  Sink=54  Rs=40.0  Rc=80.0  MaxHop=3  L=1
+Time Run = 86562.0 , Time Life = 1.0336851869891857E8
+
+Test case : 8
+Sensor=1059  Target=100  Sink=54  Rs=40.0  Rc=80.0  MaxHop=3  L=1
+Time Run = 81747.0 , Time Life = 1.0336851869891857E8
+
+Test case : 8
+Sensor=1059  Target=100  Sink=54  Rs=40.0  Rc=80.0  MaxHop=3  L=1
+Time Run = 39983.0 , Time Life = 1.0336851869891857E8
+
+Test case : 6
+Sensor=26  Target=3  Sink=3  Rs=20.0  Rc=40.0  MaxHop=3  L=2
+Time Run = 438.0 , Time Life = 1.2395344826874669E8
+
+Test case : 6
+Sensor=26  Target=3  Sink=3  Rs=20.0  Rc=40.0  MaxHop=3  L=2
+Time Run = 248.0 , Time Life = 1.2395344826874669E8
+
+Test case : 8
+Sensor=1059  Target=100  Sink=54  Rs=40.0  Rc=80.0  MaxHop=3  L=2
+Time Run = 54997.0 , Time Life = 1.665366629687009E8
+
+Test case : 8
+Sensor=1059  Target=100  Sink=54  Rs=40.0  Rc=80.0  MaxHop=3  L=2
+Time Run = 38552.0 , Time Life = 1.665366629687009E8
+
+Test case : 8
+Sensor=1059  Target=100  Sink=54  Rs=40.0  Rc=80.0  MaxHop=3  L=20
+Time Run = 40421.0 , Time Life = 1.665366629687009E8
+
+Test case : 8
+Sensor=1059  Target=100  Sink=54  Rs=40.0  Rc=80.0  MaxHop=3  L=20
+Time Run = 8408.0 , Time Life = 1.665366629687009E8
+
+Test case : 7
+Sensor=6  Target=3  Sink=5  Rs=10.0  Rc=10.0  MaxHop=2  L=2
+Time Run = 241.0 , Time Life = 6.630860129889419E7
+
+Test case : 7
+Sensor=6  Target=3  Sink=5  Rs=10.0  Rc=10.0  MaxHop=2  L=2
+Time Run = 359.0 , Time Life = 6.630860129889419E7
+
+Test case : 15
+Sensor=3  Target=2  Sink=3  Rs=20.0  Rc=20.0  MaxHop=2  L=2
+Time Run = 512.0 , Time Life = 1.3225355910205334E8
+
+Test case : 15
+Sensor=3  Target=2  Sink=3  Rs=20.0  Rc=20.0  MaxHop=2  L=2
+Time Run = 220.0 , Time Life = 1.3225355910205334E8
+
+Test case : 15
+Sensor=7  Target=3  Sink=3  Rs=20.0  Rc=20.0  MaxHop=2  L=2
+Time Run = 328.0 , Time Life = 3.31399483338174E8
+
+Test case : 15
+Sensor=7  Target=3  Sink=3  Rs=20.0  Rc=20.0  MaxHop=2  L=2
+Time Run = 1081.0 , Time Life = 3.31399483338174E8
+
+Test case : 6
+Sensor=26  Target=3  Sink=3  Rs=20.0  Rc=40.0  MaxHop=2  L=2
+Time Run = 316.0 , Time Life = 1.2395344826874669E8
+
+Test case : 6
+Sensor=26  Target=3  Sink=3  Rs=20.0  Rc=40.0  MaxHop=2  L=2
+Time Run = 295.0 , Time Life = 1.2395344826874669E8
+
+Test case : 7
+Sensor=6  Target=3  Sink=5  Rs=10.0  Rc=10.0  MaxHop=2  L=2
+Time Run = 379.0 , Time Life = 6.630860129889419E7
+
+Test case : 7
+Sensor=6  Target=3  Sink=5  Rs=10.0  Rc=10.0  MaxHop=2  L=2
+Time Run = 328.0 , Time Life = 6.630860129889419E7
+
+Test case : 8
+Sensor=1059  Target=100  Sink=54  Rs=40.0  Rc=80.0  MaxHop=3  L=20
+Time Run = 12678.0 , Time Life = 1.665366629687009E8
+
+Test case : 8
+Sensor=1059  Target=100  Sink=54  Rs=40.0  Rc=80.0  MaxHop=3  L=20
+Time Run = 7751.0 , Time Life = 1.6653666296870023E8
+
