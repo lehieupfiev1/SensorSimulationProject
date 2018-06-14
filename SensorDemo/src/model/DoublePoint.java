@@ -9,45 +9,48 @@ package model;
  *
  * @author sev_user
  */
-public class FloatPointItem {
-    float x;
-    float y;
+public class DoublePoint {
+    private static final double EPSILON = 0.00001d;
     
-    public FloatPointItem() {
+    double x;
+    double y;
+    
+    public DoublePoint() {
         
     }
 
-    public FloatPointItem(float x, float y) {
+    public DoublePoint(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
-    public float getX() {
+    public double getX() {
         return x;
     }
 
-    public void setX(float x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    public float getY() {
+    public double getY() {
         return y;
     }
 
-    public void setY(float y) {
+    public void setY(double y) {
         this.y = y;
     }
     
-    public void setXY(float x,float y) {
+    public void setXY(double x,double y) {
         this.x = x;
         this.y = y;
     }
     
-    public static boolean compare(FloatPointItem a, FloatPointItem b) {
+    //compare using epsilon to avoid double rounding precision problem
+    public static boolean compare(DoublePoint a, DoublePoint b) {
         if(a == null || b == null) {
             return false;
         }
-        return (new Float(a.getX())).equals(b.getX()) && (new Float(a.getY())).equals(b.getY());
+        return Math.abs(a.getX() - b.getX()) < EPSILON && Math.abs(a.getY() - b.getY()) < EPSILON;
     }
     
     /**
@@ -56,9 +59,9 @@ public class FloatPointItem {
      */
     @Override
     public int hashCode() {
-        int h1 = Float.floatToIntBits(x);
-        int h2 = Float.floatToIntBits(y);
-        return h1 ^ ((h2 >>> 16) | (h2 << 16));
+        long h1 = Double.doubleToLongBits(x);
+        long h2 = Double.doubleToLongBits(y);
+        return (int)(h1 ^ ((h2 >>> 16) | (h2 << 16)));
     }
     
     @Override
@@ -72,7 +75,7 @@ public class FloatPointItem {
         if (getClass() != other.getClass()) {
             return false;
         }
-        FloatPointItem otherPoint = (FloatPointItem)other;
-        return (new Float(this.x)).equals(otherPoint.getX()) && (new Float(this.y)).equals(otherPoint.getY());
+        DoublePoint otherPoint = (DoublePoint)other;
+        return Math.abs(this.getX() - otherPoint.getX()) < EPSILON && Math.abs(this.getY() - otherPoint.getY()) < EPSILON;
     }    
 }
