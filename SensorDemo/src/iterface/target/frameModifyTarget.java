@@ -240,9 +240,9 @@ public class frameModifyTarget extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (positonXTextField.getText().equals("") || postionYTextField.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Please insert Valid Number Only");
-        } else if (mNewPostionX >= SensorUtility.numberRow || mNewPostionY >= SensorUtility.numberColum){
-            int maxX = SensorUtility.numberRow-1;
-            int maxY = SensorUtility.numberColum-1;
+        } else if (mNewPostionX >= SensorUtility.numberOfColumn || mNewPostionY >= SensorUtility.numberOfRow){
+            int maxX = SensorUtility.numberOfColumn-1;
+            int maxY = SensorUtility.numberOfRow-1;
             JOptionPane.showMessageDialog(null, "Maximum positon X =" + maxX +" and Maximum positon Y =" +maxY);
         } else if (mNewPostionX == mOldPostionX && mNewPostionY == mOldPostionY) {
             JOptionPane.showMessageDialog(null, "There are no change ^_^" );

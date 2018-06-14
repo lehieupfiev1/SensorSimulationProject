@@ -31,6 +31,15 @@ public class NodeItem {
         this.group = group;
         this.status = status;
     }
+    
+    public NodeItem(NodeItem object) {
+        this.id = object.id;
+        this.x = object.x;
+        this.y = object.y;
+        this.type = object.type;
+        this.group = object.group;
+        this.status = object.status;
+    }
 
     public NodeItem(int x, int y, int type, int group, int status) {
         this.id = 0;
@@ -104,10 +113,44 @@ public class NodeItem {
     public void setId(int id) {
         this.id = id;
     }
+    
+    public DoublePoint getCoordinate() {
+        return new DoublePoint(x, y);
+    }
 
     @Override
     public String toString() {
         return "NodeItem{" + "x=" + x + ", y=" + y + ", type=" + type + ", group=" + group + '}';
     }
+    
+    /**
+     * This hash function only use x, y and type properties of this class
+     * The algorithm can be found in: https://stackoverflow.com/questions/11742593/what-is-the-hashcode-for-a-custom-class-having-just-two-int-properties
+     * The prime number is taken from: https://www.bigprimes.net/cruncher/104743/
+     * @return hashcode
+     */
+    @Override
+    public int hashCode() {
+        int prime = 104743 ;
+        int hash = 1;
+        hash = hash*prime + x;
+        hash = hash*prime + y;
+        hash = hash*prime + type;
+        return hash;
+    }
 
+    @Override
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (getClass() != other.getClass()) {
+            return false;
+        }
+        NodeItem otherNode = (NodeItem)other;
+        return this.x == otherNode.x && this.y == otherNode.y && this.type == otherNode.type;
+    }    
 }

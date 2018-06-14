@@ -20,7 +20,7 @@ public class frameSetNetworkSize extends javax.swing.JFrame {
      * Creates new form frameSetNetworkSize
      */
     int numberRow;
-    int numberColum;
+    int numberColumn;
     float mRsValue;
     float mRtValue;
     
@@ -31,12 +31,12 @@ public class frameSetNetworkSize extends javax.swing.JFrame {
     }
 
     private void initOtherComponents() {
-        numberRow = SensorUtility.numberRow;
-        numberColum = SensorUtility.numberColum;
+        numberRow = SensorUtility.numberOfColumn;
+        numberColumn = SensorUtility.numberOfRow;
         mRsValue = SensorUtility.mRsValue;
         mRtValue = SensorUtility.mRtValue;
         networkWidthTextField.setText(""+numberRow);
-        networkHeightTextField.setText(""+numberColum);
+        networkHeightTextField.setText(""+numberColumn);
         RsTextField.setText(""+mRsValue);
         RtTextField.setText(""+mRtValue);
     }
@@ -228,36 +228,36 @@ public class frameSetNetworkSize extends javax.swing.JFrame {
         } else if (numberRow > SensorUtility.MaxRow || numberRow > SensorUtility.MaxColum) {
           JOptionPane.showMessageDialog(null, "Maximum Row =" + SensorUtility.MaxRow +" and Maximum Colum =" +SensorUtility.MaxColum);
         } else {
-            SensorUtility.numberRow = numberRow;
-            SensorUtility.numberColum = numberColum;
+            SensorUtility.numberOfColumn = numberRow;
+            SensorUtility.numberOfRow = numberColumn;
             SensorUtility.mRsValue = mRsValue;
             SensorUtility.mRtValue = mRtValue;
             int tempScreen = 1240;
-            if (SensorUtility.numberRow < 300 && SensorUtility.numberColum < 300) {
-                coordinatePanel.setPanelScreenReSize(1240, 1240, SensorUtility.numberRow, SensorUtility.numberColum);
-            } else if (SensorUtility.numberRow <= 400 && SensorUtility.numberColum <= 400) {
-                if (SensorUtility.numberRow > SensorUtility.numberColum) {
-                    tempScreen = SensorUtility.numberRow * 4 + SensorUtility.marginPanel * 2;
-                    coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+            if (SensorUtility.numberOfColumn < 300 && SensorUtility.numberOfRow < 300) {
+                coordinatePanel.setPanelScreenReSize(1240, 1240, SensorUtility.numberOfColumn, SensorUtility.numberOfRow);
+            } else if (SensorUtility.numberOfColumn <= 400 && SensorUtility.numberOfRow <= 400) {
+                if (SensorUtility.numberOfColumn > SensorUtility.numberOfRow) {
+                    tempScreen = SensorUtility.numberOfColumn * 4 + SensorUtility.marginPanel * 2;
+                    coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberOfColumn, SensorUtility.numberOfRow);
                 } else {
-                    tempScreen = SensorUtility.numberColum * 4 + SensorUtility.marginPanel * 2;
-                    coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+                    tempScreen = SensorUtility.numberOfRow * 4 + SensorUtility.marginPanel * 2;
+                    coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberOfColumn, SensorUtility.numberOfRow);
                 }
-            } else if (SensorUtility.numberRow <= 700 && SensorUtility.numberColum <= 700) {
-                if (SensorUtility.numberRow > SensorUtility.numberColum) {
-                    tempScreen = SensorUtility.numberRow * 3 + SensorUtility.marginPanel * 2;
-                    coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+            } else if (SensorUtility.numberOfColumn <= 700 && SensorUtility.numberOfRow <= 700) {
+                if (SensorUtility.numberOfColumn > SensorUtility.numberOfRow) {
+                    tempScreen = SensorUtility.numberOfColumn * 3 + SensorUtility.marginPanel * 2;
+                    coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberOfColumn, SensorUtility.numberOfRow);
                 } else {
-                    tempScreen = SensorUtility.numberColum * 3 + SensorUtility.marginPanel * 2;
-                    coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+                    tempScreen = SensorUtility.numberOfRow * 3 + SensorUtility.marginPanel * 2;
+                    coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberOfColumn, SensorUtility.numberOfRow);
                 }
             } else {
-                if (SensorUtility.numberRow > SensorUtility.numberColum) {
-                    tempScreen = SensorUtility.numberRow * 2 + SensorUtility.marginPanel * 2;
-                    coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+                if (SensorUtility.numberOfColumn > SensorUtility.numberOfRow) {
+                    tempScreen = SensorUtility.numberOfColumn * 2 + SensorUtility.marginPanel * 2;
+                    coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberOfColumn, SensorUtility.numberOfRow);
                 } else {
-                    tempScreen = SensorUtility.numberColum * 2 + SensorUtility.marginPanel * 2;
-                    coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+                    tempScreen = SensorUtility.numberOfRow * 2 + SensorUtility.marginPanel * 2;
+                    coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberOfColumn, SensorUtility.numberOfRow);
                 }
 
             }
@@ -278,7 +278,7 @@ public class frameSetNetworkSize extends javax.swing.JFrame {
     private void networkHeightKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_networkHeightKeyReleased
         // TODO add your handling code here:
         try {
-            numberColum = Integer.parseInt(networkHeightTextField.getText());
+            numberColumn = Integer.parseInt(networkHeightTextField.getText());
         } catch (NumberFormatException nfe) {
             networkHeightTextField.setText("");
         }

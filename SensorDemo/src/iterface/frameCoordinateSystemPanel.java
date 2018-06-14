@@ -54,6 +54,7 @@ public class frameCoordinateSystemPanel extends JPanel{
     JMenuItem deleteSensorItem;
     JMenuItem deleteTargetItem;
     JMenuItem deleteSinkItem;
+    JMenuItem changeStatusSensor;
     int pointX;
     int pointY;
 
@@ -64,9 +65,9 @@ public class frameCoordinateSystemPanel extends JPanel{
     public frameCoordinateSystemPanel(int withScreen, int heightScreen) {
        sizeWidthPanel = withScreen-SensorUtility.marginPanel*2;
        sizeHeightPanel = heightScreen -SensorUtility.marginPanel*2;
-       setCoordinateSize(SensorUtility.numberRow,SensorUtility.numberColum);
+       setCoordinateSize(SensorUtility.numberOfColumn,SensorUtility.numberOfRow);
        initPopupMenu();
-       this.addMouseListener(new MouseAdapter() {
+       this.addMouseListener(new MouseAdapter() {        
            @Override
            public void mouseClicked(MouseEvent e) {
                if (SwingUtilities.isLeftMouseButton(e)) {
@@ -74,7 +75,7 @@ public class frameCoordinateSystemPanel extends JPanel{
                    int y = e.getY() - SensorUtility.marginPanel;
                    int cellX = x / sizeRect;
                    int cellY = y / sizeRect;
-                   if (cellX < SensorUtility.numberRow && cellX >= 0 && cellY < SensorUtility.numberColum && cellY >= 0) {
+                   if (cellX < SensorUtility.numberOfColumn && cellX >= 0 && cellY < SensorUtility.numberOfRow && cellY >= 0) {
 
                        int targetId = checkTargetExit(cellX, cellY);
                        int sensorId = checkSensorExit(cellX, cellY);
@@ -120,22 +121,27 @@ public class frameCoordinateSystemPanel extends JPanel{
                int cellY = y / sizeRect;
                if (checkPointExit(cellX, cellY) == 3) {
                    deleteSensorItem.setEnabled(true);
+                   changeStatusSensor.setEnabled(true);
                    deleteTargetItem.setEnabled(true);
                    deleteSinkItem.setEnabled(false);
                } else if (checkPointExit(cellX, cellY) == 1) {
                    deleteSensorItem.setEnabled(true);
+                   changeStatusSensor.setEnabled(true);
                    deleteTargetItem.setEnabled(false);
                    deleteSinkItem.setEnabled(false);
                } else if (checkPointExit(cellX, cellY) == 2) {
                    deleteSensorItem.setEnabled(false);
+                   changeStatusSensor.setEnabled(false);
                    deleteTargetItem.setEnabled(true);
                    deleteSinkItem.setEnabled(false);
                } else if (checkPointExit(cellX, cellY) == 4){
                    deleteSensorItem.setEnabled(false);
+                   changeStatusSensor.setEnabled(false);
                    deleteTargetItem.setEnabled(false);
                    deleteSinkItem.setEnabled(true);
                } else {
                    deleteSensorItem.setEnabled(false);
+                   changeStatusSensor.setEnabled(false);
                    deleteTargetItem.setEnabled(false);
                    deleteSinkItem.setEnabled(false);
                }
@@ -152,7 +158,7 @@ public class frameCoordinateSystemPanel extends JPanel{
                 int y = e.getY()-SensorUtility.marginPanel;
                 pointX = x / sizeRect;
                 pointY = y / sizeRect;
-                if (e.isPopupTrigger() && pointX < SensorUtility.numberRow && pointX >= 0 && pointY < SensorUtility.numberColum && pointY >=0 ) {
+                if (e.isPopupTrigger() && pointX < SensorUtility.numberOfColumn && pointX >= 0 && pointY < SensorUtility.numberOfRow && pointY >=0 ) {
                     popup.show(e.getComponent(),
                             e.getX(), e.getY());
                 }
@@ -172,7 +178,8 @@ public class frameCoordinateSystemPanel extends JPanel{
 
             public void actionPerformed(ActionEvent e) {
                 //JOptionPane.showMessageDialog(frame, "New Project clicked!");
-                SensorUtility.mListSensorNodes.add(new NodeItem(pointX, pointY, 2));
+                int id = SensorUtility.mListSensorNodes.size();
+                SensorUtility.mListSensorNodes.add(new NodeItem(id, pointX, pointY, 2, 0, 0));
                 refresh();
             }
         });
@@ -280,6 +287,31 @@ public class frameCoordinateSystemPanel extends JPanel{
             }
         });
         popup.add(deleteSinkItem);
+        
+        //(De)Activate sensor
+        changeStatusSensor = new JMenuItem("(De)Activate sensor");
+        changeStatusSensor.setMnemonic(KeyEvent.VK_F);
+        changeStatusSensor.addActionListener(new ActionListener() {
+            
+            public void actionPerformed(ActionEvent e) {
+                //JOptionPane.showMessageDialog(frame, "New File clicked!");
+                for (int i =0; i< mListSensorNodes.size(); i++) {
+                    NodeItem next = mListSensorNodes.get(i);
+                    if (next.getX() == pointX && next.getY() == pointY) {
+                        System.out.println(next.getStatus());
+                        if (next.getStatus() == 0) {
+                            mListSensorNodes.get(i).setStatus(1);
+                        } else {
+                            mListSensorNodes.get(i).setStatus(0);
+                        }
+                        break;
+                    }
+                }
+
+                refresh();
+            }
+        });
+        popup.add(changeStatusSensor);
     }
    
    int checkPointExit(int cellX, int cellY) {
@@ -393,18 +425,18 @@ public class frameCoordinateSystemPanel extends JPanel{
     }
     
     public void setCoordinateSize(int  nRow,int nColum) {
-        SensorUtility.numberColum = nColum;
-        SensorUtility.numberRow = nRow;
-        if (sizeWidthPanel/(SensorUtility.numberRow) > sizeHeightPanel/(SensorUtility.numberColum)) {
-            sizeRect = (int) sizeHeightPanel/(SensorUtility.numberColum);
+        SensorUtility.numberOfRow = nColum;
+        SensorUtility.numberOfColumn = nRow;
+        if (sizeWidthPanel/(SensorUtility.numberOfColumn) > sizeHeightPanel/(SensorUtility.numberOfRow)) {
+            sizeRect = (int) sizeHeightPanel/(SensorUtility.numberOfRow);
         } else {
-            sizeRect = (int) sizeWidthPanel/(SensorUtility.numberRow);
+            sizeRect = (int) sizeWidthPanel/(SensorUtility.numberOfColumn);
         }
-        sizeWidthCoordinater = (SensorUtility.numberRow)*sizeRect+SensorUtility.marginPanel;
-        sizeHeightCoordianter = (SensorUtility.numberColum)*sizeRect+SensorUtility.marginPanel;
-        if (SensorUtility.numberRow < 300) {
+        sizeWidthCoordinater = (SensorUtility.numberOfColumn)*sizeRect+SensorUtility.marginPanel;
+        sizeHeightCoordianter = (SensorUtility.numberOfRow)*sizeRect+SensorUtility.marginPanel;
+        if (SensorUtility.numberOfColumn < 300) {
             offset = 1;
-        } else if (SensorUtility.numberRow < 700) {
+        } else if (SensorUtility.numberOfColumn < 700) {
             offset = 2;
         } else {
             offset = 3;
@@ -659,6 +691,4 @@ public class frameCoordinateSystemPanel extends JPanel{
         }
         repaint();
     }
-    
-    
 }

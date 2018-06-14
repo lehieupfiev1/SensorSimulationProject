@@ -213,10 +213,11 @@ public class frameAddSensor extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Please insert Valid Number Only");
         } else {
             Random random = new Random();
+            int previousSize = SensorUtility.mListSensorNodes.size();
             for (int i = 0;i < numberSensor;i++) {
-                int x = random.nextInt(SensorUtility.numberRow);
-                int y = random.nextInt(SensorUtility.numberColum);
-                SensorUtility.mListSensorNodes.add(new NodeItem(x, y, 2));
+                int x = random.nextInt(SensorUtility.numberOfColumn);
+                int y = random.nextInt(SensorUtility.numberOfRow);
+                SensorUtility.mListSensorNodes.add(new NodeItem(i + previousSize, x, y, 2, 0, 0));
             }
             JOptionPane.showMessageDialog(null, "Create new sensors success !");
             updateNumberSensor();
@@ -272,9 +273,9 @@ public class frameAddSensor extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (manualPositionXTextField.getText().equals("") || manualPositionYTextField.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Please insert Valid Number Only");
-        } else if (positionX >= SensorUtility.numberRow || positionY >= SensorUtility.numberColum){
-            int maxX = SensorUtility.numberRow-1;
-            int maxY = SensorUtility.numberColum-1;
+        } else if (positionX >= SensorUtility.numberOfColumn || positionY >= SensorUtility.numberOfRow){
+            int maxX = SensorUtility.numberOfColumn-1;
+            int maxY = SensorUtility.numberOfRow-1;
             JOptionPane.showMessageDialog(null, "Maximum positon X =" + maxX +" and Maximum positon Y =" +maxY);
         } else {
             SensorUtility.mListSensorNodes.add(new NodeItem(positionX, positionY, 2));

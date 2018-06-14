@@ -15,6 +15,7 @@ import iterface.algorithm.frameAlgorithm3_v2;
 import iterface.algorithm.frameMyAlgorithm;
 import iterface.algorithm.frameMyAlgorithm2;
 import iterface.algorithm.frameMyAlgorithm3;
+import iterface.algorithm.frameMyAlgorithm4;
 import iterface.robot.frameAddRobot;
 import iterface.robot.frameModifyRobot;
 import iterface.sensor.frameAddSensor;
@@ -37,6 +38,9 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.JMenuItem;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 
 /**
@@ -451,6 +455,14 @@ public class frameMain extends javax.swing.JFrame {
         });
         AlgorithmMenu.add(Algorithm3_v2MenuItem);
 
+        MyAlgorithm4MenuItem.setText("MyAlgorithm4");
+        MyAlgorithm4MenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MyAlgorithm4MenuItemActionPerformed(evt);
+            }
+        });
+        AlgorithmMenu.add(MyAlgorithm4MenuItem);
+
         menuBar.add(AlgorithmMenu);
 
         helpMenu.setMnemonic('h');
@@ -602,32 +614,32 @@ public class frameMain extends javax.swing.JFrame {
                 SensorUtility.resetSetting();
             } finally {
                 int tempScreen = 1240;
-                if (SensorUtility.numberRow < 300 && SensorUtility.numberColum < 300) {
-                    coordinatePanel.setPanelScreenReSize(1240, 1240, SensorUtility.numberRow, SensorUtility.numberColum);
-                } else if (SensorUtility.numberRow <= 400 && SensorUtility.numberColum <= 400) {
-                    if (SensorUtility.numberRow > SensorUtility.numberColum) {
-                        tempScreen = SensorUtility.numberRow * 4 + SensorUtility.marginPanel * 2;
-                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+                if (SensorUtility.numberOfColumn < 300 && SensorUtility.numberOfRow < 300) {
+                    coordinatePanel.setPanelScreenReSize(1240, 1240, SensorUtility.numberOfColumn, SensorUtility.numberOfRow);
+                } else if (SensorUtility.numberOfColumn <= 400 && SensorUtility.numberOfRow <= 400) {
+                    if (SensorUtility.numberOfColumn > SensorUtility.numberOfRow) {
+                        tempScreen = SensorUtility.numberOfColumn * 4 + SensorUtility.marginPanel * 2;
+                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberOfColumn, SensorUtility.numberOfRow);
                     } else {
-                        tempScreen = SensorUtility.numberColum * 4 + SensorUtility.marginPanel * 2;
-                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+                        tempScreen = SensorUtility.numberOfRow * 4 + SensorUtility.marginPanel * 2;
+                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberOfColumn, SensorUtility.numberOfRow);
                     }
-                } else if (SensorUtility.numberRow <= 700 && SensorUtility.numberColum <= 700){
-                    if (SensorUtility.numberRow > SensorUtility.numberColum) {
-                        tempScreen = SensorUtility.numberRow * 3 + SensorUtility.marginPanel * 2;
-                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+                } else if (SensorUtility.numberOfColumn <= 700 && SensorUtility.numberOfRow <= 700){
+                    if (SensorUtility.numberOfColumn > SensorUtility.numberOfRow) {
+                        tempScreen = SensorUtility.numberOfColumn * 3 + SensorUtility.marginPanel * 2;
+                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberOfColumn, SensorUtility.numberOfRow);
                     } else {
-                        tempScreen = SensorUtility.numberColum * 3 + SensorUtility.marginPanel * 2;
-                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+                        tempScreen = SensorUtility.numberOfRow * 3 + SensorUtility.marginPanel * 2;
+                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberOfColumn, SensorUtility.numberOfRow);
                     }
                 } else {
                     
-                    if (SensorUtility.numberRow > SensorUtility.numberColum) {
-                        tempScreen = SensorUtility.numberRow * 2 + SensorUtility.marginPanel * 2;
-                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+                    if (SensorUtility.numberOfColumn > SensorUtility.numberOfRow) {
+                        tempScreen = SensorUtility.numberOfColumn * 2 + SensorUtility.marginPanel * 2;
+                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberOfColumn, SensorUtility.numberOfRow);
                     } else {
-                        tempScreen = SensorUtility.numberColum * 2 + SensorUtility.marginPanel * 2;
-                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberRow, SensorUtility.numberColum);
+                        tempScreen = SensorUtility.numberOfRow * 2 + SensorUtility.marginPanel * 2;
+                        coordinatePanel.setPanelScreenReSize(tempScreen, tempScreen, SensorUtility.numberOfColumn, SensorUtility.numberOfRow);
                     } 
                     
                 }
@@ -830,7 +842,13 @@ public class frameMain extends javax.swing.JFrame {
         mFrameAlgorithm.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         mFrameAlgorithm.setVisible(true);
     }//GEN-LAST:event_MyAlgorithm3MenuItemActionPerformed
-
+//
+//    private void MyAlgorithm4MenuItemActionPerformed(ActionEvent e) {
+//        frameMyAlgorithm4 mFrameAlgorithm = new frameMyAlgorithm4();
+//        mFrameAlgorithm.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+//        mFrameAlgorithm.setVisible(true);
+//    }
+//    
     private void showAllPathItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showAllPathItemStateChanged
         // TODO add your handling code here:
         int state = evt.getStateChange();
@@ -841,6 +859,12 @@ public class frameMain extends javax.swing.JFrame {
         }
         coordinatePanel.refresh();
     }//GEN-LAST:event_showAllPathItemStateChanged
+
+    private void MyAlgorithm4MenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MyAlgorithm4MenuItemActionPerformed
+        frameMyAlgorithm4 mFrameAlgorithm = new frameMyAlgorithm4();
+        mFrameAlgorithm.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        mFrameAlgorithm.setVisible(true);
+    }//GEN-LAST:event_MyAlgorithm4MenuItemActionPerformed
 
     private void Algorithm3_v2MenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Algorithm3_v2MenuItemActionPerformed
         // TODO add your handling code here:
@@ -954,6 +978,7 @@ public class frameMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem ModifyTargetMenuItem;
     private javax.swing.JMenuItem MyAlgorithm2MenuItem;
     private javax.swing.JMenuItem MyAlgorithm3MenuItem;
+    private javax.swing.JMenuItem MyAlgorithm4MenuItem;
     private javax.swing.JMenuItem MyAlgorithmMenuItem;
     private javax.swing.JMenuItem NetworkSizeMenuItem;
     private javax.swing.JMenu RobotMenu;
@@ -978,4 +1003,5 @@ public class frameMain extends javax.swing.JFrame {
     private javax.swing.JCheckBoxMenuItem showTargetMenuItem;
     // End of variables declaration//GEN-END:variables
     public static frameCoordinateSystemPanel coordinatePanel;
+    private JMenuItem MyAlgorithm4;
 }
