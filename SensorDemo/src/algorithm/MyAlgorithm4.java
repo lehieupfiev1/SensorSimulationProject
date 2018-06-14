@@ -62,11 +62,17 @@ public class MyAlgorithm4 {
         Map<String,Object> data = new HashMap<>();
         data.put("sensorRadius", (double)SensorUtility.mRsValue);
         data.put("sensorLifeTime", SensorUtility.LifeTimeOfSensor);
-        // since saved sensor list doesn't assign id for each sensor, so that the below function assign each sensor with
-        // an id equals to its index in the array in order to distinguish sensors located at the same coordinate
-        ArrayList<NodeItem> uniqNodeList = (new HashSet<>(SensorUtility.mListSensorNodes)).stream().collect(Collectors.toCollection(ArrayList::new));
-        data.put("sensorList", IntStream.range(0, uniqNodeList.size()).mapToObj(i -> {
-            NodeItem node = uniqNodeList.get(i);
+/**********************/
+//        // since saved sensor list doesn't assign id for each sensor, so that the below function assign each sensor with
+//        // an id equals to its index in the array in order to distinguish sensors located at the same coordinate
+//        ArrayList<NodeItem> uniqNodeList = (new HashSet<>(SensorUtility.mListSensorNodes)).stream().collect(Collectors.toCollection(ArrayList::new));
+//        data.put("sensorList", IntStream.range(0, uniqNodeList.size()).mapToObj(i -> {
+//            NodeItem node = uniqNodeList.get(i);
+//            return new NodeItem(i, node.getX(), node.getY(), 2, 0, 0);
+//        }).collect(Collectors.toCollection(ArrayList::new)));
+/***********************************/
+        data.put("sensorList", IntStream.range(0, SensorUtility.mListSensorNodes.size()).mapToObj(i -> {
+            NodeItem node = SensorUtility.mListSensorNodes.get(i);
             return new NodeItem(i, node.getX(), node.getY(), 2, 0, 0);
         }).collect(Collectors.toCollection(ArrayList::new)));
         data.put("UpLeftCornerPoint", new DoublePoint(0, 0));
@@ -230,6 +236,8 @@ public class MyAlgorithm4 {
      */
     private ArrayList<NodeItem> getSensorSet(ArrayList<Curve> uncoveredCurve, ArrayList<NodeItem> sensorList, ArrayList<NodeItem> usedSensors, double sensorRadius) {
         HashSet<NodeItem> currentConstructingSensorSet = new HashSet<>();
+        ArrayList<NodeItem> duplicatedSensor = new ArrayList<>();
+        ArrayList<NodeItem> duplicatedUsedSensor = new ArrayList<>();
 
         // run until all arcs is covered
         while (uncoveredCurve.size() > 0) {
@@ -255,12 +263,23 @@ public class MyAlgorithm4 {
                     return null;
                 } else {
                     chosenSensor = (NodeItem)optionalSensor.get();
-                    usedSensors.remove(chosenSensor);
+                    usedSensors.removeIf(sensor -> sensor.getId() == chosenSensor.getId());
+                    int duplicatedIndex;
+                    while ((duplicatedIndex = usedSensors.indexOf(chosenSensor)) != -1) {
+                        duplicatedUsedSensor.add(usedSensors.remove(duplicatedIndex));
+                    }
                     System.out.println("used sensor");
                 }
             } else {
                 chosenSensor = (NodeItem)optionalSensor.get();
-                sensorList.remove(chosenSensor);
+                sensorList.removeIf(sensor -> sensor.getId() == chosenSensor.getId());
+                int duplicatedIndex;
+                while ((duplicatedIndex = sensorList.indexOf(chosenSensor)) != -1) {
+                    duplicatedSensor.add(sensorList.remove(duplicatedIndex));
+                }
+                while ((duplicatedIndex = usedSensors.indexOf(chosenSensor)) != -1) {
+                    duplicatedUsedSensor.add(usedSensors.remove(duplicatedIndex));
+                }
             }
             
             currentConstructingSensorSet.add(chosenSensor);
@@ -274,6 +293,8 @@ public class MyAlgorithm4 {
         }
         
         usedSensors.addAll(currentConstructingSensorSet);
+        usedSensors.addAll(duplicatedUsedSensor);
+        sensorList.addAll(duplicatedSensor);
         
         return currentConstructingSensorSet.stream().collect(Collectors.toCollection(ArrayList::new));
     }
