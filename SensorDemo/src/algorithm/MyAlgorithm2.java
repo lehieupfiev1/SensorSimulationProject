@@ -302,17 +302,26 @@ public class MyAlgorithm2 {
     public List<Integer> FindListSensor(FloatPointItem UpLeftCornerPoint, FloatPointItem DownRightCornerPoint) {
         List<Integer> resultListSensor = new ArrayList<>();
         float Xmax,Xmin,Ymax,Ymin;
-        Xmin = UpLeftCornerPoint.getX() - Rs;
-        Xmax=  DownRightCornerPoint.getX() + Rs;
-        Ymin = UpLeftCornerPoint.getY() - Rs;
-        Ymax = DownRightCornerPoint.getY() +Rs;
+        Xmin = UpLeftCornerPoint.getX() - SensorUtility.mRsValue;
+        Xmax = DownRightCornerPoint.getX() + SensorUtility.mRsValue;
+        Ymin = UpLeftCornerPoint.getY() - SensorUtility.mRsValue;
+        Ymax = DownRightCornerPoint.getY() + SensorUtility.mRsValue;
         
-        for (int i = 0 ;i<mListSensorNodes.size(); i++) {
-            if (mListSensorNodes.get(i).getX() >= Xmin && mListSensorNodes.get(i).getX() < Xmax && mListSensorNodes.get(i).getY() >= Ymin && mListSensorNodes.get(i).getY() < Ymax ) {
-                resultListSensor.add(i);
+        for (int i = 0; i < SensorUtility.mListSensorNodes.size(); i++) {
+            float X = SensorUtility.mListSensorNodes.get(i).getX();
+            float Y = SensorUtility.mListSensorNodes.get(i).getY();
+            if (X >= Xmin && X < Xmax && Y >= Ymin && Y < Ymax ) {
+                if ((X < UpLeftCornerPoint.getX() && Y < UpLeftCornerPoint.getY() && calculateDistance(new DoublePoint(X, Y), new DoublePoint(UpLeftCornerPoint)) > SensorUtility.mRsValue) ||
+                        (X < UpLeftCornerPoint.getX() && Y > DownRightCornerPoint.getY() && calculateDistance(new DoublePoint(X, Y), new DoublePoint(UpLeftCornerPoint.getX(), DownRightCornerPoint.getY())) > SensorUtility.mRsValue) ||
+                        (X > DownRightCornerPoint.getX() && Y > DownRightCornerPoint.getY() && calculateDistance(new DoublePoint(X, Y), new DoublePoint(DownRightCornerPoint)) > SensorUtility.mRsValue) ||
+                        (X > DownRightCornerPoint.getX() && Y < UpLeftCornerPoint.getY()) && calculateDistance(new DoublePoint(X, Y), new DoublePoint(DownRightCornerPoint.getX(), UpLeftCornerPoint.getY())) > SensorUtility.mRsValue) {
+                    // do nothing here
+                } else {
+                    resultListSensor.add(i);
+                }
             }
         }
-        return resultListSensor;        
+        return resultListSensor;
     }
     
     public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> listSenSor, double valueT) {
@@ -1520,7 +1529,7 @@ public class MyAlgorithm2 {
         int as= 5;
     }
     
-    public void FindSetXi(List<Integer> ListSensor,FloatPointItem UpLeftCornerPoint, FloatPointItem DownRightCornerPoint, List<List<Integer>> ListResultXi) {
+    public List<List<Integer>> FindSetXi(List<Integer> ListSensor,FloatPointItem UpLeftCornerPoint, FloatPointItem DownRightCornerPoint) {
         // convert data to be compatible with the function parameters, for more infor
         // on what does each key-value pairs mean, looking at the comment in MyAlgorithm4
         Map<String,Object> data = new HashMap<>();
@@ -1533,13 +1542,17 @@ public class MyAlgorithm2 {
         data.put("UpLeftCornerPoint", new DoublePoint(UpLeftCornerPoint.getX(), UpLeftCornerPoint.getY()));
         data.put("DownRightCornerPoint", new DoublePoint(DownRightCornerPoint.getX(), DownRightCornerPoint.getY()));
         
-        float rectangleArea = (DownRightCornerPoint.getX() - UpLeftCornerPoint.getX())*(DownRightCornerPoint.getY() - UpLeftCornerPoint.getY());
+        float rectangleArea = Math.abs((DownRightCornerPoint.getX() - UpLeftCornerPoint.getX())*(DownRightCornerPoint.getY() - UpLeftCornerPoint.getY()));
         float sensorArea = SensorUtility.mRsValue*SensorUtility.mRsValue*(float)Math.PI;
         data.put("sensorsThreshold", (int)Math.ceil(rectangleArea/(2*sensorArea)));
         
         ArrayList<ArrayList<NodeItem>> ListSensorSets = getListOfSensorSet(data);
-        // convert back to integer
-        ListResultXi = ListSensorSets.stream().map(set -> set.stream().map(sensor -> sensor.getId()).collect(Collectors.toCollection(ArrayList::new))).collect(Collectors.toCollection(ArrayList::new));
+        if (ListSensorSets == null) {
+            return null;
+        } else {
+            // convert back to integer
+            return ListSensorSets.stream().map(set -> set.stream().map(sensor -> sensor.getId()).collect(Collectors.toCollection(ArrayList::new))).collect(Collectors.toCollection(ArrayList::new));
+        }
     }
     
     /**
@@ -1565,11 +1578,13 @@ public class MyAlgorithm2 {
          */
         while (sensorList.size() > minPossibleSensors) {
             // Initialize uncovered edges/arcs (4 edges of the rectangle)
+            DoublePoint DownRight = (DoublePoint)data.get("DownRightCornerPoint");
+            DoublePoint UpLeft = (DoublePoint)data.get("UpLeftCornerPoint");
             ArrayList<Curve> uncoveredCurve = new ArrayList<>();
-            uncoveredCurve.add(new Curve((DoublePoint)data.get("DownRightCornerPoint"), new DoublePoint(0, SensorUtility.numberOfRow - 1), Curve.EdgeId.BOTTOM));
-            uncoveredCurve.add(new Curve(new DoublePoint(0, SensorUtility.numberOfRow - 1), (DoublePoint)data.get("UpLeftCornerPoint"), Curve.EdgeId.LEFT));
-            uncoveredCurve.add(new Curve((DoublePoint)data.get("UpLeftCornerPoint"), new DoublePoint(SensorUtility.numberOfColumn - 1, 0), Curve.EdgeId.TOP));
-            uncoveredCurve.add(new Curve(new DoublePoint(SensorUtility.numberOfColumn - 1, 0), (DoublePoint)data.get("DownRightCornerPoint"), Curve.EdgeId.RIGHT));
+            uncoveredCurve.add(new Curve(DownRight, new DoublePoint(UpLeft.getX(), DownRight.getY()), Curve.EdgeId.BOTTOM));
+            uncoveredCurve.add(new Curve(new DoublePoint(UpLeft.getX(), DownRight.getY()), UpLeft, Curve.EdgeId.LEFT));
+            uncoveredCurve.add(new Curve(UpLeft, new DoublePoint(DownRight.getX(), UpLeft.getY()), Curve.EdgeId.TOP));
+            uncoveredCurve.add(new Curve(new DoublePoint(DownRight.getX(), UpLeft.getY()), DownRight, Curve.EdgeId.RIGHT));
             
             System.out.println("____Number of sensor left: " + sensorList.size() + "___________");
             
