@@ -13,6 +13,7 @@ import ilog.cplex.IloCplex;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,6 +21,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import model.Curve;
 import model.DoublePoint;
+import model.FloatPointItem;
 import model.IntersectionPoint;
 import model.NodeItem;
 
@@ -77,7 +79,7 @@ public class MyAlgorithm4 {
         }).collect(Collectors.toCollection(ArrayList::new)));
         data.put("UpLeftCornerPoint", new DoublePoint(0, 0));
         data.put("DownRightCornerPoint", new DoublePoint(SensorUtility.numberOfColumn - 1, SensorUtility.numberOfRow - 1));
-        
+
         return data;
     }
     
@@ -104,6 +106,15 @@ public class MyAlgorithm4 {
             
             return result;
         }
+//
+//        List<List<Integer>> result = new ArrayList<>();
+//        FloatPointItem UpLeft = new FloatPointItem(0, 0);
+//        FloatPointItem DownRight = new FloatPointItem(40, 40);
+//        List<Integer> listSensor = FindListSensor(UpLeft, DownRight);
+//        
+//        result = FindSetXi(listSensor, UpLeft, DownRight);
+//        System.out.println(result == null ? "cant cover" : result.size());
+//        return null;
     }
     
     /**
@@ -129,11 +140,13 @@ public class MyAlgorithm4 {
          */
         while (sensorList.size() > minPossibleSensors) {
             // Initialize uncovered edges/arcs (4 edges of the rectangle)
+            DoublePoint DownRight = (DoublePoint)data.get("DownRightCornerPoint");
+            DoublePoint UpLeft = (DoublePoint)data.get("UpLeftCornerPoint");
             ArrayList<Curve> uncoveredCurve = new ArrayList<>();
-            uncoveredCurve.add(new Curve((DoublePoint)data.get("DownRightCornerPoint"), new DoublePoint(0, SensorUtility.numberOfRow - 1), Curve.EdgeId.BOTTOM));
-            uncoveredCurve.add(new Curve(new DoublePoint(0, SensorUtility.numberOfRow - 1), (DoublePoint)data.get("UpLeftCornerPoint"), Curve.EdgeId.LEFT));
-            uncoveredCurve.add(new Curve((DoublePoint)data.get("UpLeftCornerPoint"), new DoublePoint(SensorUtility.numberOfColumn - 1, 0), Curve.EdgeId.TOP));
-            uncoveredCurve.add(new Curve(new DoublePoint(SensorUtility.numberOfColumn - 1, 0), (DoublePoint)data.get("DownRightCornerPoint"), Curve.EdgeId.RIGHT));
+            uncoveredCurve.add(new Curve(DownRight, new DoublePoint(UpLeft.getX(), DownRight.getY()), Curve.EdgeId.BOTTOM));
+            uncoveredCurve.add(new Curve(new DoublePoint(UpLeft.getX(), DownRight.getY()), UpLeft, Curve.EdgeId.LEFT));
+            uncoveredCurve.add(new Curve(UpLeft, new DoublePoint(DownRight.getX(), UpLeft.getY()), Curve.EdgeId.TOP));
+            uncoveredCurve.add(new Curve(new DoublePoint(DownRight.getX(), UpLeft.getY()), DownRight, Curve.EdgeId.RIGHT));
 
             System.out.println("____Number of sensor left: " + sensorList.size() + "___________");
 
@@ -171,7 +184,13 @@ public class MyAlgorithm4 {
             ArrayList<NodeItem> set = listOfSensorSets.get(i);
             int length = set.size();
             for (int j = 0; j < length; j++) {
-                a[set.get(j).getId()][i] = 1; // since the id is also the index of sensor in the original list
+                NodeItem node = set.get(j);
+                for (int k = 0, n = sensorList.size(); k < n; k++) {
+                    if (node.getId() == sensorList.get(k).getId()) {
+                        a[k][i] = 1;
+                        break;
+                    }
+                }
             }
         }
         
@@ -820,5 +839,72 @@ public class MyAlgorithm4 {
         
     public static void main(String[] args) {
         
+    }
+    
+    /**
+     * These functions are not used in the actual algorithm
+     */
+    /**
+     * Find sensor set that cover a sub area, this function is for testing purpose, not used in the actual algorithm
+     * @param ListSensor sensor list, all sensor in this list must cover some part of the area, or the algorithm can goes into infinite loop
+     * @param UpLeftCornerPoint define the cover area
+     * @param DownRightCornerPoint define the cover area
+     * @return list integer set which integer is the index of sensor in sensorList
+     */
+    public List<List<Integer>> FindSetXi(List<Integer> ListSensor,FloatPointItem UpLeftCornerPoint, FloatPointItem DownRightCornerPoint) {
+        // convert data to be compatible with the function parameters, for more infor
+        // on what does each key-value pairs mean, looking at the comment in MyAlgorithm4
+        Map<String,Object> data = new HashMap<>();
+        data.put("sensorRadius", (double)SensorUtility.mRsValue);
+        data.put("sensorLifeTime", SensorUtility.LifeTimeOfSensor);
+        data.put("sensorList", ListSensor.stream().map(i -> {
+            NodeItem node = SensorUtility.mListSensorNodes.get(i);
+            return new NodeItem(i, node.getX(), node.getY(), 2, 0, 0);
+        }).collect(Collectors.toCollection(ArrayList::new)));
+        data.put("UpLeftCornerPoint", new DoublePoint(UpLeftCornerPoint.getX(), UpLeftCornerPoint.getY()));
+        data.put("DownRightCornerPoint", new DoublePoint(DownRightCornerPoint.getX(), DownRightCornerPoint.getY()));
+        
+        float rectangleArea = (DownRightCornerPoint.getX() - UpLeftCornerPoint.getX())*(DownRightCornerPoint.getY() - UpLeftCornerPoint.getY());
+        float sensorArea = SensorUtility.mRsValue*SensorUtility.mRsValue*(float)Math.PI;
+        data.put("sensorsThreshold", (int)Math.ceil(rectangleArea/(2*sensorArea)));
+        
+        ArrayList<ArrayList<NodeItem>> ListSensorSets = getListOfSensorSet(data);
+        if (ListSensorSets == null) {
+            return null;
+        } else {
+            // convert back to integer
+            return ListSensorSets.stream().map(set -> set.stream().map(sensor -> sensor.getId()).collect(Collectors.toCollection(ArrayList::new))).collect(Collectors.toCollection(ArrayList::new));
+        }
+    }
+    
+    /**
+     * Find the sensor that cover part of the area defined by 2 input points, not used in the actual algorithm
+     * @param UpLeftCornerPoint
+     * @param DownRightCornerPoint
+     * @return
+     */
+    public List<Integer> FindListSensor(FloatPointItem UpLeftCornerPoint, FloatPointItem DownRightCornerPoint) {
+        List<Integer> resultListSensor = new ArrayList<>();
+        float Xmax,Xmin,Ymax,Ymin;
+        Xmin = UpLeftCornerPoint.getX() - SensorUtility.mRsValue;
+        Xmax = DownRightCornerPoint.getX() + SensorUtility.mRsValue;
+        Ymin = UpLeftCornerPoint.getY() - SensorUtility.mRsValue;
+        Ymax = DownRightCornerPoint.getY() + SensorUtility.mRsValue;
+        
+        for (int i = 0; i < SensorUtility.mListSensorNodes.size(); i++) {
+            float X = SensorUtility.mListSensorNodes.get(i).getX();
+            float Y = SensorUtility.mListSensorNodes.get(i).getY();
+            if (X >= Xmin && X < Xmax && Y >= Ymin && Y < Ymax ) {
+                if ((X < UpLeftCornerPoint.getX() && Y < UpLeftCornerPoint.getY() && calculateDistance(new DoublePoint(X, Y), new DoublePoint(UpLeftCornerPoint)) > SensorUtility.mRsValue) ||
+                        (X < UpLeftCornerPoint.getX() && Y > DownRightCornerPoint.getY() && calculateDistance(new DoublePoint(X, Y), new DoublePoint(UpLeftCornerPoint.getX(), DownRightCornerPoint.getY())) > SensorUtility.mRsValue) ||
+                        (X > DownRightCornerPoint.getX() && Y > DownRightCornerPoint.getY() && calculateDistance(new DoublePoint(X, Y), new DoublePoint(DownRightCornerPoint)) > SensorUtility.mRsValue) ||
+                        (X > DownRightCornerPoint.getX() && Y < UpLeftCornerPoint.getY()) && calculateDistance(new DoublePoint(X, Y), new DoublePoint(DownRightCornerPoint.getX(), UpLeftCornerPoint.getY())) > SensorUtility.mRsValue) {
+                    // do nothing here
+                } else {
+                    resultListSensor.add(i);
+                }
+            }
+        }
+        return resultListSensor;
     }
 }
