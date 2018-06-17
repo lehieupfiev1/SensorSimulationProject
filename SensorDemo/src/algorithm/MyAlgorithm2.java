@@ -1577,6 +1577,8 @@ public class MyAlgorithm2 {
          * terminate when there are minPossibleSensors/2 unused sensors left, this is used to reduce some sets that reused to many sensor from other set
          */
         while (sensorList.size() > minPossibleSensors) {
+            int oldLength = sensorList.size();
+            
             // Initialize uncovered edges/arcs (4 edges of the rectangle)
             DoublePoint DownRight = (DoublePoint)data.get("DownRightCornerPoint");
             DoublePoint UpLeft = (DoublePoint)data.get("UpLeftCornerPoint");
@@ -1585,14 +1587,19 @@ public class MyAlgorithm2 {
             uncoveredCurve.add(new Curve(new DoublePoint(UpLeft.getX(), DownRight.getY()), UpLeft, Curve.EdgeId.LEFT));
             uncoveredCurve.add(new Curve(UpLeft, new DoublePoint(DownRight.getX(), UpLeft.getY()), Curve.EdgeId.TOP));
             uncoveredCurve.add(new Curve(new DoublePoint(DownRight.getX(), UpLeft.getY()), DownRight, Curve.EdgeId.RIGHT));
-            
+
             System.out.println("____Number of sensor left: " + sensorList.size() + "___________");
-            
+
             ArrayList<NodeItem> currentConstructingSensorSet = new ArrayList<>();
             currentConstructingSensorSet = getSensorSet(uncoveredCurve, sensorList, usedSensors, sensorRadius);
-            
+
             if (currentConstructingSensorSet == null) {
                 return null;
+            }
+            
+            int newLength = sensorList.size();
+            if (oldLength == newLength) {
+                break;
             }
             listOfSensorSets.add(currentConstructingSensorSet);
         }
