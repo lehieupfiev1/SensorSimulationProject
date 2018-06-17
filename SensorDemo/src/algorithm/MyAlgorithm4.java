@@ -139,6 +139,8 @@ public class MyAlgorithm4 {
          * terminate when there are minPossibleSensors/2 unused sensors left, this is used to reduce some sets that reused to many sensor from other set
          */
         while (sensorList.size() > minPossibleSensors) {
+            int oldLength = sensorList.size();
+            
             // Initialize uncovered edges/arcs (4 edges of the rectangle)
             DoublePoint DownRight = (DoublePoint)data.get("DownRightCornerPoint");
             DoublePoint UpLeft = (DoublePoint)data.get("UpLeftCornerPoint");
@@ -155,6 +157,11 @@ public class MyAlgorithm4 {
 
             if (currentConstructingSensorSet == null) {
                 return null;
+            }
+            
+            int newLength = sensorList.size();
+            if (oldLength == newLength) {
+                break;
             }
             listOfSensorSets.add(currentConstructingSensorSet);
         }
@@ -257,7 +264,7 @@ public class MyAlgorithm4 {
         HashSet<NodeItem> currentConstructingSensorSet = new HashSet<>();
         ArrayList<NodeItem> duplicatedSensor = new ArrayList<>();
         ArrayList<NodeItem> duplicatedUsedSensor = new ArrayList<>();
-
+        
         // run until all arcs is covered
         while (uncoveredCurve.size() > 0) {
             System.out.println(sensorList.size() + ", (" + currentConstructingSensorSet.size() + "). Number of curves left: " + uncoveredCurve.size());
@@ -861,8 +868,8 @@ public class MyAlgorithm4 {
             NodeItem node = SensorUtility.mListSensorNodes.get(i);
             return new NodeItem(i, node.getX(), node.getY(), 2, 0, 0);
         }).collect(Collectors.toCollection(ArrayList::new)));
-        data.put("UpLeftCornerPoint", new DoublePoint(UpLeftCornerPoint.getX(), UpLeftCornerPoint.getY()));
-        data.put("DownRightCornerPoint", new DoublePoint(DownRightCornerPoint.getX(), DownRightCornerPoint.getY()));
+        data.put("UpLeftCornerPoint", new DoublePoint(UpLeftCornerPoint));
+        data.put("DownRightCornerPoint", new DoublePoint(DownRightCornerPoint));
         
         float rectangleArea = (DownRightCornerPoint.getX() - UpLeftCornerPoint.getX())*(DownRightCornerPoint.getY() - UpLeftCornerPoint.getY());
         float sensorArea = SensorUtility.mRsValue*SensorUtility.mRsValue*(float)Math.PI;
@@ -894,11 +901,11 @@ public class MyAlgorithm4 {
         for (int i = 0; i < SensorUtility.mListSensorNodes.size(); i++) {
             float X = SensorUtility.mListSensorNodes.get(i).getX();
             float Y = SensorUtility.mListSensorNodes.get(i).getY();
-            if (X >= Xmin && X < Xmax && Y >= Ymin && Y < Ymax ) {
-                if ((X < UpLeftCornerPoint.getX() && Y < UpLeftCornerPoint.getY() && calculateDistance(new DoublePoint(X, Y), new DoublePoint(UpLeftCornerPoint)) > SensorUtility.mRsValue) ||
-                        (X < UpLeftCornerPoint.getX() && Y > DownRightCornerPoint.getY() && calculateDistance(new DoublePoint(X, Y), new DoublePoint(UpLeftCornerPoint.getX(), DownRightCornerPoint.getY())) > SensorUtility.mRsValue) ||
-                        (X > DownRightCornerPoint.getX() && Y > DownRightCornerPoint.getY() && calculateDistance(new DoublePoint(X, Y), new DoublePoint(DownRightCornerPoint)) > SensorUtility.mRsValue) ||
-                        (X > DownRightCornerPoint.getX() && Y < UpLeftCornerPoint.getY()) && calculateDistance(new DoublePoint(X, Y), new DoublePoint(DownRightCornerPoint.getX(), UpLeftCornerPoint.getY())) > SensorUtility.mRsValue) {
+            if (X > Xmin && X < Xmax && Y > Ymin && Y < Ymax ) {
+                if ((X < UpLeftCornerPoint.getX() && Y < UpLeftCornerPoint.getY() && calculateDistance(new DoublePoint(X, Y), new DoublePoint(UpLeftCornerPoint)) >= SensorUtility.mRsValue) ||
+                        (X < UpLeftCornerPoint.getX() && Y > DownRightCornerPoint.getY() && calculateDistance(new DoublePoint(X, Y), new DoublePoint(UpLeftCornerPoint.getX(), DownRightCornerPoint.getY())) >= SensorUtility.mRsValue) ||
+                        (X > DownRightCornerPoint.getX() && Y > DownRightCornerPoint.getY() && calculateDistance(new DoublePoint(X, Y), new DoublePoint(DownRightCornerPoint)) >= SensorUtility.mRsValue) ||
+                        (X > DownRightCornerPoint.getX() && Y < UpLeftCornerPoint.getY()) && calculateDistance(new DoublePoint(X, Y), new DoublePoint(DownRightCornerPoint.getX(), UpLeftCornerPoint.getY())) >= SensorUtility.mRsValue) {
                     // do nothing here
                 } else {
                     resultListSensor.add(i);
