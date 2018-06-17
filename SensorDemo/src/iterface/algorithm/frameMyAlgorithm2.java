@@ -6,6 +6,7 @@
 package iterface.algorithm;
 
 import algorithm.Algorithm1;
+import algorithm.CGCSAlgorithm;
 import algorithm.MyAlgorithm2;
 import common.SensorUtility;
 import static common.SensorUtility.*;
@@ -78,6 +79,7 @@ public class frameMyAlgorithm2 extends javax.swing.JFrame {
         numberSensorLabel.setText("Number of Sensor : "+mListSensorNodes.size());
         LvalueTextField.setText(""+Lvalue);
         TimeSensorTextField.setText(""+LifeTimeOfSensor);
+        CValueTextField.setText(""+SensorUtility.Cvalue);
      
     }
     void clearData(){
@@ -159,6 +161,8 @@ public class frameMyAlgorithm2 extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         showViewBtn = new javax.swing.JButton();
         DoneBtn = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        CValueTextField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -258,6 +262,20 @@ public class frameMyAlgorithm2 extends javax.swing.JFrame {
             }
         });
 
+        jLabel4.setText("C value");
+
+        CValueTextField.setText("0.0");
+        CValueTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CValueTextFieldActionPerformed(evt);
+            }
+        });
+        CValueTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                CvalueKeyReleased(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -273,24 +291,26 @@ public class frameMyAlgorithm2 extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(43, 43, 43))
             .addGroup(layout.createSequentialGroup()
+                .addGap(38, 38, 38)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(38, 38, 38)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(numberSensorLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel2))
-                                .addGap(64, 64, 64)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(LvalueTextField)
-                                    .addComponent(TimeSensorTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)))
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(409, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(245, 245, 245)
-                        .addComponent(RunButton, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel4))
+                        .addGap(64, 64, 64)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(LvalueTextField)
+                            .addComponent(TimeSensorTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+                            .addComponent(CValueTextField))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(RunButton, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(95, 95, 95))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -304,10 +324,13 @@ public class frameMyAlgorithm2 extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(TimeSensorTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(28, 28, 28)
-                .addComponent(RunButton)
-                .addGap(15, 15, 15)
+                    .addComponent(TimeSensorTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(RunButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4)
+                    .addComponent(CValueTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(35, 35, 35)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -315,8 +338,10 @@ public class frameMyAlgorithm2 extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(showViewBtn)
                     .addComponent(DoneBtn))
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
+
+        jLabel4.getAccessibleContext().setAccessibleName("C value");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -345,7 +370,7 @@ public class frameMyAlgorithm2 extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Insert sensorr nodes");
         }  else {
             clearData();
-            MyAlgorithm2 mAlgorithm = new MyAlgorithm2();
+            CGCSAlgorithm mAlgorithm = new CGCSAlgorithm();
             Thread thread;
             thread = new Thread(new Runnable() {
                 @Override
@@ -388,6 +413,19 @@ public class frameMyAlgorithm2 extends javax.swing.JFrame {
         coordinatePanel.refresh();
         this.dispose();
     }//GEN-LAST:event_DoneBtnActionPerformed
+
+    private void CValueTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CValueTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CValueTextFieldActionPerformed
+
+    private void CvalueKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_CvalueKeyReleased
+        // TODO add your handling code here:
+        try {
+            SensorUtility.Cvalue = Double.parseDouble(LvalueTextField.getText());
+        } catch (NumberFormatException nfe) {
+            CValueTextField.setText("");
+        }
+    }//GEN-LAST:event_CvalueKeyReleased
     
     
     
@@ -455,6 +493,7 @@ public class frameMyAlgorithm2 extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField CValueTextField;
     private javax.swing.JButton DoneBtn;
     private javax.swing.JTextField LvalueTextField;
     private javax.swing.JButton RunButton;
@@ -463,6 +502,7 @@ public class frameMyAlgorithm2 extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel listSenSorLabel;
     private javax.swing.JScrollPane listSensorScrollPane;

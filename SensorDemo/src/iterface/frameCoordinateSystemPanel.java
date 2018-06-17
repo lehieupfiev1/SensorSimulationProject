@@ -45,6 +45,7 @@ public class frameCoordinateSystemPanel extends JPanel{
     static boolean isShowCorver = true;
     static boolean isShowSink = true;
     static boolean isShowAllPath = false;
+    static boolean isEnableSenor = false;
     public static boolean isShowPathSelected = false;
     public static int TargetSelected;
     public static int SinkSelected;
@@ -179,7 +180,11 @@ public class frameCoordinateSystemPanel extends JPanel{
             public void actionPerformed(ActionEvent e) {
                 //JOptionPane.showMessageDialog(frame, "New Project clicked!");
                 int id = SensorUtility.mListSensorNodes.size();
-                SensorUtility.mListSensorNodes.add(new NodeItem(id, pointX, pointY, 2, 0, 0));
+                if (isEnableSenor) {
+                   SensorUtility.mListSensorNodes.add(new NodeItem(id, pointX, pointY, 2, 0, 1));
+                } else{
+                   SensorUtility.mListSensorNodes.add(new NodeItem(id, pointX, pointY, 2, 0, 0));
+                }
                 refresh();
             }
         });
@@ -442,6 +447,20 @@ public class frameCoordinateSystemPanel extends JPanel{
             offset = 3;
         }
         repaint();
+    }
+    
+    public void setShowEnableSensor(boolean view) {
+        isEnableSenor = view;
+        for (Iterator<NodeItem> iterator = mListSensorNodes.iterator(); iterator.hasNext();) {
+            NodeItem next = iterator.next();
+            if (view) {
+                next.setStatus(1);
+            } else {
+                next.setStatus(0);
+            }
+        }
+        
+        refresh();
     }
     
     @Override

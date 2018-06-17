@@ -23,6 +23,11 @@ public class DoublePoint {
         this.x = x;
         this.y = y;
     }
+    
+    public DoublePoint(FloatPointItem point) {
+        this.x = point.getX();
+        this.y = point.getY();
+    }
 
     public double getX() {
         return x;

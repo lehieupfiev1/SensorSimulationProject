@@ -162,6 +162,7 @@ public class frameMain extends javax.swing.JFrame {
         showSensorCorverMenuItem = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
         ShowAllPathMenuItem = new javax.swing.JCheckBoxMenuItem();
+        showEnableSensorMenuItem = new javax.swing.JCheckBoxMenuItem();
         AlgorithmMenu = new javax.swing.JMenu();
         MyAlgorithmMenuItem = new javax.swing.JMenuItem();
         Algorithm1MenuItem = new javax.swing.JMenuItem();
@@ -169,7 +170,6 @@ public class frameMain extends javax.swing.JFrame {
         Algorithm2 = new javax.swing.JMenuItem();
         MyAlgorithm3MenuItem = new javax.swing.JMenuItem();
         Algoritm3MenuItem = new javax.swing.JMenuItem();
-        MyAlgorithm4MenuItem = new javax.swing.JMenuItem();
         Algorithm3_v2MenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         contentsMenuItem = new javax.swing.JMenuItem();
@@ -396,6 +396,14 @@ public class frameMain extends javax.swing.JFrame {
         });
         ViewMenu.add(ShowAllPathMenuItem);
 
+        showEnableSensorMenuItem.setText("Show Enable Sensor");
+        showEnableSensorMenuItem.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                showEnableSensorStateChanged(evt);
+            }
+        });
+        ViewMenu.add(showEnableSensorMenuItem);
+
         menuBar.add(ViewMenu);
 
         AlgorithmMenu.setText("Algorithm");
@@ -455,14 +463,6 @@ public class frameMain extends javax.swing.JFrame {
             }
         });
         AlgorithmMenu.add(Algorithm3_v2MenuItem);
-
-        MyAlgorithm4MenuItem.setText("MyAlgorithm4");
-        MyAlgorithm4MenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                MyAlgorithm4MenuItemActionPerformed(evt);
-            }
-        });
-        AlgorithmMenu.add(MyAlgorithm4MenuItem);
 
         menuBar.add(AlgorithmMenu);
 
@@ -874,6 +874,17 @@ public class frameMain extends javax.swing.JFrame {
         mFrameAlgorithm.setVisible(true);
     }//GEN-LAST:event_Algorithm3_v2MenuItemActionPerformed
 
+    private void showEnableSensorStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showEnableSensorStateChanged
+        // TODO add your handling code here:
+        int state = evt.getStateChange();
+        if (state == ItemEvent.SELECTED) {
+            coordinatePanel.setShowEnableSensor(true);
+        } else {
+            coordinatePanel.setShowEnableSensor(false);
+        }
+        coordinatePanel.refresh();
+    }//GEN-LAST:event_showEnableSensorStateChanged
+
     public void saveFile() {
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new java.io.File("."));
@@ -979,7 +990,6 @@ public class frameMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem ModifyTargetMenuItem;
     private javax.swing.JMenuItem MyAlgorithm2MenuItem;
     private javax.swing.JMenuItem MyAlgorithm3MenuItem;
-    private javax.swing.JMenuItem MyAlgorithm4MenuItem;
     private javax.swing.JMenuItem MyAlgorithmMenuItem;
     private javax.swing.JMenuItem NetworkSizeMenuItem;
     private javax.swing.JMenu RobotMenu;
@@ -997,6 +1007,7 @@ public class frameMain extends javax.swing.JFrame {
     private javax.swing.JMenu inputDataMenu;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JCheckBoxMenuItem showEnableSensorMenuItem;
     private javax.swing.JCheckBoxMenuItem showGridMenuItem;
     private javax.swing.JCheckBoxMenuItem showRobotMenuItem;
     private javax.swing.JCheckBoxMenuItem showSensorCorverMenuItem;

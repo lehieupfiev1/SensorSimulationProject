@@ -50,6 +50,7 @@ public final class SensorUtility {
     public static float MAX_DISTANCE = 1000000000000.0f;
     
     public static int Lvalue = 2;
+    public static double Cvalue = 0.7; // Cvalue > 0 and Cvalue <1
     public static int LifeTimeOfSensor = 3000;
     public static float mSaiso = 0.001f;
       
