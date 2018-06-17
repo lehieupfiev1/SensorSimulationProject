@@ -310,11 +310,11 @@ public class MyAlgorithm2 {
         for (int i = 0; i < SensorUtility.mListSensorNodes.size(); i++) {
             float X = SensorUtility.mListSensorNodes.get(i).getX();
             float Y = SensorUtility.mListSensorNodes.get(i).getY();
-            if (X >= Xmin && X < Xmax && Y >= Ymin && Y < Ymax ) {
-                if ((X < UpLeftCornerPoint.getX() && Y < UpLeftCornerPoint.getY() && calculateDistance(new DoublePoint(X, Y), new DoublePoint(UpLeftCornerPoint)) > SensorUtility.mRsValue) ||
-                        (X < UpLeftCornerPoint.getX() && Y > DownRightCornerPoint.getY() && calculateDistance(new DoublePoint(X, Y), new DoublePoint(UpLeftCornerPoint.getX(), DownRightCornerPoint.getY())) > SensorUtility.mRsValue) ||
-                        (X > DownRightCornerPoint.getX() && Y > DownRightCornerPoint.getY() && calculateDistance(new DoublePoint(X, Y), new DoublePoint(DownRightCornerPoint)) > SensorUtility.mRsValue) ||
-                        (X > DownRightCornerPoint.getX() && Y < UpLeftCornerPoint.getY()) && calculateDistance(new DoublePoint(X, Y), new DoublePoint(DownRightCornerPoint.getX(), UpLeftCornerPoint.getY())) > SensorUtility.mRsValue) {
+            if (X > Xmin && X < Xmax && Y > Ymin && Y < Ymax ) {
+                if ((X < UpLeftCornerPoint.getX() && Y < UpLeftCornerPoint.getY() && calculateDistance(new DoublePoint(X, Y), new DoublePoint(UpLeftCornerPoint)) >= SensorUtility.mRsValue) ||
+                        (X < UpLeftCornerPoint.getX() && Y > DownRightCornerPoint.getY() && calculateDistance(new DoublePoint(X, Y), new DoublePoint(UpLeftCornerPoint.getX(), DownRightCornerPoint.getY())) >= SensorUtility.mRsValue) ||
+                        (X > DownRightCornerPoint.getX() && Y > DownRightCornerPoint.getY() && calculateDistance(new DoublePoint(X, Y), new DoublePoint(DownRightCornerPoint)) >= SensorUtility.mRsValue) ||
+                        (X > DownRightCornerPoint.getX() && Y < UpLeftCornerPoint.getY()) && calculateDistance(new DoublePoint(X, Y), new DoublePoint(DownRightCornerPoint.getX(), UpLeftCornerPoint.getY())) >= SensorUtility.mRsValue) {
                     // do nothing here
                 } else {
                     resultListSensor.add(i);
