@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import model.BlockItem;
 import model.Curve;
 import model.DoublePoint;
 import model.FloatPointItem;
@@ -41,12 +42,16 @@ import model.NodeItem;
  */
 public class CGCSAlgorithm {
     double mTimeLife;
+    double mTimeLifeResult;
     float Rs, Rt;// Rs and Rt value
     int mLvalue;
     List<List<Integer>> resultListX;
     List<Double> resultListT;
+    List<BlockItem> mListBlockItem;
     int countA =0;
+    float TIMEij_max;
     public float Distance[][];
+    float ListTimeUsing[];
     int Num;// Number sensor
     boolean isFull = false;
     static int countBlock = 0;
@@ -65,7 +70,7 @@ public class CGCSAlgorithm {
         
         //Step 2: 
 
-        runAlgorithm();
+        runAlgorithm2();
         
         CoppyToListSensor();
         
@@ -78,6 +83,7 @@ public class CGCSAlgorithm {
         resultListX = new ArrayList<>();
         resultListT = new ArrayList<>();
         ListNearBy = new ArrayList<>();
+        mListBlockItem = new ArrayList<>();
         
     }
     public void readData() {
@@ -85,10 +91,12 @@ public class CGCSAlgorithm {
         Rs = SensorUtility.mRsValue;
         Rt = SensorUtility.mRtValue;
         mLvalue = SensorUtility.Lvalue;
+        mTimeLifeResult =0;
         mTimeLife = SensorUtility.LifeTimeOfSensor;
         Num = mListSensorNodes.size();
         Distance = new float[Num+1][Num+1];
         Intersect = new IntersectItem[Num+1][Num+1];
+        ListTimeUsing = new float[Num];
         
         for (int i =0;i<Num;i++) {
             for (int j =0;j<=i;j++) {
@@ -98,6 +106,7 @@ public class CGCSAlgorithm {
                     Distance[i][j] = Distance[j][i] = calculateDistance(mListSensorNodes.get(i).getX(), mListSensorNodes.get(i).getY(), mListSensorNodes.get(j).getX(), mListSensorNodes.get(j).getY());
                 }
             }
+            ListTimeUsing[i] = 0;
         }
         
         //Tim lan can
@@ -143,6 +152,41 @@ public class CGCSAlgorithm {
             mListofListSensor.add(tempNodeList);
         }
         mListofListTime = resultListT;
+        
+        if (isFull) {
+            //Reset time using
+            for (int i =0; i< mListSensorNodes.size();i++) {
+                ListTimeUsing[i] =0;
+            }
+            BlockItem blockItem = mListBlockItem.get(0);
+            List<List<Integer>> ListXi = blockItem.getListResultX();
+            List<Double> ListTi = blockItem.getListTime();
+            for (int i =0; i< ListXi.size(); i++) {
+                List<Integer> Xi = ListXi.get(i);
+                double time = ListTi.get(i);
+                for (int j =0; j<Xi.size(); j++) {
+                    int sensor = Xi.get(j);
+                    ListTimeUsing[sensor] += time;
+                }
+            }
+            //Hien thi ket qua
+            System.out.println("Thoi gian ON cua cac sensor ---------FULL------------");
+            for (int i =0; i< mListSensorNodes.size(); i++) {
+                System.out.print(ListTimeUsing[i]+"  ");
+            }
+            System.out.println();
+            
+        } else {
+            System.out.println("Thoi gian ON cua cac sensor ---------------------");
+            for (int i =0; i< mListSensorNodes.size();i++) {
+                double time = (ListTimeUsing[i] /TIMEij_max)* SensorUtility.LifeTimeOfSensor;
+                System.out.print(time+"  ");
+            }
+            
+        }
+        
+        System.out.println();
+        SensorUtility.LifeTimeResult = mTimeLifeResult;
     }
     
     public void showViewTest(List<Integer> listSensor) {                                            
@@ -169,8 +213,8 @@ public class CGCSAlgorithm {
         List<Integer> tmpListSensor = FindListSensor(tmpUpPoint, tmpDownPoint);
         List<List<Integer>> tempListX;
         List<Double> tempListT;
-        
-        if (tmpListSensor.size() != SensorUtility.mListSensorNodes.size()) {
+        System.out.println("MaxSizeBlock :" + MaxSizeBlock+"-------------------------");
+        if ( MaxSizeBlock <= SensorUtility.numberOfColumn || MaxSizeBlock <= SensorUtility.numberOfRow) {
             isFull = false;
             List<Thread> mListThread = new ArrayList<>();
 
@@ -214,6 +258,12 @@ public class CGCSAlgorithm {
 
                                     //Find set Time foreach SetX%
                                     List<Double> tempListT = LinearProAlgorithm(tempListX, tempListSensor, mTimeLife);
+                                    double totalTime = 0;
+                                    for (int k =0; k< tempListT.size();k++) {
+                                        totalTime += tempListT.get(k);
+                                    }
+                                    BlockItem blockItem = new BlockItem(positionI, positionJ, tempListX, tempListT, totalTime);
+                                    mListBlockItem.add(blockItem);
 
                                     //Add result of Block
                                     countBlock++;
@@ -252,11 +302,20 @@ public class CGCSAlgorithm {
                     List<List<Integer>> tempListX = new ArrayList<>();
                     showViewTest(tempListSensor);
 
-                    ColumnGenerationAlgorithm(tempListSensor, tmpUpPoint, tmpDownPoint, tempListX);
+                    FloatPointItem upPoint = new FloatPointItem(0, 0);
+                    FloatPointItem downPoint = new FloatPointItem(SensorUtility.numberOfRow,SensorUtility.numberOfColumn);
+                    ColumnGenerationAlgorithm(tempListSensor, upPoint, downPoint, tempListX);
                     //FindSetX(tempListSensor, upPoint,downPoint,tempListX);
 
                     //Find set Time foreach SetX%
                     List<Double> tempListT = LinearProAlgorithm(tempListX, tempListSensor, mTimeLife);
+
+                    double totalTime = 0;
+                    for (int k = 0; k < tempListT.size(); k++) {
+                        totalTime += tempListT.get(k);
+                    }
+                    BlockItem blockItem = new BlockItem(0, 0, tempListX, tempListT, totalTime);
+                    mListBlockItem.add(blockItem);
 
                 }
 
@@ -274,7 +333,7 @@ public class CGCSAlgorithm {
         
         long start2 = System.currentTimeMillis();
         //Combining_All_Division(mListAllPathItem,resultListY,resultListTi,isFull);
-        //mTimeLife = Combining_All_Division2(mListBlockResult, isFull);
+        mTimeLifeResult = Combining_All_Division2(mListBlockItem, isFull);
         long end2 = System.currentTimeMillis();
         //AutoNDSTAlgorithm.timeRunCombine = end2-start2;
         System.out.println("Part time Combine:" + (end2-start2));
@@ -282,6 +341,125 @@ public class CGCSAlgorithm {
         
         //Free data
     }
+    
+    public double Combining_All_Division2(List<BlockItem> ListBlockResult,boolean isFull) {
+        double network_timelife = 0;
+        if (isFull) {
+            //TH mang full
+            if (ListBlockResult.isEmpty()) return network_timelife;
+            BlockItem blockResultItem = ListBlockResult.get(0);
+            List<Double> listTime = blockResultItem.getListTime();
+            for (int i = 0; i < listTime.size(); i++) {
+                network_timelife += listTime.get(i);
+            }
+
+        } else {
+            //TH division
+            double tempx = SensorUtility.numberOfRow / (2 * Rs);
+            double tempy = SensorUtility.numberOfColumn / (2 * Rs);
+            int current_lifetime;
+            int min_dis;
+            int count; 
+            for (int i = 1; i <= mLvalue; i++) {
+                for (int j = 1; j <= mLvalue; j++) {
+              //      if (i == 1 || j == 1) {
+                        current_lifetime = 0;
+                        count = 0;
+
+                        
+                        int Kx = (int) Math.ceil((tempx - i) / mLvalue);
+                        int Ky = (int) Math.ceil((tempy - j) / mLvalue);
+                        if (Kx > 0 && Ky > 0) {
+                            double TimeIJ = getMinTimeOfBlock(i, j, Kx, Ky, ListBlockResult);
+                            //Calculation ListEnergyUsing
+                            CalculateEnergyUsing(i, j, Kx, Ky, ListBlockResult,ListTimeUsing,TimeIJ);
+                            
+                            network_timelife += TimeIJ;
+                            count += 1; 
+
+                        }
+                }
+
+                //   network_timelife /= ((double)(Anpha)*(double)(Anpha));
+            }
+            TIMEij_max = 0; 
+            for (int m = 0; m < mListSensorNodes.size(); m++) {
+                if (ListTimeUsing[m] > TIMEij_max) {
+                    TIMEij_max = ListTimeUsing[m];
+                }
+            }
+            network_timelife *= (SensorUtility.LifeTimeOfSensor / TIMEij_max);
+        }
+        return network_timelife;
+    }
+    
+     //Calculate energy using of all block in a division
+    void CalculateEnergyUsing(int posI, int posJ, int Kx, int Ky, List<BlockItem> ListBlockResult, float[] ListTimeUsing, double minTime) {
+        for (int u = 0; u <= Kx; u++) {
+            for (int v = 0; v <= Ky; v++) {
+                int positionI = posI + u * mLvalue;
+                int positionJ = posJ + v * mLvalue;
+                TimeSensorUsingInBlock(positionI, positionJ, ListBlockResult, ListTimeUsing,minTime);
+            }
+
+        }
+    }
+    
+    void TimeSensorUsingInBlock(int positionI, int positionJ,List<BlockItem> ListBlockResult, float[] ListTimeUsing,double minTime) {
+        for (int i =0; i< ListBlockResult.size(); i++) {
+            BlockItem blockResultItem = ListBlockResult.get(i);
+            if (blockResultItem.getPostionI() == positionI && blockResultItem.getPostionJ() == positionJ) {
+                //Calculate Energy Using
+                double totalTimeBlock = blockResultItem.getTotalTime();
+                double ratio = minTime/totalTimeBlock;
+                List<List<Integer>> listResultXi = blockResultItem.getListResultX();
+                List<Double> listTime = blockResultItem.getListTime();
+                for (int j = 0 ; j < listResultXi.size(); j++) {
+                    List<Integer> Xi = listResultXi.get(j);
+                    double timePath = listTime.get(j);
+                    for (int k = 0; k < Xi.size(); k++) {
+                        int point = Xi.get(k);
+                        ListTimeUsing[point] += timePath*ratio;
+                    }
+                }
+            }
+        }
+ //       System.out.println("Khong tim thay block");
+        return ;
+
+    } 
+    
+    double getMinTimeOfBlock(int posI, int posJ, int Kx, int Ky, List<BlockItem> ListBlockResult) {
+        double timeMin = Double.MAX_VALUE;
+        System.out.println("Bat dau chia ");
+        for (int u =0 ; u <= Kx; u++) {
+            for (int v=0; v <= Ky; v++) {
+                int positionI = posI + u*mLvalue;
+                int positionJ = posJ + v*mLvalue;
+                System.out.println("Khoi chia I ="+positionI+ " J ="+ positionJ);
+                double time = findTotalTimeFromListBlock(positionI, positionJ, ListBlockResult);
+                if (time != 0 && time < timeMin) {
+                    timeMin = time;
+                }
+            }
+            
+        }
+        System.out.println("Ket thuc chia ");
+        return timeMin;
+     }
+    
+    double findTotalTimeFromListBlock(int positionI, int positionJ,List<BlockItem> ListBlockResult) {
+        for (int i =0; i< ListBlockResult.size(); i++) {
+            BlockItem blockResultItem = ListBlockResult.get(i);
+            if (blockResultItem.getPostionI() == positionI && blockResultItem.getPostionJ() == positionJ) {
+                
+                return blockResultItem.getTotalTime();
+            }
+        }
+  //      System.out.println("Khong tim thay block");
+        return 0;
+    }
+    
     public void runAlgorithm() {
         FloatPointItem UpLeftCornerPoint = new FloatPointItem(0,0);
         FloatPointItem DownRightCornerPoint = new FloatPointItem(SensorUtility.numberOfRow-1,SensorUtility.numberOfColumn-1);
@@ -1632,7 +1810,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
         
         int minPossibleSensors = (int)data.get("sensorsThreshold");
         
-        System.out.println("Start find set with min: " + minPossibleSensors);
+        //System.out.println("Start find set with min: " + minPossibleSensors);
         
         /**
          * run the algorithm until sensors list is empty (all sensors have been used)
@@ -1650,7 +1828,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
             uncoveredCurve.add(new Curve(UpLeft, new DoublePoint(DownRight.getX(), UpLeft.getY()), Curve.EdgeId.TOP));
             uncoveredCurve.add(new Curve(new DoublePoint(DownRight.getX(), UpLeft.getY()), DownRight, Curve.EdgeId.RIGHT));
 
-            System.out.println("____Number of sensor left: " + sensorList.size() + "___________");
+            //System.out.println("____Number of sensor left: " + sensorList.size() + "___________");
 
             ArrayList<NodeItem> currentConstructingSensorSet = new ArrayList<>();
             currentConstructingSensorSet = getSensorSet(uncoveredCurve, sensorList, usedSensors, sensorRadius);
@@ -1665,7 +1843,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
             }
             listOfSensorSets.add(currentConstructingSensorSet);
         }
-        System.out.println("unused sensors: " + sensorList.size());
+        //System.out.println("unused sensors: " + sensorList.size());
         return listOfSensorSets;
     }
     
@@ -1686,7 +1864,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
         
         // run until all arcs is covered
         while (uncoveredCurve.size() > 0) {
-            System.out.println(sensorList.size() + ", (" + currentConstructingSensorSet.size() + "). Number of curves left: " + uncoveredCurve.size());
+            //System.out.println(sensorList.size() + ", (" + currentConstructingSensorSet.size() + "). Number of curves left: " + uncoveredCurve.size());
             // pick 1st curve, filter out all sensors that don't cover some segment of this curve
             ArrayList<DoublePoint> startPointArray = uncoveredCurve.stream().map(curve -> curve.getStartPoint()).collect(Collectors.toCollection(ArrayList::new));
             ArrayList<NodeItem> nearBySensors = filterByTheNumberOfPointsCovered(sensorList, startPointArray, sensorRadius);
@@ -1713,7 +1891,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
                     while ((duplicatedIndex = usedSensors.indexOf(chosenSensor)) != -1) {
                         duplicatedUsedSensor.add(usedSensors.remove(duplicatedIndex));
                     }
-                    System.out.println("used sensor");
+                    //System.out.println("used sensor");
                 }
             } else {
                 chosenSensor = (NodeItem)optionalSensor.get();

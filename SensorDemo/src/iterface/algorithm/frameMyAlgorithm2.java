@@ -97,7 +97,7 @@ public class frameMyAlgorithm2 extends javax.swing.JFrame {
             Double next = mListofListTime.get(i);
             totalTime+=next;
         }
-        totalTimeOnLabel.setText("Total Time ON : "+totalTime);
+        totalTimeOnLabel.setText("Total Time ON : "+SensorUtility.LifeTimeResult);
 
      
     }
