@@ -338,7 +338,7 @@ public void initOtherComponent() {
         }  else {
             clearData();
             //Algorithm2 mAlgorithm = new Algorithm2();
-            TempAlgorithm mAlgorithm = new TempAlgorithm();
+            Algorithm2 mAlgorithm = new Algorithm2();
             Thread thread;
             thread = new Thread(new Runnable() {
                 @Override
@@ -349,6 +349,7 @@ public void initOtherComponent() {
                     timeRun = end-begin;
                     updateListX();
                     displayResult();
+                    JOptionPane.showMessageDialog(null, "Compare Algorithm run finished !");
                 }
             });
             thread.start();

@@ -58,6 +58,7 @@ public class TempAlgorithm {
 
     public void readData() {
         // Read Rs, Rt
+        System.out.println("Read data input");
         Rs = SensorUtility.mRsValue;
         Rt = SensorUtility.mRtValue;
         mTimeLife = SensorUtility.LifeTimeOfSensor;
@@ -101,21 +102,25 @@ public class TempAlgorithm {
     public PCLItem findPCLPoint(List<Integer> nearByList, int node) {//listNearBy : list lan can cua node , node : vi tri cua node trong ListNodeSensor
 
         List<FloatPointItem> listI = new ArrayList<>(); // List giao diem cua Sj voi lan can
-        PCLItem mPCL_Sj = new PCLItem(node, 100000);// Khoi tao PCL of node
+        PCLItem mPCL_Sj = new PCLItem(node, 100000000);// Khoi tao PCL of node
         // TH1 : Diem Sj nam ben trong khoi hinh 
         if (Math.abs(mListSensorNodes.get(node).getX() - P1.getX()) > Rs
-                && Math.abs(mListSensorNodes.get(node).getX() - P3.getX()) > Rs
+                && ( P4.getX() - mListSensorNodes.get(node).getX() ) > Rs
                 && Math.abs(mListSensorNodes.get(node).getY() - P1.getY()) > Rs
-                && Math.abs(mListSensorNodes.get(node).getY() - P2.getY()) > Rs) {
+                && (P4.getY() -mListSensorNodes.get(node).getY()) > Rs) {
 
             // Tim giao diem cua Sj voi cac lan can
             listI.clear();
             for (int j = 0; j < nearByList.size(); j++) {
-                FloatPointItem n1 = new FloatPointItem();
-                FloatPointItem n2 = new FloatPointItem();
-                findIntersection_TwoCircle(node, nearByList.get(j), n1, n2);
-                listI.add(n1);
-                listI.add(n2);
+                if (node != nearByList.get(j) && Distance[node][nearByList.get(j)] < 2 * Rs) {
+                    if ((mListSensorNodes.get(node).getY() != mListSensorNodes.get(nearByList.get(j)).getY()) || (mListSensorNodes.get(node).getX() != mListSensorNodes.get(nearByList.get(j)).getX())) {
+                        FloatPointItem n1 = new FloatPointItem();
+                        FloatPointItem n2 = new FloatPointItem();
+                        findIntersection_TwoCircle(node, nearByList.get(j), n1, n2);
+                        listI.add(n1);
+                        listI.add(n2);
+                    }
+                }
             }
             // Find PCL of Sj
 
@@ -130,15 +135,19 @@ public class TempAlgorithm {
             // Tim giao diem cua Sj voi cac lan can-----------------------------------------------------------------------
             listI.clear();
             for (int j = 0; j < nearByList.size(); j++) {
-                FloatPointItem n1 = new FloatPointItem();
-                FloatPointItem n2 = new FloatPointItem();
-                findIntersection_TwoCircle(node, nearByList.get(j), n1, n2);
-                //Giao diem voi lan can nam trong mang
-                if (CheckPoint_InRectange(n1, P1.getX(), P1.getY(), P4.getX(), P4.getY())) {
-                    listI.add(n1);
-                }
-                if (CheckPoint_InRectange(n2, P1.getX(), P1.getY(), P4.getX(), P4.getY())) {
-                    listI.add(n2);
+                if (node != nearByList.get(j) && Distance[node][nearByList.get(j)] < 2 * Rs) {
+                    if ((mListSensorNodes.get(node).getY() != mListSensorNodes.get(nearByList.get(j)).getY()) || (mListSensorNodes.get(node).getX() != mListSensorNodes.get(nearByList.get(j)).getX())) {
+                        FloatPointItem n1 = new FloatPointItem();
+                        FloatPointItem n2 = new FloatPointItem();
+                        findIntersection_TwoCircle(node, nearByList.get(j), n1, n2);
+                        //Giao diem voi lan can nam trong mang
+                        if (CheckPoint_InRectange(n1, P1.getX(), P1.getY(), P4.getX(), P4.getY())) {
+                            listI.add(n1);
+                        }
+                        if (CheckPoint_InRectange(n2, P1.getX(), P1.getY(), P4.getX(), P4.getY())) {
+                            listI.add(n2);
+                        }
+                    }
                 }
 
             }
@@ -335,49 +344,49 @@ public class TempAlgorithm {
         //Giai phuong trinh
         //2(x1-x0)*X + 2(y1-y0)*Y = x1^2 -x0^2 +y1^2-y0^2
         //(X-x0)^2+ (Y-y0)^2 = R^2
-        float x0 = mListSensorNodes.get(point_u).getX();
-        float y0 = mListSensorNodes.get(point_u).getY();
-        float x1 = mListSensorNodes.get(point_v).getX();
-        float y1 = mListSensorNodes.get(point_v).getY();
+        double x0 = mListSensorNodes.get(point_u).getX();
+        double y0 = mListSensorNodes.get(point_u).getY();
+        double x1 = mListSensorNodes.get(point_v).getX();
+        double y1 = mListSensorNodes.get(point_v).getY();
         if (x0 == x1) {
-            float ny = (x1 * x1 - x0 * x0) / (2 * y1 - 2 * y0) + (y1 + y0) / 2;
+            double ny = (x1 * x1 - x0 * x0) / (2 * y1 - 2 * y0) + (y1 + y0) / 2;
 
-            float c = x0 * x0 + (ny - y0) * (ny - y0) - Rs * Rs;
-            float Delta = 4 * x0 * x0 - 4 * c;
+            double c = x0 * x0 + (ny - y0) * (ny - y0) - Rs * Rs;
+            double Delta = 4 * x0 * x0 - 4 * c;
 
             // Giai phuong trinh
             // Nghiem 1
-            float nx1 = (2 * x0 + (float) Math.sqrt(Delta)) / 2;
-            mP1.setX(nx1);
-            mP1.setY(ny);
+            double nx1 = (2 * x0 + Math.sqrt(Delta)) / 2;
+            mP1.setX((float)nx1);
+            mP1.setY((float)ny);
 
             // Nghiem 2
-            float nx2 = (2 * x0 - (float) Math.sqrt(Delta)) / 2;
-            mP2.setX(nx2);
-            mP2.setY(ny);
+            double nx2 = (2 * x0 - Math.sqrt(Delta)) / 2;
+            mP2.setX((float)nx2);
+            mP2.setY((float)ny);
 
         } else {
-            float a = (x0 + x1) / 2 + (y1 * y1 - y0 * y0) / (2 * x1 - 2 * x0);
-            float b = (y0 - y1) / (x1 - x0);
+            double a = (x0 + x1) / 2 + (y1 * y1 - y0 * y0) / (2 * x1 - 2 * x0);
+            double b = (y0 - y1) / (x1 - x0);
 
-            float a1 = b * b + 1;
-            float a2 = 2 * a * b - 2 * x0 * b - 2 * y0;
-            float a3 = a * a - 2 * x0 * a + x0 * x0 + y0 * y0 - Rs * Rs;
+            double a1 = b * b + 1;
+            double a2 = (2 * a * b) - (2 * x0 * b )- (2 * y0);
+            double a3 = (a * a) - (2 * x0 * a) + (x0 * x0) + (y0 * y0) - (Rs * Rs);
 
-            float Delta = a2 * a2 - 4 * a1 * a3;
+            double Delta = a2 * a2 - 4 * a1 * a3;
 
             // Giai phuong trinh
             // Nghiem 1
-            float ny1 = (-a2 + (float) Math.sqrt(Delta)) / (2 * a1);
-            float nx1 = a + b * ny1;
-            mP1.setX(nx1);
-            mP1.setY(ny1);
+            double ny1 = (-a2 +  Math.sqrt(Delta)) / (2 * a1);
+            double nx1 = a + b * ny1;
+            mP1.setX((float)nx1);
+            mP1.setY((float)ny1);
 
             // Nghiem 2
-            float ny2 = (-a2 - (float) Math.sqrt(Delta)) / (2 * a1);
-            float nx2 = a + b * ny2;
-            mP2.setX(nx2);
-            mP2.setY(ny2);
+            double ny2 = (-a2 - Math.sqrt(Delta)) / (2 * a1);
+            double nx2 = a + b * ny2;
+            mP2.setX((float)nx2);
+            mP2.setY((float)ny2);
 
         }
     }
@@ -491,7 +500,7 @@ public class TempAlgorithm {
          //Input : Rs Value, TimeLife , Num ( Soluong sensor) , mListSensorNodes : List cac node sensor (NodeItem)
          // Output : resultListX ( List ket qua cac Xi thong qua position cua mListSensorNodes)
          //          resultListT (Thoi gian on của tap hop Xi) 
-         
+         System.out.println("Run algorithm");
          // Step 1: Find PCL of all sensorList and sort PCL of sensor follow non-descend
          findPCLAllPoint(ListNearBy, mListPCLSensor);
          for (int i = 0; i < mListPCLSensor.size(); i++) {
@@ -511,11 +520,13 @@ public class TempAlgorithm {
          while (!mListPCLSensor.isEmpty()) {
              
              int covi = getCoverageLevel(listCi);
+             System.out.println(" Covi ="+covi);
              if (covi < 1) {
                  int node = mListPCLSensor.get(0).getId();
                  //Add node to listCi
                  updateCoverageLevel(listCi, node, ADD_MODE);
                  // Remove node from mListPCLSensor
+                 System.out.println("Remove mListPCLSensor :"+mListPCLSensor.get(0).getId() + " size="+mListPCLSensor.size());
                  mListPCLSensor.remove(0);
                  
              } else {
@@ -527,7 +538,7 @@ public class TempAlgorithm {
                      listX.add(listCi.get(j).getId());
                  }
                  resultListX.add(listX);
-                 
+                 System.out.println("Found a ListXi : size ="+listX.size());
                  //Khoi tao list Ci tiep theo
                  listCi = new ArrayList<>();
 
@@ -563,7 +574,7 @@ public class TempAlgorithm {
              //Remove phan tu i cua listCi
              int node = list.get(i);
              updateCoverageLevel(listCi,node , REMOVE_MODE);
-             
+             System.out.println("PruneGreedySelection update node ="+node);
              //getCovi of listCi
              int covi = getCoverageLevel(listCi);
              

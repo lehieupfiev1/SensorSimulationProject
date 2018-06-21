@@ -286,7 +286,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="MyAlgorithm2MenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="MyAlgorithm 2"/>
+                <Property name="text" type="java.lang.String" value="CGCS Algorithm"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="MyAlgorithm2MenuItemActionPerformed"/>

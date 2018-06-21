@@ -52,7 +52,7 @@ public class frameMyAlgorithm2 extends javax.swing.JFrame {
         initOtherComponent();
         displayInput();
         clearData();
-        this.setTitle("My Algorithm 2");
+        this.setTitle("CGCS Algorithm");
     }
     
 
@@ -381,6 +381,7 @@ public class frameMyAlgorithm2 extends javax.swing.JFrame {
                     timeRun = end-begin;
                     updateListX();
                     displayResult();
+                    JOptionPane.showMessageDialog(null, "CGCS Algorithm run finished !");
                 }
             });
             thread.start();

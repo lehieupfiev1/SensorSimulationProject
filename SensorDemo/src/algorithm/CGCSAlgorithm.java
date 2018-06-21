@@ -124,7 +124,7 @@ public class CGCSAlgorithm {
         //Tim giao diem
         for (int i = 0;i<Num;i++) {
             for (int j =0;j<=i;j++) {
-                if (i != j && Distance[i][j] < 2*Rs) {
+                if (i != j && Distance[i][j] < 2*Rs && (mListSensorNodes.get(i).getX() != mListSensorNodes.get(j).getX() || mListSensorNodes.get(i).getY() != mListSensorNodes.get(j).getY())) {
                     FloatPointItem n1 = new FloatPointItem();
                     FloatPointItem n2 = new FloatPointItem();
                     findIntersection_TwoCircle(i, j, n1, n2);
@@ -736,9 +736,9 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
         }
         
         if (Math.abs(mListSensorNodes.get(exception).getX() - P1.getX()) > Rs
-                && Math.abs(mListSensorNodes.get(exception).getX() - P3.getX()) > Rs
+                && ( P4.getX() - mListSensorNodes.get(exception).getX() ) > Rs
                 && Math.abs(mListSensorNodes.get(exception).getY() - P1.getY()) > Rs
-                && Math.abs(mListSensorNodes.get(exception).getY() - P2.getY()) > Rs) {
+                && (P4.getY() -mListSensorNodes.get(exception).getY()) > Rs) {
             //Point nam ben trong 
             // Tim giao diem cua lan can
             for (int i = 0; i < nearByList.size(); i++) {
@@ -1175,49 +1175,49 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
         //Giai phuong trinh
         //2(x1-x0)*X + 2(y1-y0)*Y = x1^2 -x0^2 +y1^2-y0^2
         //(X-x0)^2+ (Y-y0)^2 = R^2
-        float x0 = mListSensorNodes.get(point_u).getX();
-        float y0 = mListSensorNodes.get(point_u).getY();
-        float x1 = mListSensorNodes.get(point_v).getX();
-        float y1 = mListSensorNodes.get(point_v).getY();
+        double x0 = mListSensorNodes.get(point_u).getX();
+        double y0 = mListSensorNodes.get(point_u).getY();
+        double x1 = mListSensorNodes.get(point_v).getX();
+        double y1 = mListSensorNodes.get(point_v).getY();
         if (x0 == x1) {
-            float ny = (x1 * x1 - x0 * x0) / (2 * y1 - 2 * y0) + (y1 + y0) / 2;
+            double ny = (x1 * x1 - x0 * x0) / (2 * y1 - 2 * y0) + (y1 + y0) / 2;
 
-            float c = x0 * x0 + (ny - y0) * (ny - y0) - Rs * Rs;
-            float Delta = 4 * x0 * x0 - 4 * c;
+            double c = x0 * x0 + (ny - y0) * (ny - y0) - Rs * Rs;
+            double Delta = 4 * x0 * x0 - 4 * c;
 
             // Giai phuong trinh
             // Nghiem 1
-            float nx1 = (2 * x0 + (float) Math.sqrt(Delta)) / 2;
-            mP1.setX(nx1);
-            mP1.setY(ny);
+            double nx1 = (2 * x0 + Math.sqrt(Delta)) / 2;
+            mP1.setX((float)nx1);
+            mP1.setY((float)ny);
 
             // Nghiem 2
-            float nx2 = (2 * x0 - (float) Math.sqrt(Delta)) / 2;
-            mP2.setX(nx2);
-            mP2.setY(ny);
+            double nx2 = (2 * x0 - Math.sqrt(Delta)) / 2;
+            mP2.setX((float)nx2);
+            mP2.setY((float)ny);
 
         } else {
-            float a = (x0 + x1) / 2 + (y1 * y1 - y0 * y0) / (2 * x1 - 2 * x0);
-            float b = (y0 - y1) / (x1 - x0);
+            double a = (x0 + x1) / 2 + (y1 * y1 - y0 * y0) / (2 * x1 - 2 * x0);
+            double b = (y0 - y1) / (x1 - x0);
 
-            float a1 = b * b + 1;
-            float a2 = 2 * a * b - 2 * x0 * b - 2 * y0;
-            float a3 = a * a - 2 * x0 * a + x0 * x0 + y0 * y0 - Rs * Rs;
+            double a1 = b * b + 1;
+            double a2 = (2 * a * b) - (2 * x0 * b )- (2 * y0);
+            double a3 = (a * a) - (2 * x0 * a) + (x0 * x0) + (y0 * y0) - (Rs * Rs);
 
-            float Delta = a2 * a2 - 4 * a1 * a3;
+            double Delta = a2 * a2 - 4 * a1 * a3;
 
             // Giai phuong trinh
             // Nghiem 1
-            float ny1 = (-a2 + (float) Math.sqrt(Delta)) / (2 * a1);
-            float nx1 = a + b * ny1;
-            mP1.setX(nx1);
-            mP1.setY(ny1);
+            double ny1 = (-a2 +  Math.sqrt(Delta)) / (2 * a1);
+            double nx1 = a + b * ny1;
+            mP1.setX((float)nx1);
+            mP1.setY((float)ny1);
 
             // Nghiem 2
-            float ny2 = (-a2 - (float) Math.sqrt(Delta)) / (2 * a1);
-            float nx2 = a + b * ny2;
-            mP2.setX(nx2);
-            mP2.setY(ny2);
+            double ny2 = (-a2 - Math.sqrt(Delta)) / (2 * a1);
+            double nx2 = a + b * ny2;
+            mP2.setX((float)nx2);
+            mP2.setY((float)ny2);
 
         }
     }
@@ -1494,13 +1494,14 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
     }
     
     public void ColumnGenerationAlgorithm(List<Integer> ListSensor, FloatPointItem P1, FloatPointItem P4, List<List<Integer>> returListX) {
-        
+        System.out.println("ColumnGenerationAlgorithm-----");
         List<List<Integer>> ListPX = new ArrayList<>();
         List<Integer> tempListSensor = new ArrayList<>();
         List<Long> Hash = new ArrayList<>();
         //Need Algorithm calculate Xi
         //FindSetXi(ListSensor, P1, P4, ListPX);
         ListPX = FindSetXi_v2(ListSensor, P1, P4);
+        System.out.println("Find Set Xi size ="+ListPX.size());
         //Sort and calcuate Hash of ListPX
         for (int i =0; i < ListPX.size(); i++) {
             List<Integer> Xi = ListPX.get(i);
@@ -1521,6 +1522,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
         double beta =1.1;
         double pre_timelife = 100000000000.0;
         double current_timelife = 0;
+        int count = 1;
         
         do {
             List<HeuristicItem> ListPi = new ArrayList<>();
@@ -1583,13 +1585,15 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
             } else {
                 ListPX.add(tmpXi);
                 Hash.add(tempHash);
+                System.out.println("Add a new Xi size="+tmpXi.size());
             }
             
             //
             beta = current_timelife/pre_timelife;
             pre_timelife = current_timelife;
+            count ++;
 
-        } while (gama <= 1 && beta < Cvalue);
+        } while ( (gama < 1 && beta > Cvalue )|| ListPX.size() < ListSensor.size() || count < 10);
         
         for (int i =0; i< ListPX.size(); i++) {
         	List<Integer> Xi = ListPX.get(i);

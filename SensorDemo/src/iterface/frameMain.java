@@ -424,7 +424,7 @@ public class frameMain extends javax.swing.JFrame {
         });
         AlgorithmMenu.add(Algorithm1MenuItem);
 
-        MyAlgorithm2MenuItem.setText("MyAlgorithm 2");
+        MyAlgorithm2MenuItem.setText("CGCS Algorithm");
         MyAlgorithm2MenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 MyAlgorithm2MenuItemActionPerformed(evt);
