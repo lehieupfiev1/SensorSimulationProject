@@ -8,7 +8,6 @@ package algorithm;
 import common.SensorUtility;
 import static common.SensorUtility.mListSensorNodes;
 import static common.SensorUtility.mListofListSensor;
-import static common.SensorUtility.mListofListTime;
 import ilog.concert.IloException;
 import ilog.concert.IloLinearNumExpr;
 import ilog.concert.IloNumVar;
@@ -35,6 +34,7 @@ import model.HeuristicItem;
 import model.IntersectItem;
 import model.IntersectionPoint;
 import model.NodeItem;
+import model.PCLItem;
 
 /**
  *
@@ -48,6 +48,8 @@ public class CGCSAlgorithm {
     List<List<Integer>> resultListX;
     List<Double> resultListT;
     List<BlockItem> mListBlockItem;
+    public final static int ADD_MODE =  0; 
+    public final static int REMOVE_MODE =  1; 
     int countA =0;
     float TIMEij_max;
     public float Distance[][];
@@ -151,7 +153,7 @@ public class CGCSAlgorithm {
             }
             mListofListSensor.add(tempNodeList);
         }
-        mListofListTime = resultListT;
+        //mListofListTime = resultListT;
         
         if (isFull) {
             //Reset time using
@@ -210,9 +212,7 @@ public class CGCSAlgorithm {
         float MaxSizeBlock = 2*Rs*mLvalue;
         FloatPointItem tmpUpPoint = new FloatPointItem(0, 0);
         FloatPointItem tmpDownPoint = new FloatPointItem(MaxSizeBlock, MaxSizeBlock);
-        List<Integer> tmpListSensor = FindListSensor(tmpUpPoint, tmpDownPoint);
-        List<List<Integer>> tempListX;
-        List<Double> tempListT;
+
         System.out.println("MaxSizeBlock :" + MaxSizeBlock+"-------------------------");
         if ( MaxSizeBlock <= SensorUtility.numberOfColumn || MaxSizeBlock <= SensorUtility.numberOfRow) {
             isFull = false;
@@ -246,15 +246,12 @@ public class CGCSAlgorithm {
                                     //Find ListSensor in Block                                
 
                                     List<Integer> tempListSensor = FindListSensor(upPoint, downPoint);
-                                    //List<Integer> tempListSink = FindListSink(upPoint, downPoint);
-                                    //Get List
 
                                     //Find set X in Block
                                     List<List<Integer>> tempListX = new ArrayList<>();
                                     showViewTest(tempListSensor);
 
                                     ColumnGenerationAlgorithm(tempListSensor, upPoint, downPoint, tempListX);
-                                    //FindSetX(tempListSensor, upPoint,downPoint,tempListX);
 
                                     //Find set Time foreach SetX%
                                     List<Double> tempListT = LinearProAlgorithm(tempListX, tempListSensor, mTimeLife);
@@ -305,7 +302,6 @@ public class CGCSAlgorithm {
                     FloatPointItem upPoint = new FloatPointItem(0, 0);
                     FloatPointItem downPoint = new FloatPointItem(SensorUtility.numberOfRow,SensorUtility.numberOfColumn);
                     ColumnGenerationAlgorithm(tempListSensor, upPoint, downPoint, tempListX);
-                    //FindSetX(tempListSensor, upPoint,downPoint,tempListX);
 
                     //Find set Time foreach SetX%
                     List<Double> tempListT = LinearProAlgorithm(tempListX, tempListSensor, mTimeLife);
@@ -1500,7 +1496,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
         List<Long> Hash = new ArrayList<>();
         //Need Algorithm calculate Xi
         //FindSetXi(ListSensor, P1, P4, ListPX);
-        ListPX = FindSetXi_v2(ListSensor, P1, P4);
+        ListPX = FindSetXi_v3(ListSensor, P1, P4);
         System.out.println("Find Set Xi size ="+ListPX.size());
         //Sort and calcuate Hash of ListPX
         for (int i =0; i < ListPX.size(); i++) {
@@ -1715,6 +1711,328 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
     public void freeData() {
         Distance = null;
         Intersect = null;
+    }
+    
+    ///------------------------Find Set Xi using compareAlgorithm--------------------------------------//
+    public List<List<Integer>> FindSetXi_v3(List<Integer> ListSensor,FloatPointItem UpLeftCornerPoint, FloatPointItem DownRightCornerPoint) {
+        //Input : Rs Value, TimeLife , Num ( Soluong sensor) , mListSensorNodes : List cac node sensor (NodeItem)
+         // Output : resultListX ( List ket qua cac Xi thong qua position cua mListSensorNodes)
+         //          resultListT (Thoi gian on của tap hop Xi) 
+         List<List<Integer>> resultListXi = new ArrayList<>();
+         List<PCLItem> mListPCLSensor = new ArrayList<>();
+         List<PCLItem> mListPCLSensorCommon = new ArrayList<>();// ListPCL ban dau theo thu tu listSensor
+        //Tim lan can
+        List<List<Integer>> listNearBy = new ArrayList<>();
+        for (int i = 0;i<ListSensor.size();i++) {
+            List<Integer> tempNearBy = new ArrayList<>();
+            for (int j =0;j<ListSensor.size();j++) {
+                if (i != j && Distance[ListSensor.get(i)][ListSensor.get(j)] <= 2*Rs) {
+                    tempNearBy.add(ListSensor.get(j));
+                }
+            }
+            listNearBy.add(tempNearBy);
+        }
+         // Step 1: Find PCL of all sensorList and sort PCL of sensor follow non-descend
+         findPCLAllPoint(listNearBy, mListPCLSensor,UpLeftCornerPoint,DownRightCornerPoint);
+         for (int i = 0; i < mListPCLSensor.size(); i++) {
+             mListPCLSensorCommon.add(new PCLItem(mListPCLSensor.get(i).getId(), mListPCLSensor.get(i).getPclValue()));
+         }
+         Collections.sort(mListPCLSensor, new Comparator<PCLItem>() {
+            @Override
+            public int compare(PCLItem o1, PCLItem o2) {
+                int x1 = o1.getPclValue();
+                int x2 = o2.getPclValue();
+                return Integer.compare(x1, x2);
+            }
+        });
+         
+         //Step 2: Vong lap while
+         List<PCLItem> listCi = new ArrayList<>();
+         while (!mListPCLSensor.isEmpty()) {
+             
+             int covi = getCoverageLevel(listCi);
+             System.out.println(" Covi ="+covi);
+             if (covi < 1) {
+                 int node = mListPCLSensor.get(0).getId();
+                 //Add node to listCi
+                 updateCoverageLevel(listCi, node, ADD_MODE,UpLeftCornerPoint,DownRightCornerPoint);
+                 // Remove node from mListPCLSensor
+                 System.out.println("Remove mListPCLSensor :"+mListPCLSensor.get(0).getId() + " size="+mListPCLSensor.size());
+                 mListPCLSensor.remove(0);
+                 
+             } else {
+                 //Thuat toan PruneGreedySelection(k,S,Ci)
+                 PruneGreedySelection(mListPCLSensor,mListPCLSensorCommon,listCi,UpLeftCornerPoint,DownRightCornerPoint);
+                 //Add listCi to resultListC
+                 List<Integer> listX = new ArrayList<>();
+                 for (int j = 0; j < listCi.size(); j++) {
+                     listX.add(listCi.get(j).getId());
+                 }
+                 showViewTest(listX);
+                 resultListXi.add(listX);
+                 System.out.println("Found a ListXi : size ="+listX.size());
+                 //Khoi tao list Ci tiep theo
+                 listCi = new ArrayList<>();
+
+             }
+         }
+         
+         //Xet TH toan bo vua du
+         int covi = getCoverageLevel(listCi);
+         if (covi == 1) {
+             List<Integer> listX = new ArrayList<>();
+             for (int j = 0; j < listCi.size(); j++) {
+                 listX.add(listCi.get(j).getId());
+             }
+             showViewTest(listX);
+             resultListXi.add(listX);
+         }
+         
+        return resultListXi;
+        
+    }
+    
+    public void findPCLAllPoint(List<List<Integer>> listofListNearBy, List<PCLItem> mListPCLSensor, FloatPointItem P1, FloatPointItem P4) {
+        for (int i = 0; i < listofListNearBy.size(); i++) {
+            PCLItem mPCLItem = findPCLPoint(listofListNearBy.get(i),i,P1,P4);
+            mListPCLSensor.add(mPCLItem);
+        }
+    }
+    
+    public int getCoverageLevel(List<PCLItem> listCi) {
+        if (listCi.isEmpty()) return 0;
+        int result =  listCi.get(0).getPclValue();
+        for (int i =1;i < listCi.size();i++) {
+            if(result > listCi.get(i).getPclValue()) result = listCi.get(i).getPclValue();
+        }
+        return result;
+    }
+    
+    public void PruneGreedySelection(List<PCLItem> ListPCLSensor,List<PCLItem> mListPCLSensorCommon, List<PCLItem> listCi , FloatPointItem P1, FloatPointItem P4) {
+         //Coppy listCi to list
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0;i< listCi.size();i++) {
+           list.add(listCi.get(i).getId());
+        }
+        // Vong lap voi moi phan tu list
+         for (int i = 0; i < list.size(); i++) {
+             //Remove phan tu i cua listCi
+             int node = list.get(i);
+             updateCoverageLevel(listCi,node , REMOVE_MODE,P1,P4);
+             System.out.println("PruneGreedySelection update node ="+node);
+             //getCovi of listCi
+             int covi = getCoverageLevel(listCi);
+             
+             if (covi >= 1) {
+                 //Add Si to mListPCLSensor;
+                 PCLItem mPCLItem = new PCLItem(node, mListPCLSensorCommon.get(node).getPclValue());
+                 ListPCLSensor.add(mPCLItem);
+                 
+             } else {
+                 //Add Si to back listCi
+                 updateCoverageLevel(listCi, node, ADD_MODE,P1,P4);
+             }
+
+         }
+         //Sort List PCL
+          Collections.sort(ListPCLSensor, new Comparator<PCLItem>() {
+            @Override
+            public int compare(PCLItem o1, PCLItem o2) {
+                int x1 = o1.getPclValue();
+                int x2 = o2.getPclValue();
+                return Integer.compare(x1, x2);
+            }
+        });
+         
+     }
+    
+    public PCLItem findPCLPoint(List<Integer> nearByList, int node, FloatPointItem P1, FloatPointItem P4) {//listNearBy : list lan can cua node , node : vi tri cua node trong ListNodeSensor
+        FloatPointItem P2 = new FloatPointItem(0.0f, P4.getY());
+        FloatPointItem P3 = new FloatPointItem(P4.getX(), 0.0f);
+        List<FloatPointItem> listI = new ArrayList<>(); // List giao diem cua Sj voi lan can
+        PCLItem mPCL_Sj = new PCLItem(node, 100000000);// Khoi tao PCL of node
+        // TH1 : Diem Sj nam ben trong khoi hinh 
+        if (Math.abs(mListSensorNodes.get(node).getX() - P1.getX()) > Rs
+                && ( P4.getX() - mListSensorNodes.get(node).getX() ) > Rs
+                && Math.abs(mListSensorNodes.get(node).getY() - P1.getY()) > Rs
+                && (P4.getY() -mListSensorNodes.get(node).getY()) > Rs) {
+
+            // Tim giao diem cua Sj voi cac lan can
+            listI.clear();
+            for (int j = 0; j < nearByList.size(); j++) {
+                if (node != nearByList.get(j) && Distance[node][nearByList.get(j)] < 2 * Rs) {
+                    if ((mListSensorNodes.get(node).getY() != mListSensorNodes.get(nearByList.get(j)).getY()) || (mListSensorNodes.get(node).getX() != mListSensorNodes.get(nearByList.get(j)).getX())) {
+                        FloatPointItem n1 = Intersect[node][nearByList.get(j)].getN1();
+                        FloatPointItem n2 = Intersect[node][nearByList.get(j)].getN2();
+                        listI.add(n1);
+                        listI.add(n2);
+                    }
+                }
+            }
+            // Find PCL of Sj
+
+            for (int j = 0; j < listI.size(); j++) {
+                int PClPoint = CheckPoint_Corvering_bySet(listI.get(j), nearByList);
+                if (PClPoint < mPCL_Sj.getPclValue()) {
+                    mPCL_Sj.setPclValue(PClPoint);
+                }
+            }
+
+        } else { //TH 2 :  Diem Sj giao voi cac duong bien
+            // Tim giao diem cua Sj voi cac lan can-----------------------------------------------------------------------
+            listI.clear();
+            for (int j = 0; j < nearByList.size(); j++) {
+                if (node != nearByList.get(j) && Distance[node][nearByList.get(j)] < 2 * Rs) {
+                    if ((mListSensorNodes.get(node).getY() != mListSensorNodes.get(nearByList.get(j)).getY()) || (mListSensorNodes.get(node).getX() != mListSensorNodes.get(nearByList.get(j)).getX())) {
+                        FloatPointItem n1 = Intersect[node][nearByList.get(j)].getN1();
+                        FloatPointItem n2 = Intersect[node][nearByList.get(j)].getN2();
+                        //Giao diem voi lan can nam trong mang
+                        if (CheckPoint_InRectange(n1, P1.getX(), P1.getY(), P4.getX(), P4.getY())) {
+                            listI.add(n1);
+                        }
+                        if (CheckPoint_InRectange(n2, P1.getX(), P1.getY(), P4.getX(), P4.getY())) {
+                            listI.add(n2);
+                        }
+                    }
+                }
+
+            }
+
+            // Tim Giao diem cua Sj voi cac canh duong bien----------------------------------------------------------------
+            List<FloatPointItem> ListK = new ArrayList<>(); // Giao diem cua Sj voi cac canh duong bien
+            boolean[] intersect = new boolean[5];
+            ListK.clear();
+            //Canh tren
+            intersect[1] = Find_Interaction_FirstEdge(mListSensorNodes.get(node), P1, P3, ListK);
+            //Canh dưoi
+            intersect[2] = Find_Interaction_FirstEdge(mListSensorNodes.get(node), P2, P4, ListK);
+            //Canh trai
+            intersect[3] = Find_Interaction_SecondEdge(mListSensorNodes.get(node), P1, P2, ListK);
+            //Canh phai
+            intersect[4] = Find_Interaction_SecondEdge(mListSensorNodes.get(node), P3, P4, ListK);
+
+
+            // Find PCL of Sj----------------------------------------------------------------------------------------------------------
+            // Xet cac giao diem cua Sj voi lan can
+            for (int j = 0; j < listI.size(); j++) {
+                int PClPoint = CheckPoint_Corvering_bySet(listI.get(j), nearByList);
+                if (PClPoint < mPCL_Sj.getPclValue()) {
+                    mPCL_Sj.setPclValue(PClPoint);
+                }
+            }
+            // Xet giao diem cua Sj voi cac duong bien
+            for (int j = 0; j < ListK.size(); j++) {
+                int PClPoint = CheckPoint_Corvering_bySet(ListK.get(j), nearByList);
+                if (PClPoint < mPCL_Sj.getPclValue()) {
+                    mPCL_Sj.setPclValue(PClPoint);
+                }
+            }
+
+        }
+        // Return mPCL of node 
+        return mPCL_Sj;
+    }
+    
+    int CheckPoint_Corvering_bySet(FloatPointItem point, List<Integer> Set) {
+        int count = 0;
+        for (int i = 0; i < Set.size(); i++) {
+             if (calculateDistance(point.getX(), point.getY(), mListSensorNodes.get(Set.get(i)).getX(), mListSensorNodes.get(Set.get(i)).getY()) + SensorUtility.mSaiso <  Rs) {
+                 count++;
+             }
+        }
+        return count;
+    }
+    
+    public void updateCoverageLevel(List<PCLItem> listCi , int node, int MODE,FloatPointItem P1, FloatPointItem P4) {
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0;i< listCi.size();i++) {
+           list.add(listCi.get(i).getId());
+        }
+        switch (MODE) {
+            case ADD_MODE: /// Add new node in listCi
+                if (list.isEmpty()) {
+                    listCi.add(new PCLItem(node, 0));
+                } else {
+                    //Update 
+                    List<Integer> nearByList = new ArrayList<>();
+                    PCLItem tempPCL;
+                    for (int i = 0; i < list.size(); i++) {
+                        if (list.get(i) != node && Distance[list.get(i)][node] <= 2 * Rs) {
+                            nearByList.add(list.get(i));
+                        }
+                    }
+                    tempPCL = findPCLPoint(nearByList, node,P1,P4);
+                    listCi.add(tempPCL);
+                    
+                    // Update PCL of other node
+                    for (int i = 0; i < nearByList.size(); i++) {
+                        List<Integer> tempNearByList = findNearByList(list,nearByList.get(i),node);
+                        PCLItem temp = findPCLPoint(tempNearByList, nearByList.get(i),P1,P4);
+                        //Change value of other node
+                        for (int j =0;j<listCi.size();j++) {
+                            if (listCi.get(j).getId() == temp.getId()) {
+                                listCi.get(j).setPclValue(temp.getPclValue());
+                            }
+                        }
+                        
+                    }
+                }
+                
+                break;
+            case REMOVE_MODE: // Remove node in ListCi    
+                for (int i =0;i< listCi.size();i++) {
+                    if (listCi.get(i).getId()== node) {
+                        listCi.remove(i);
+                        list.remove(i);
+                        break;
+                    }
+                }
+                // Find nearByList of node
+                List<Integer> nearByList = new ArrayList<>();
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i) != node && Distance[list.get(i)][node] <= 2 * Rs) {
+                        nearByList.add(list.get(i));
+                    }
+                }
+                
+                //Update PCL node in nearbyNode
+                for (int i = 0; i < nearByList.size(); i++) {
+                    List<Integer> tempByList = new ArrayList<>();
+                    for (int j = 0; j < list.size(); j++) {
+                        if (!Objects.equals(list.get(j), nearByList.get(i)) && Distance[list.get(j)][nearByList.get(i)] <= 2 * Rs) {
+                            tempByList.add(list.get(j));
+                        }
+                    }
+                    
+                    //Update node in nearbyNode
+                    PCLItem temp = findPCLPoint(tempByList, nearByList.get(i),P1,P4);
+                    for (int j = 0; j < listCi.size(); j++) {
+                        if (listCi.get(j).getId() == temp.getId()) {
+                            listCi.get(j).setPclValue(temp.getPclValue());
+                        }
+                    }
+                }
+                
+                
+                
+                break;
+            default: break;
+        }
+
+    }
+    
+    public List<Integer> findNearByList(List<Integer> listSensor, int node, int nodeAdd) {
+        List<Integer> nearByList = new ArrayList<>();
+        for (int i = 0; i < listSensor.size(); i++) {
+            if (listSensor.get(i) != node && Distance[listSensor.get(i)][node] <= 2 * Rs) {
+                nearByList.add(listSensor.get(i));
+            }
+        }
+        //Check with node add
+        if (nodeAdd != node && Distance[nodeAdd][node] <= 2 * Rs) {
+                nearByList.add(nodeAdd);
+        }
+        return nearByList;
     }
     
     public static void main(String[] args) {
