@@ -57,7 +57,7 @@ public class CGCSAlgorithm {
     int Num;// Number sensor
     boolean isFull = false;
     static int countBlock = 0;
-    List<List<Integer>> ListNearBy;
+    //List<List<Integer>> ListNearBy;
     IntersectItem Intersect[][];
     public CGCSAlgorithm() {
     }
@@ -84,7 +84,7 @@ public class CGCSAlgorithm {
     public void init() {
         resultListX = new ArrayList<>();
         resultListT = new ArrayList<>();
-        ListNearBy = new ArrayList<>();
+        //ListNearBy = new ArrayList<>();
         mListBlockItem = new ArrayList<>();
         
     }
@@ -112,16 +112,16 @@ public class CGCSAlgorithm {
         }
         
         //Tim lan can
-        ListNearBy.clear();
-        for (int i = 0;i<Num;i++) {
-            List<Integer> tempNearBy = new ArrayList<>();
-            for (int j =0;j<Num;j++) {
-                if (i != j && Distance[i][j] <= 2*Rs) {
-                    tempNearBy.add(j);
-                }
-            }
-            ListNearBy.add(tempNearBy);
-        }
+//        ListNearBy.clear();
+//        for (int i = 0;i<Num;i++) {
+//            List<Integer> tempNearBy = new ArrayList<>();
+//            for (int j =0;j<Num;j++) {
+//                if (i != j && Distance[i][j] <= 2*Rs) {
+//                    tempNearBy.add(j);
+//                }
+//            }
+//            ListNearBy.add(tempNearBy);
+//        }
         
         //Tim giao diem
         for (int i = 0;i<Num;i++) {
@@ -264,8 +264,8 @@ public class CGCSAlgorithm {
 
                                     //Add result of Block
                                     countBlock++;
-                                    System.out.println("Khoi :" + countBlock);
-                                    System.out.println("Toa do : (" + upPoint.getX() + " , " + upPoint.getY() + ") - (" + downPoint.getX() + " , " + downPoint.getY() + ")");
+                                    //System.out.println("Khoi :" + countBlock);
+                                    //System.out.println("Toa do : (" + upPoint.getX() + " , " + upPoint.getY() + ") - (" + downPoint.getX() + " , " + downPoint.getY() + ")");
 
                                 }
 
@@ -325,7 +325,7 @@ public class CGCSAlgorithm {
         }
         long end1 = System.currentTimeMillis();
         //AutoNDSTAlgorithm.timeRunCplex = end1-start1;
-        System.out.println("Part time Cplex :" + (end1-start1));
+        //System.out.println("Part time Cplex :" + (end1-start1));
         
         long start2 = System.currentTimeMillis();
         //Combining_All_Division(mListAllPathItem,resultListY,resultListTi,isFull);
@@ -382,8 +382,10 @@ public class CGCSAlgorithm {
             for (int m = 0; m < mListSensorNodes.size(); m++) {
                 if (ListTimeUsing[m] > TIMEij_max) {
                     TIMEij_max = ListTimeUsing[m];
+                    System.out.println("ListTimeUsing[m] > TIMEij_max = "+TIMEij_max);
                 }
             }
+            System.out.println("TIMEij_max = "+TIMEij_max);
             network_timelife *= (SensorUtility.LifeTimeOfSensor / TIMEij_max);
         }
         return network_timelife;
@@ -410,7 +412,7 @@ public class CGCSAlgorithm {
                 double ratio = minTime/totalTimeBlock;
                 List<List<Integer>> listResultXi = blockResultItem.getListResultX();
                 List<Double> listTime = blockResultItem.getListTime();
-                for (int j = 0 ; j < listResultXi.size(); j++) {
+                for (int j = 0 ; j < listTime.size(); j++) {
                     List<Integer> Xi = listResultXi.get(j);
                     double timePath = listTime.get(j);
                     for (int k = 0; k < Xi.size(); k++) {
@@ -427,12 +429,12 @@ public class CGCSAlgorithm {
     
     double getMinTimeOfBlock(int posI, int posJ, int Kx, int Ky, List<BlockItem> ListBlockResult) {
         double timeMin = Double.MAX_VALUE;
-        System.out.println("Bat dau chia ");
+        //System.out.println("Bat dau chia ");
         for (int u =0 ; u <= Kx; u++) {
             for (int v=0; v <= Ky; v++) {
                 int positionI = posI + u*mLvalue;
                 int positionJ = posJ + v*mLvalue;
-                System.out.println("Khoi chia I ="+positionI+ " J ="+ positionJ);
+                //System.out.println("Khoi chia I ="+positionI+ " J ="+ positionJ);
                 double time = findTotalTimeFromListBlock(positionI, positionJ, ListBlockResult);
                 if (time != 0 && time < timeMin) {
                     timeMin = time;
@@ -440,7 +442,7 @@ public class CGCSAlgorithm {
             }
             
         }
-        System.out.println("Ket thuc chia ");
+        //System.out.println("Ket thuc chia ");
         return timeMin;
      }
     
@@ -454,6 +456,13 @@ public class CGCSAlgorithm {
         }
   //      System.out.println("Khong tim thay block");
         return 0;
+    }
+    
+    public double Combining_All_Division3(List<BlockItem> ListBlockResult,boolean isFull) {
+        double network_timelife = 0;
+        
+        
+        return network_timelife;
     }
     
     public void runAlgorithm() {
@@ -632,22 +641,22 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
 //        time.add(valueT);
 //        time.add(valueT);
 //    }
-        int[][] a = new int[n][m];
-
-        //Check Input
-        for (int i = 0; i < n; i++) {
-            int sensor = listSenSor.get(i);
-            for (int j = 0; j < m; j++) {
-                a[i][j] = 0;
-                List<Integer> Xj = listX.get(j);
-                for (int k = 0; k < Xj.size(); k++) {
-                    if (sensor == Xj.get(k)) {
-                        a[i][j] = 1;
-                        break;
-                    }
-                }
-            }
-        }
+//        int[][] a = new int[n][m];
+//
+//        //Check Input
+//        for (int i = 0; i < n; i++) {
+//            int sensor = listSenSor.get(i);
+//            for (int j = 0; j < m; j++) {
+//                a[i][j] = 0;
+//                List<Integer> Xj = listX.get(j);
+//                for (int k = 0; k < Xj.size(); k++) {
+//                    if (sensor == Xj.get(k)) {
+//                        a[i][j] = 1;
+//                        break;
+//                    }
+//                }
+//            }
+//        }
 
         try {
             //Define new model
@@ -665,7 +674,8 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
                 totalTimeOnExpr[j] = cplex.linearNumExpr();
 
                 for (int i = 0; i < m; i++) {
-                    totalTimeOnExpr[j].addTerm(a[j][i], T[i]);
+                	int value = getExitInXi(listSenSor.get(j), listX.get(i));
+                    totalTimeOnExpr[j].addTerm(value, T[i]);
                 }
             }
 
@@ -685,14 +695,24 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
             cplex.setParam(IloCplex.Param.Simplex.Display, 0);
             //Resolve Model
             if (cplex.solve()) {
+            	System.out.println("value: " + cplex.getObjValue());
                 for (int i = 0; i < m; i++) {
                     time.add(cplex.getValue(T[i]));
-                    System.out.println("time: " + cplex.getValue(T[i]));
+                    System.out.print(" " + cplex.getValue(T[i]));
                 }
-                System.out.println("value: " + cplex.getObjValue());
-    } else {
-                System.out.println("Problem not solved");
-    }
+                //Reduce ListXi and Time
+                for (int i =0; i< listX.size();) {
+                	if (time.get(i) > 0.001) {
+                	    i++;
+                	} else {
+                	    time.remove(i);
+                        listX.remove(i);
+                	}
+                }
+                System.out.println();
+            } else {
+                System.out.println("Problem not solved with Formula 4");
+            }
 
             cplex.end();
 
@@ -702,6 +722,12 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
         return time;
     }
     
+    int getExitInXi(int sensor, List<Integer> Xi) {
+    	for(int i =0 ; i< Xi.size(); i++) {
+    		if (sensor == Xi.get(i)) return 1;
+    	}
+    	return 0;
+    }
     
     //------------------------------------
     
@@ -740,9 +766,20 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
             for (int i = 0; i < nearByList.size(); i++) {
                 for (int j =0;j<i;j++) {
                     if (i != j ) {
-                        if (Distance[nearByList.get(i)][nearByList.get(j)] < 2*Rs) {
+                    	NodeItem node1 = mListSensorNodes.get(nearByList.get(i));
+                    	NodeItem node2 = mListSensorNodes.get(nearByList.get(j));
+                        if (Distance[nearByList.get(i)][nearByList.get(j)] < 2*Rs && (node1.getX() != node2.getX() || node1.getY() != node2.getY())) {
                              FloatPointItem n1 = Intersect[nearByList.get(i)][nearByList.get(j)].getN1();
                              FloatPointItem n2 = Intersect[nearByList.get(i)][nearByList.get(j)].getN2();
+                             
+                             //TH n1 ,n2 = null
+                             if (n1 == null || n2 == null) {
+                                 n1 = new FloatPointItem();
+                                 n2 = new FloatPointItem();
+                                 findIntersection_TwoCircle(nearByList.get(i), nearByList.get(j), n1, n2); 
+                                 System.out.println("CheckPointCorveringBySet n1, n2 = null");
+                             }
+                             
                              if (CheckPoint_InCircle(n1,mListSensorNodes.get(exception).getX(), mListSensorNodes.get(exception).getY(),Rs)) {
                                  listY.add(n1);
                              }
@@ -772,9 +809,20 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
            for (int i = 0; i < nearByList.size(); i++) {
                 for (int j =0;j<i;j++) {
                     if (i != j ) {
-                        if (Distance[nearByList.get(i)][nearByList.get(j)] < 2*Rs) {
+                    	NodeItem node1 = mListSensorNodes.get(nearByList.get(i));
+                    	NodeItem node2 = mListSensorNodes.get(nearByList.get(j));
+                        if (Distance[nearByList.get(i)][nearByList.get(j)] < 2*Rs && (node1.getX() != node2.getX() || node1.getY() != node2.getY())) {
                              FloatPointItem n1 = Intersect[nearByList.get(i)][nearByList.get(j)].getN1();
                              FloatPointItem n2 = Intersect[nearByList.get(i)][nearByList.get(j)].getN2();
+                             
+                             //TH n1 ,n2 = null
+                             if (n1 == null || n2 == null) {
+                                 n1 = new FloatPointItem();
+                                 n2 = new FloatPointItem();
+                                 findIntersection_TwoCircle(nearByList.get(i), nearByList.get(j), n1, n2); 
+                                 System.out.println("CheckPointCorveringBySet n1, n2 = null");
+                             }
+                             
                              if (CheckPoint_InCircle(n1,mListSensorNodes.get(exception).getX(), mListSensorNodes.get(exception).getY(),Rs) && CheckPoint_InRectange(n1,P1.getX(),P1.getY(),P4.getX(),P4.getY())) {
                                  listY.add(n1);
                              }
@@ -1490,14 +1538,13 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
     }
     
     public void ColumnGenerationAlgorithm(List<Integer> ListSensor, FloatPointItem P1, FloatPointItem P4, List<List<Integer>> returListX) {
-        System.out.println("ColumnGenerationAlgorithm-----");
         List<List<Integer>> ListPX = new ArrayList<>();
         List<Integer> tempListSensor = new ArrayList<>();
         List<Long> Hash = new ArrayList<>();
         //Need Algorithm calculate Xi
         //FindSetXi(ListSensor, P1, P4, ListPX);
-        ListPX = FindSetXi_v3(ListSensor, P1, P4);
-        System.out.println("Find Set Xi size ="+ListPX.size());
+        ListPX = FindSetXi_v2(ListSensor, P1, P4);
+        System.out.println("Find Set Xi int Block P1=("+P1.getX()+" , "+P1.getY()+") , P4=(" +P4.getX()+" , "+P4.getY()+")  sizeBlock = "+ListPX.size());
         //Sort and calcuate Hash of ListPX
         for (int i =0; i < ListPX.size(); i++) {
             List<Integer> Xi = ListPX.get(i);
@@ -1519,9 +1566,10 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
         double pre_timelife = 100000000000.0;
         double current_timelife = 0;
         int count = 1;
+        List<HeuristicItem> ListPi = new ArrayList<>();
         
         do {
-            List<HeuristicItem> ListPi = new ArrayList<>();
+        	ListPi.clear();
             current_timelife = LinearProgramingFormula3(ListSensor, ListPX, ListPi);
             //Find SetX
             if (ListPi.isEmpty()) {
@@ -1581,7 +1629,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
             } else {
                 ListPX.add(tmpXi);
                 Hash.add(tempHash);
-                System.out.println("Add a new Xi size="+tmpXi.size());
+                //System.out.println("Add a new Xi size="+tmpXi.size());
             }
             
             //
@@ -1595,6 +1643,9 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
         	List<Integer> Xi = ListPX.get(i);
             returListX.add(Xi);
         }
+        ListPX = null;
+        tempListSensor = null;
+        ListPi =null;
         
     }
     
@@ -1663,7 +1714,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
             cplex.setParam(IloCplex.Param.Simplex.Display, 0);
             
             if (cplex.solve()) {
-                 System.out.println("Value  " + cplex.getObjValue());
+                 //System.out.println("Value  " + cplex.getObjValue());
                  result = cplex.getObjValue();
                  //Xu ly
                  for (int i = 0 ; i< n ; i++) {
@@ -1672,7 +1723,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
                  }
                  //Sort cac phan tu
             } else {
-                System.out.println("Problem not solved");
+                System.out.println("Problem not solved with formula 3");
             }
             cplex.end();
             
@@ -1680,7 +1731,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
             Logger.getLogger("LeHieu").log(Level.SEVERE, null, ex);
         }
         
-        
+        tempListX = null;
         return result;
     }
     
@@ -1726,7 +1777,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
         for (int i = 0;i<ListSensor.size();i++) {
             List<Integer> tempNearBy = new ArrayList<>();
             for (int j =0;j<ListSensor.size();j++) {
-                if (i != j && Distance[ListSensor.get(i)][ListSensor.get(j)] <= 2*Rs) {
+                if (i != j && Distance[ListSensor.get(i)][ListSensor.get(j)] < 2*Rs) {
                     tempNearBy.add(ListSensor.get(j));
                 }
             }
@@ -1751,13 +1802,13 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
          while (!mListPCLSensor.isEmpty()) {
              
              int covi = getCoverageLevel(listCi);
-             System.out.println(" Covi ="+covi);
+             //System.out.println(" Covi ="+covi);
              if (covi < 1) {
                  int node = mListPCLSensor.get(0).getId();
                  //Add node to listCi
                  updateCoverageLevel(listCi, node, ADD_MODE,UpLeftCornerPoint,DownRightCornerPoint);
                  // Remove node from mListPCLSensor
-                 System.out.println("Remove mListPCLSensor :"+mListPCLSensor.get(0).getId() + " size="+mListPCLSensor.size());
+                 //System.out.println("Remove mListPCLSensor :"+mListPCLSensor.get(0).getId() + " size="+mListPCLSensor.size());
                  mListPCLSensor.remove(0);
                  
              } else {
@@ -1770,7 +1821,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
                  }
                  showViewTest(listX);
                  resultListXi.add(listX);
-                 System.out.println("Found a ListXi : size ="+listX.size());
+                 //System.out.println("Found a ListXi : size ="+listX.size());
                  //Khoi tao list Ci tiep theo
                  listCi = new ArrayList<>();
 
@@ -1788,6 +1839,8 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
              resultListXi.add(listX);
          }
          
+         mListPCLSensor = null;
+         mListPCLSensorCommon = null;
         return resultListXi;
         
     }
@@ -1819,7 +1872,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
              //Remove phan tu i cua listCi
              int node = list.get(i);
              updateCoverageLevel(listCi,node , REMOVE_MODE,P1,P4);
-             System.out.println("PruneGreedySelection update node ="+node);
+            // System.out.println("PruneGreedySelection update node ="+node);
              //getCovi of listCi
              int covi = getCoverageLevel(listCi);
              
@@ -1847,8 +1900,8 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
      }
     
     public PCLItem findPCLPoint(List<Integer> nearByList, int node, FloatPointItem P1, FloatPointItem P4) {//listNearBy : list lan can cua node , node : vi tri cua node trong ListNodeSensor
-        FloatPointItem P2 = new FloatPointItem(0.0f, P4.getY());
-        FloatPointItem P3 = new FloatPointItem(P4.getX(), 0.0f);
+        FloatPointItem P2 = new FloatPointItem(P1.getX(), P4.getY());
+        FloatPointItem P3 = new FloatPointItem(P4.getX(), P1.getY());
         List<FloatPointItem> listI = new ArrayList<>(); // List giao diem cua Sj voi lan can
         PCLItem mPCL_Sj = new PCLItem(node, 100000000);// Khoi tao PCL of node
         // TH1 : Diem Sj nam ben trong khoi hinh 
@@ -1957,7 +2010,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
                     List<Integer> nearByList = new ArrayList<>();
                     PCLItem tempPCL;
                     for (int i = 0; i < list.size(); i++) {
-                        if (list.get(i) != node && Distance[list.get(i)][node] <= 2 * Rs) {
+                        if (list.get(i) != node && Distance[list.get(i)][node] < 2 * Rs) {
                             nearByList.add(list.get(i));
                         }
                     }
@@ -1990,7 +2043,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
                 // Find nearByList of node
                 List<Integer> nearByList = new ArrayList<>();
                 for (int i = 0; i < list.size(); i++) {
-                    if (list.get(i) != node && Distance[list.get(i)][node] <= 2 * Rs) {
+                    if (list.get(i) != node && Distance[list.get(i)][node] < 2 * Rs) {
                         nearByList.add(list.get(i));
                     }
                 }
@@ -1999,7 +2052,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
                 for (int i = 0; i < nearByList.size(); i++) {
                     List<Integer> tempByList = new ArrayList<>();
                     for (int j = 0; j < list.size(); j++) {
-                        if (!Objects.equals(list.get(j), nearByList.get(i)) && Distance[list.get(j)][nearByList.get(i)] <= 2 * Rs) {
+                        if (!Objects.equals(list.get(j), nearByList.get(i)) && Distance[list.get(j)][nearByList.get(i)] < 2 * Rs) {
                             tempByList.add(list.get(j));
                         }
                     }
@@ -2019,17 +2072,18 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
             default: break;
         }
 
+        list = null;
     }
     
     public List<Integer> findNearByList(List<Integer> listSensor, int node, int nodeAdd) {
         List<Integer> nearByList = new ArrayList<>();
         for (int i = 0; i < listSensor.size(); i++) {
-            if (listSensor.get(i) != node && Distance[listSensor.get(i)][node] <= 2 * Rs) {
+            if (listSensor.get(i) != node && Distance[listSensor.get(i)][node] < 2 * Rs) {
                 nearByList.add(listSensor.get(i));
             }
         }
         //Check with node add
-        if (nodeAdd != node && Distance[nodeAdd][node] <= 2 * Rs) {
+        if (nodeAdd != node && Distance[nodeAdd][node] < 2 * Rs) {
                 nearByList.add(nodeAdd);
         }
         return nearByList;
