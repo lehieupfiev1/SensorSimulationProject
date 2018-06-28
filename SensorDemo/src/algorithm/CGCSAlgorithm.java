@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -48,6 +50,7 @@ public class CGCSAlgorithm {
     List<List<Integer>> resultListX;
     List<Double> resultListT;
     List<BlockItem> mListBlockItem;
+    ReentrantLock lock = new ReentrantLock();
     public final static int ADD_MODE =  0; 
     public final static int REMOVE_MODE =  1; 
     int countA =0;
@@ -181,7 +184,8 @@ public class CGCSAlgorithm {
         } else {
             System.out.println("Thoi gian ON cua cac sensor ---------------------");
             for (int i =0; i< mListSensorNodes.size();i++) {
-                double time = (ListTimeUsing[i] /TIMEij_max)* SensorUtility.LifeTimeOfSensor;
+            //    double time = (ListTimeUsing[i] /TIMEij_max)* SensorUtility.LifeTimeOfSensor;
+            	double time = ListTimeUsing[i];
                 System.out.print(time+"  ");
             }
             
@@ -207,12 +211,12 @@ public class CGCSAlgorithm {
     }    
     
     public void runAlgorithm2() {
-
         long start1 = System.currentTimeMillis();
         float MaxSizeBlock = 2*Rs*mLvalue;
         FloatPointItem tmpUpPoint = new FloatPointItem(0, 0);
         FloatPointItem tmpDownPoint = new FloatPointItem(MaxSizeBlock, MaxSizeBlock);
-
+        
+        
         System.out.println("MaxSizeBlock :" + MaxSizeBlock+"-------------------------");
         if ( MaxSizeBlock <= SensorUtility.numberOfColumn || MaxSizeBlock <= SensorUtility.numberOfRow) {
             isFull = false;
@@ -222,64 +226,123 @@ public class CGCSAlgorithm {
             int Y = (int) Math.ceil(SensorUtility.numberOfColumn / (2 * Rs)) + mLvalue - 1;
             System.out.println("Max postion i :" + X + " - Max postion j :"+Y);
             countBlock = 0;
+            
+            // Get # of system's logical cores
+            // Return if there is no core available
+            int cores = Runtime.getRuntime().availableProcessors();
+            if (cores < 1) {
+            	throw new java.lang.Error("Number of cores need to be geater or equal than 1!");
+            	//return;
+            }else {
+            	System.out.println("The # of cores: " + cores);
+            }
+            		
+           
             for (int i = 1; i <= X; i++) {
                 for (int j = 1; j <= Y; j++) {
+                	
+                	// Check current # of active threads
+                	// Only create new thread if # of active threads < cores
+                	
+                	if (mListThread.size() < cores) {
+                	
                     //Tao thread
-                    float x1 = getMax(0, -2 * mLvalue * Rs + 2 * i * Rs);
-                    float y1 = getMax(0, -2 * mLvalue * Rs + 2 * j * Rs);
-
-                    float x2 = getMin(2 * i * Rs, SensorUtility.numberOfRow);
-                    float y2 = getMin(2 * j * Rs, SensorUtility.numberOfColumn);
-                    if (x2 > x1 && y2 > y1) {
-                        int positionI = i;
-                        int positionJ = j;
-                        FloatPointItem upPoint = new FloatPointItem(x1, y1);
-                        FloatPointItem downPoint = new FloatPointItem(x2, y2);
-                        List<Integer> tempListSensor = FindListSensor(tmpUpPoint, tmpDownPoint);
-                        System.out.println("Tij  I:" +positionI + "J :"+positionJ + " upPoint=( "+upPoint.getX()+ " , "+upPoint.getY()+" )" + "  downPoint=( "+downPoint.getX() +" , "+ downPoint.getY()+ " )" );
-                        
-                        if (!tempListSensor.isEmpty()) {
-                            //Kiem tra khoi la full mang
-                            Thread thread = new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    //Find ListSensor in Block                                
-
-                                    List<Integer> tempListSensor = FindListSensor(upPoint, downPoint);
-
-                                    //Find set X in Block
-                                    List<List<Integer>> tempListX = new ArrayList<>();
-                                    showViewTest(tempListSensor);
-
-                                    ColumnGenerationAlgorithm(tempListSensor, upPoint, downPoint, tempListX);
-
-                                    //Find set Time foreach SetX%
-                                    List<Double> tempListT = LinearProAlgorithm(tempListX, tempListSensor, mTimeLife);
-                                    double totalTime = 0;
-                                    for (int k =0; k< tempListT.size();k++) {
-                                        totalTime += tempListT.get(k);
-                                    }
-                                    BlockItem blockItem = new BlockItem(positionI, positionJ, tempListX, tempListT, totalTime);
-                                    mListBlockItem.add(blockItem);
-
-                                    //Add result of Block
-                                    countBlock++;
-                                    //System.out.println("Khoi :" + countBlock);
-                                    //System.out.println("Toa do : (" + upPoint.getX() + " , " + upPoint.getY() + ") - (" + downPoint.getX() + " , " + downPoint.getY() + ")");
-
-                                }
-
-                            });
-                            thread.start();
-                            mListThread.add(thread);
+	                    float x1 = getMax(0, -2 * mLvalue * Rs + 2 * i * Rs);
+	                    float y1 = getMax(0, -2 * mLvalue * Rs + 2 * j * Rs);
+	
+	                    float x2 = getMin(2 * i * Rs, SensorUtility.numberOfRow);
+	                    float y2 = getMin(2 * j * Rs, SensorUtility.numberOfColumn);
+	                    if (x2 > x1 && y2 > y1) {
+	                        int positionI = i;
+	                        int positionJ = j;
+	                        FloatPointItem upPoint = new FloatPointItem(x1, y1);
+	                        FloatPointItem downPoint = new FloatPointItem(x2, y2);
+	                        List<Integer> tempListSensor = FindListSensor(tmpUpPoint, tmpDownPoint);
+	                        System.out.println("Tij  I:" +positionI + "J :"+positionJ + " upPoint=( "+upPoint.getX()+ " , "+upPoint.getY()+" )" + "  downPoint=( "+downPoint.getX() +" , "+ downPoint.getY()+ " )" );
+	                        
+	                        if (!tempListSensor.isEmpty()) {
+	                            //Kiem tra khoi la full mang
+	                            Thread thread = new Thread(new Runnable() {
+	                                @Override
+	                                public void run() {
+	                                    //Find ListSensor in Block                                
+	
+	                                    List<Integer> tempListSensor = FindListSensor(upPoint, downPoint);
+	
+	                                    //Find set X in Block
+	                                    List<List<Integer>> tempListX = new ArrayList<>();
+	                                    showViewTest(tempListSensor);
+	
+	                                    ColumnGenerationAlgorithm(tempListSensor, upPoint, downPoint, tempListX);
+	
+	                                    //Find set Time foreach SetX%
+	                                    List<Double> tempListT = LinearProAlgorithm(tempListX, tempListSensor, mTimeLife);
+	                                    double totalTime = 0;
+	                                    for (int k =0; k< tempListT.size();k++) {
+	                                        totalTime += tempListT.get(k);
+	                                    }
+	                                    BlockItem blockItem = new BlockItem(positionI, positionJ, tempListX, tempListT, totalTime);
+	                                    lock.lock();
+	                                    try {
+	                                    	mListBlockItem.add(blockItem);
+	                                    	countBlock++;
+	                                    } finally {
+	                                        lock.unlock();
+	                                    }
+	                                    
+	
+	                                    //Add result of Block
+	                                    
+	                                    //System.out.println("Khoi :" + countBlock);
+	                                    //System.out.println("Toa do : (" + upPoint.getX() + " , " + upPoint.getY() + ") - (" + downPoint.getX() + " , " + downPoint.getY() + ")");
+	
+	                                }
+	
+	                            });
+	                            thread.start();
+	                            mListThread.add(thread);
+	                            System.out.println("Start new thread with ID " + thread.getId());
+	                        }
+	                    }
+	                    
+                    } else {
+                        // Check threads' alive.
+                    	// If there is any thread finish, create new one.
+                    	// else sleep for 5 seconds
+                    	
+                    	boolean finish_thread = false;
+                        for (int k = 0; k < mListThread.size(); k++) {
+                            Thread thread = mListThread.get(k);
+                            if (!thread.isAlive()) {
+                            	mListThread.remove(k);
+                            	finish_thread = true;
+                            	System.out.println("Thread  is finish." + thread.getId());
+                            	System.out.println("Remove thread in mThreadList.");
+                            	break;
+                            }
+                            
                         }
+                        
+                        // Sleep for periodic checking
+                        if (!finish_thread) {
+                        	System.out.println("All threads are running. Sleep 5s");
+                        	try {
+								TimeUnit.SECONDS.sleep(5*mLvalue);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+                        }
+                        
                     }
 
                 }
 
             }
-
-            //Set main thread wait
+            
+            System.out.println("All threads have been started.");
+            
+            // Wait until all threads are finish
             for (int i = 0; i < mListThread.size(); i++) {
                 Thread thread = mListThread.get(i);
                 try {
@@ -289,6 +352,11 @@ public class CGCSAlgorithm {
                 }
 
             }
+            
+            // Clear threads list
+            mListThread.clear();
+
+
         } else {
             isFull = true;
             Thread thread = new Thread(new Runnable() {
@@ -329,7 +397,7 @@ public class CGCSAlgorithm {
         
         long start2 = System.currentTimeMillis();
         //Combining_All_Division(mListAllPathItem,resultListY,resultListTi,isFull);
-        mTimeLifeResult = Combining_All_Division2(mListBlockItem, isFull);
+        mTimeLifeResult = Combining_All_Division3(mListBlockItem, isFull);
         long end2 = System.currentTimeMillis();
         //AutoNDSTAlgorithm.timeRunCombine = end2-start2;
         System.out.println("Part time Combine:" + (end2-start2));
@@ -460,8 +528,206 @@ public class CGCSAlgorithm {
     
     public double Combining_All_Division3(List<BlockItem> ListBlockResult,boolean isFull) {
         double network_timelife = 0;
-        
-        
+        if (isFull) {
+            //TH mang full
+            if (ListBlockResult.isEmpty()) return network_timelife;
+            BlockItem blockResultItem = ListBlockResult.get(0);
+            List<Double> listTime = blockResultItem.getListTime();
+            for (int i = 0; i < listTime.size(); i++) {
+                network_timelife += listTime.get(i);
+            }
+
+        } else {
+        	List<Integer> overTimeSensorList = new ArrayList<>(); 
+            //TH division
+            double tempx = SensorUtility.numberOfRow / (2 * Rs);
+            double tempy = SensorUtility.numberOfColumn / (2 * Rs);
+            int current_lifetime;
+            int min_dis;
+            int count; 
+            double ratio = 0; 
+            int timeMaxIndex = 0; 
+            for (int i = 1; i <= mLvalue; i++) {
+                for (int j = 1; j <= mLvalue; j++) {
+              //      if (i == 1 || j == 1) {
+                        current_lifetime = 0;
+                        count = 0;    
+                        int Kx = (int) Math.ceil((tempx - i) / mLvalue);
+                        int Ky = (int) Math.ceil((tempy - j) / mLvalue);
+                        if (Kx > 0 && Ky > 0) {
+                            double TimeIJ = getMinTimeOfBlock(i, j, Kx, Ky, ListBlockResult)/(mLvalue * mLvalue);
+                            //Calculation ListEnergyUsing
+                            CalculateEnergyUsing(i, j, Kx, Ky, ListBlockResult,ListTimeUsing,TimeIJ);
+                            
+                            // LE: set lai thoi gian cho toan bo block ///////////////////////////
+                            for (int u =0 ; u <= Kx; u++) {
+                                for (int v=0; v <= Ky; v++) {
+                                    int positionI = i + u*mLvalue;
+                                    int positionJ = j + v*mLvalue;
+                                    //System.out.println("Khoi chia I ="+positionI+ " J ="+ positionJ);
+                                    for (int k =0; k< ListBlockResult.size(); k++) {
+                                        BlockItem blockResultItem = ListBlockResult.get(k); // 1 bloc 
+                                        if (blockResultItem.getPostionI() == positionI && blockResultItem.getPostionJ() == positionJ) {
+                                            for (int m = 0; m < blockResultItem.getListTime().size(); m ++) {
+                                            	double new_time = blockResultItem.getListTime().get(m) * TimeIJ/(blockResultItem.getTotalTime());
+                                            	blockResultItem.getListTime().set(m, new_time);
+                                            }
+                                            blockResultItem.setTotalTime(TimeIJ);
+                                            
+                                        }
+                                        
+                                    }
+                                    
+                                }
+                                
+                            }
+                            /////////////////////////////
+                            
+                            network_timelife += TimeIJ;
+                            count += 1; 
+
+                        }
+                	}
+                    
+            	}
+            	TIMEij_max = 0; 
+            	System.out.println("T ="+SensorUtility.LifeTimeOfSensor + 0.1);
+                for (int m = 0; m < mListSensorNodes.size(); m++) {
+                //	int sensor_id = mListSensorNodes.get(m).getId();
+                	System.out.println("0 ListTimeUsing[" + m + "] = "+ListTimeUsing[m]);
+                	if (ListTimeUsing[m] > SensorUtility.LifeTimeOfSensor + 0.1) {
+                    	overTimeSensorList.add(m);
+                    	if (ListTimeUsing[m] > TIMEij_max) {
+                            TIMEij_max = ListTimeUsing[m];
+                            timeMaxIndex = m;
+                            System.out.println("1 ListTimeUsing[" + m + "] > TIMEij_max = "+TIMEij_max);
+                        }
+                    }
+                    
+                }
+                System.out.println("TIMEij_max = "+TIMEij_max);
+                
+                //LE /////////////////////////////
+                if (TIMEij_max == 0)
+                	return network_timelife;
+                else { // reduce time 
+                	ratio = SensorUtility.LifeTimeOfSensor / TIMEij_max;
+                	FloatPointItem  maxTimePoint = new FloatPointItem(); 
+                	while(ratio < 0.999999) {
+                		// determine coordinate of the sensors whose time is the highest 
+                		for (int i = 0 ;i<mListSensorNodes.size(); i++) {
+                			if (i == timeMaxIndex) {
+                				maxTimePoint.setXY(mListSensorNodes.get(i).getX(), mListSensorNodes.get(i).getY());
+                				break;
+                			}
+                		}
+                		
+                		 for (int k = 0; k< ListBlockResult.size(); k++) { // reduce time of X_i containing the sensor with the highest time 
+                             BlockItem blockResultItem = ListBlockResult.get(k); 
+                             int i = blockResultItem.getPostionI();
+                             int j = blockResultItem.getPostionJ();
+                             
+                             float x1 = getMax(0, -2 * mLvalue * Rs + 2 * i * Rs);
+                             float y1 = getMax(0, -2 * mLvalue * Rs + 2 * j * Rs);
+
+                             float x2 = getMin(2 * i * Rs, SensorUtility.numberOfRow);
+                             float y2 = getMin(2 * j * Rs, SensorUtility.numberOfColumn);
+                            
+                             FloatPointItem upPoint = new FloatPointItem(x1, y1);
+                             FloatPointItem downPoint = new FloatPointItem(x2, y2);
+                             
+                             float Xmax,Xmin,Ymax,Ymin;
+                             Xmin = upPoint.getX() - Rs;
+                             Xmax=  downPoint.getX() + Rs;
+                             Ymin = upPoint.getY() - Rs;
+                             Ymax = downPoint.getY() +Rs;
+                             // check if maxTimePoint stay inside the block  
+                                                         
+                             if (maxTimePoint.getX() >= Xmin && maxTimePoint.getX() < Xmax && maxTimePoint.getY() >= Ymin && maxTimePoint.getY() < Ymax ) {
+                            	 List<List<Integer>> listResultXItem = blockResultItem.getListResultX();
+                                 List<Double> listTimeItem = blockResultItem.getListTime();
+                                 for (int m = 0; m < listResultXItem.size(); m ++) { 
+                                	 List<Integer> xItem = listResultXItem.get(m); 
+                                	 boolean flag = false; 
+                                	 double new_time= 0;
+                                	 double old_time = 0; 
+                                	 for (int n = 0; n < xItem.size(); n++) {
+                                		 if(xItem.get(n) == timeMaxIndex) { // block m contains sensor with maximum time 
+                                			 flag = true; 
+                                			 old_time = listTimeItem.get(m);
+                                			 new_time = (listTimeItem.get(m))*ratio; 
+                                			 listTimeItem.set(m, new_time);
+                                			 blockResultItem.setTotalTime(blockResultItem.getTotalTime() + new_time - old_time);
+                                			 break;
+                                		 }
+                                	 }
+                                	 if(flag) { //update time of all other sensors
+                                		 for (int n = 0 ; n < xItem.size(); n++) {  
+                                			 ListTimeUsing[xItem.get(n)] += new_time - old_time; 
+                                    		 
+                                    	 }
+                                	 }
+                                	
+                                 }
+                            	 
+                             }                            
+                            
+                    	 }
+                		 TIMEij_max = 0; 
+                         for (int m = 0; m < overTimeSensorList.size();) {
+                        	 System.out.println("* overTimeSensorList[" + m + "] < T = "+ListTimeUsing[overTimeSensorList.get(m)]);
+                        	 if(ListTimeUsing[overTimeSensorList.get(m)] <= SensorUtility.LifeTimeOfSensor + 0.1) {
+                        		 overTimeSensorList.remove(m);
+                        	 }
+                        	 else if (ListTimeUsing[overTimeSensorList.get(m)] > TIMEij_max) {
+                                 TIMEij_max = ListTimeUsing[overTimeSensorList.get(m)];
+                                 timeMaxIndex = overTimeSensorList.get(m);
+                                 System.out.println("* ListTimeUsing[" + overTimeSensorList.get(m) + "] > TIMEij_max = "+TIMEij_max);
+                                 m++;
+                             }
+                        	 else {
+                        		 m++;
+                        	 }
+                         }
+                         if(TIMEij_max > 0) {
+                        	 ratio = SensorUtility.LifeTimeOfSensor / TIMEij_max;   
+                        	 System.out.println("TIMEij_max = "+TIMEij_max);
+                        	 System.out.println("timeMaxIndex = "+timeMaxIndex);
+                         }
+                         else
+                         {
+                        	 for(int m = 0; m < overTimeSensorList.size(); m++) {
+                        		 System.out.println("* overTimeSensorList[" + m + "] < T = "+ListTimeUsing[overTimeSensorList.get(m)]);
+                        	 }
+                        	
+                        	 ratio = 1;
+                         }
+                	}
+                	
+                }
+                network_timelife = 0; 
+                for (int i = 1; i <= mLvalue; i++) {
+                    for (int j = 1; j <= mLvalue; j++) {
+                  //      if (i == 1 || j == 1) {
+                            current_lifetime = 0;
+                            count = 0;
+                 
+                            int Kx = (int) Math.ceil((tempx - i) / mLvalue);
+                            int Ky = (int) Math.ceil((tempy - j) / mLvalue);
+                            if (Kx > 0 && Ky > 0) {
+                                double TimeIJ = getMinTimeOfBlock(i, j, Kx, Ky, ListBlockResult);
+                                //Calculation ListEnergyUsing
+                     //           CalculateEnergyUsing(i, j, Kx, Ky, ListBlockResult,ListTimeUsing,TimeIJ);
+                                
+                                network_timelife += TimeIJ;
+                                count += 1; 
+
+                            }
+                    }
+             
+                }
+                /////////////////////////////////
+        }
         return network_timelife;
     }
     
@@ -1559,7 +1825,62 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
             }
             Hash.add(hash);
         }
+// find more Xi 
         
+        if(ListPX.size() < ListSensor.size()) {
+        	int countdown = ListSensor.size() - ListPX.size(); 
+        	int count = 0;
+        	while(countdown > 0 || count < 50) {
+        	//	List<Integer> newXi = new ArrayList<>();
+                List<Integer> currentSensorList = new ArrayList<>();
+                long hash = 0; 
+                int listSize = ListSensor.size(); 
+                for(int i = 0; i < ListSensor.size(); i++) {
+                	currentSensorList.add(ListSensor.get(i)); 
+                	
+                }
+            
+                
+            	for(int i = 0; i < currentSensorList.size();) {
+            		double ran = Math.random();
+            		if (ran < 0.5) {
+            			currentSensorList.remove(i);
+                		if (CheckPointCorveringBySet(currentSensorList, i, P1, P4)) {
+                            //Do not any thing
+                            
+                        } else { // can not remove sensor i 
+                        	currentSensorList.add(i);
+                        	i++; 
+                            
+                        }
+            		}
+            		else {
+            			i++;
+            		}
+            		listSize --; 
+            		if(listSize == 0) {
+            			break;
+            		}
+            		
+            	}
+            	for (int i = 0; i < currentSensorList.size(); i++) {
+            		hash += currentSensorList.get(i)*(i+1);
+            	}
+            	if (checkExitHash(hash, Hash)) {
+                    //Break out 
+                     break;
+            	}
+            	else {
+            		ListPX.add(currentSensorList);
+            		Hash.add(hash);
+            		count ++; 
+            		countdown --; 
+            	}
+        	}
+              
+        }
+
+        ////////////////////////
         double Cvalue = SensorUtility.Cvalue;
         double gama =0;
         double beta =1.1;
@@ -1586,6 +1907,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
             });
             
             //Remove tung phan tu
+            int ListPiSize = ListPi.size();
             for (int i =0; i< ListPi.size(); ) {
                 HeuristicItem headItem = ListPi.get(i);
                 int id = headItem.getId();
@@ -1601,6 +1923,10 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
                 } else {
                     ListPi.add(i, headItem);
                     i++;
+                }
+                ListPiSize --;
+                if(ListPiSize ==0) {
+                	break;
                 }
             }
 
@@ -1637,7 +1963,9 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
             pre_timelife = current_timelife;
             count ++;
 
-        } while ( (gama < 1 && beta > Cvalue )|| ListPX.size() < ListSensor.size() || count < 10);
+        } while ( (gama < 1.2 && beta > Cvalue ));
+        //||  count < 50
+        //ListPX.size() < ListSensor.size() ||
         
         for (int i =0; i< ListPX.size(); i++) {
         	List<Integer> Xi = ListPX.get(i);
@@ -2184,7 +2512,8 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
         ArrayList<NodeItem> usedSensors = new ArrayList<>();
         ArrayList<ArrayList<NodeItem>> listOfSensorSets = new ArrayList<>();
         
-        int minPossibleSensors = (int)data.get("sensorsThreshold");
+     //   int minPossibleSensors = (int)data.get("sensorsThreshold");
+        int minPossibleSensors = 0;
         
         //System.out.println("Start find set with min: " + minPossibleSensors);
         
@@ -2192,6 +2521,7 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
          * run the algorithm until sensors list is empty (all sensors have been used)
          * terminate when there are minPossibleSensors/2 unused sensors left, this is used to reduce some sets that reused to many sensor from other set
          */
+        List<Long> Hash = new ArrayList<>();
         while (sensorList.size() > minPossibleSensors) {
             int oldLength = sensorList.size();
             
@@ -2212,12 +2542,32 @@ public List<Double> LinearProAlgorithm(List<List<Integer>> listX, List<Integer> 
             if (currentConstructingSensorSet == null) {
                 return null;
             }
+            long hash = 0;
+            boolean flag = false; 
+            for(int i = 0 ; i < currentConstructingSensorSet.size(); i ++) {
+            	hash += currentConstructingSensorSet.get(i).getId()*(i+1); 
+            	           	
+            }
+            for (int j = 0; j <Hash.size(); j++) {
+        		if(hash == Hash.get(j)) {
+        			flag = true;
+        			break; 
+        		}
+        	}
+            if(flag) { // terminate because the set found has been found already 
+            	break; 
+            }
+            else {
+            	Hash.add(hash); 
+            	listOfSensorSets.add(currentConstructingSensorSet);
+            }
             
-            int newLength = sensorList.size();
-            if (oldLength == newLength) {
+      /*     int newLength = sensorList.size();
+           if (oldLength == newLength) {
                 break;
             }
             listOfSensorSets.add(currentConstructingSensorSet);
+            */
         }
         //System.out.println("unused sensors: " + sensorList.size());
         return listOfSensorSets;
