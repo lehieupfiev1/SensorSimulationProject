@@ -13,7 +13,7 @@ import java.util.List;
  * @author sev_user
  */
 public class CoverageItem {
-    int id; // Id of Sensor
+     int id; // Id of Sensor
     List<Integer> listCoverage; // List target that sensor coverage 
 
     public CoverageItem() {

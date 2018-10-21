@@ -31,13 +31,15 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="70" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
               <Component id="CalculateButton" min="-2" pref="94" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="67" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="57" max="-2" attributes="0"/>
               <Component id="ShowButton" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="76" max="-2" attributes="0"/>
-              <Component id="DoneButton" min="-2" pref="89" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
+              <Component id="jButton1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
+              <Component id="DoneButton" min="-2" pref="89" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
           </Group>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
@@ -72,6 +74,7 @@
                   <Component id="CalculateButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="DoneButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="ShowButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -527,16 +530,16 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="ListEECCLabel" min="-2" pref="80" max="-2" attributes="0"/>
                               <Component id="listEECCScrollPane" min="-2" pref="224" max="-2" attributes="0"/>
+                              <Component id="ListSheduleLabel" min="-2" pref="152" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
                   <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="ListSensorResultLabel" min="-2" max="-2" attributes="0"/>
                       <Component id="TimeLifeLabel" min="-2" max="-2" attributes="0"/>
                       <Component id="listSensorScrollPane" alignment="0" min="-2" pref="199" max="-2" attributes="0"/>
+                      <Component id="ListSensorResultLabel" alignment="0" min="-2" pref="140" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="83" max="32767" attributes="0"/>
               </Group>
@@ -552,7 +555,7 @@
                   </Group>
                   <EmptySpace pref="12" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="ListEECCLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="ListSheduleLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="ListSensorResultLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -573,17 +576,20 @@
         </Component>
         <Component class="javax.swing.JLabel" name="TimeLifeLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Minimize time life : 0"/>
+            <Property name="text" type="java.lang.String" value="Total time life : 0"/>
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="listEECCScrollPane">
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
         </Container>
-        <Component class="javax.swing.JLabel" name="ListEECCLabel">
+        <Component class="javax.swing.JLabel" name="ListSheduleLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="List Target :0"/>
+            <Property name="text" type="java.lang.String" value="List Schedule :0"/>
           </Properties>
+          <AccessibilityProperties>
+            <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="List Schedule : 0"/>
+          </AccessibilityProperties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="listSensorScrollPane">
 
@@ -591,10 +597,21 @@
         </Container>
         <Component class="javax.swing.JLabel" name="ListSensorResultLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="List Path Y : 0"/>
+            <Property name="text" type="java.lang.String" value="List Path X : 0"/>
           </Properties>
+          <AccessibilityProperties>
+            <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="List Path X: 0"/>
+          </AccessibilityProperties>
         </Component>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JButton" name="jButton1">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="ShowAllPath"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ShowAllPathActionPerformed"/>
+      </Events>
+    </Component>
   </SubComponents>
 </Form>

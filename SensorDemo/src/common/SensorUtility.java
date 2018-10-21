@@ -55,6 +55,10 @@ public final class SensorUtility {
     public static double LifeTimeResult = 0;
     public static float mSaiso = 0.001f;
       
+    //Show All Path in Main
+    public static List<List<Integer>> mListPathSensor= new ArrayList<>();
+    public static List<List<Integer>> mListOfListTargetId = new ArrayList<>();
+    public static List<Integer> mListSinkId= new ArrayList<>();
     
     //Constant wuth sink
     public static float mRcValue = 40f;
@@ -71,7 +75,7 @@ public final class SensorUtility {
     public static float mGamma1 = 0.3f;
     public static float mGamma2 = 0.3f;
     public static int mKmax = 7;
-    public static float mUnitTime = 60000000;
+    public static float mUnitTime = 6000000;
     
     public static void writeFile(String filename) throws IOException {
         File file = new File(filename);

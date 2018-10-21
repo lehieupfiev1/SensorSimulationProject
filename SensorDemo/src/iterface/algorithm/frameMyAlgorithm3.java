@@ -7,6 +7,7 @@ package iterface.algorithm;
 
 import algorithm.MyAlgorithm3;
 import algorithm.MyAlgorithm3_v2;
+import algorithm.NDSTAlgorithm;
 import common.SensorUtility;
 import static common.SensorUtility.*;
 import static iterface.algorithm.frameAlgorithm3.ListSensor;
@@ -26,6 +27,7 @@ import model.PathItem;
 /**
  *
  * @author sev_user
+ * ---------------------------------------------------------NDST-----------------------------------------------
  */
 public class frameMyAlgorithm3 extends javax.swing.JFrame {
 
@@ -46,7 +48,8 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
                 if (!dataListTargetModel.isEmpty()) {
                     mListTargetIndex = mJListTarget.getSelectedIndex();
                     if (mListTargetIndex >= 0 && mListTargetIndex < mListofListPath.size()) {
-                        updateListPath(mListTargetIndex);
+                        //updateListPath(mListTargetIndex);
+                        updateListSchedulePath(mListTargetIndex);
                     }
                 }
         }
@@ -76,7 +79,7 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
         initOtherComponent();
         displayInput();
         clearData();
-        this.setTitle("NDST Algorithm");
+        this.setTitle("PALL-CAPS Algorithm");
     }
 
     private void initOtherComponent() {
@@ -121,7 +124,7 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
         //Result
         TimeRunningLabel.setText("Time Running : 0");
         TimeLifeLabel.setText("Total time life : 0");
-        ListEECCLabel.setText("List Target :0");
+        ListSheduleLabel.setText("List Target :0");
         ListSensorResultLabel.setText("List Sensor : 0");
      
     }
@@ -129,7 +132,7 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
     void clearData(){
         TimeRunningLabel.setText("Time Running : 0");
         TimeLifeLabel.setText("Total time life : 0");
-        ListEECCLabel.setText("List Target :0");
+        ListSheduleLabel.setText("List Target :0");
         ListSensorResultLabel.setText("List Sensor : 0");
         
         
@@ -148,6 +151,12 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
             minimumTime = listTotalTime.get(i).doubleValue();
         }
         TimeLifeLabel.setText("Minimize time life :  "+minimumTime);
+    }
+    
+    void displayResultAlgorithm() {
+        TimeRunningLabel.setText("Time Running : "+timeRun);
+
+        TimeLifeLabel.setText("Total time life :  "+LifeTimeResult);
     }
 
     public void updateListPath(int index) {
@@ -169,6 +178,23 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
         });
     }
     
+    public void updateListSchedulePath(int index) {
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                dataPathModel.clear();
+                ListSensorResultLabel.setText("List Path : 0");
+                if (index >= 0 && index < mListofListPath.size()) {
+                    List<PathItem> ListPath = mListofListPath.get(index);
+                    for (int i = 0; i < ListPath.size(); i++) {
+                        PathItem next = ListPath.get(i);
+                        ((DefaultListModel) mJListPath.getModel()).addElement(i + ". " + next.getString());
+                    }
+                    ListSensorResultLabel.setText("List Path : " + ListPath.size());
+                }
+            }
+        });
+    }
+    
     public void updateListTarget() {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -182,7 +208,26 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
                         ((DefaultListModel) mJListTarget.getModel()).addElement(i + ". id = "+i+"( "+targetNode.getX()+" , "+targetNode.getY()+" )" +"path=null");
                     }
                 }
-                ListEECCLabel.setText("List Target :"+ mListofListPath.size());
+                ListSheduleLabel.setText("List Target :"+ mListofListPath.size());
+            }
+        });
+
+    }
+    
+    public void updateListSchedule() {
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                dataListTargetModel.clear();
+                
+                for (int i = 0; i < mListofListPath.size(); i++) {
+                    
+                    if (mListofListPath.get(i).size() > 0) {
+                        ((DefaultListModel) mJListTarget.getModel()).addElement(i + ". id = " + i +" (NoPath: "+mListofListPath.get(i).size() +", TotalTime: " + mListofListTime.get(i) + ")");
+                    } else {
+                        ((DefaultListModel) mJListTarget.getModel()).addElement(i + ". id = "+i +" path=null");
+                    }
+                }
+                ListSheduleLabel.setText("List Schedule :"+ mListofListPath.size());
             }
         });
 
@@ -256,9 +301,10 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
         TimeRunningLabel = new javax.swing.JLabel();
         TimeLifeLabel = new javax.swing.JLabel();
         listEECCScrollPane = new javax.swing.JScrollPane();
-        ListEECCLabel = new javax.swing.JLabel();
+        ListSheduleLabel = new javax.swing.JLabel();
         listSensorScrollPane = new javax.swing.JScrollPane();
         ListSensorResultLabel = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         jRadioButton1.setText("jRadioButton1");
 
@@ -564,11 +610,11 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
 
         TimeRunningLabel.setText("Time Running : 0");
 
-        TimeLifeLabel.setText("Minimize time life : 0");
+        TimeLifeLabel.setText("Total time life : 0");
 
-        ListEECCLabel.setText("List Target :0");
+        ListSheduleLabel.setText("List Schedule :0");
 
-        ListSensorResultLabel.setText("List Path Y : 0");
+        ListSensorResultLabel.setText("List Path X : 0");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -582,13 +628,13 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(31, 31, 31)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(ListEECCLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(listEECCScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(listEECCScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ListSheduleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(29, 29, 29)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(ListSensorResultLabel)
                     .addComponent(TimeLifeLabel)
-                    .addComponent(listSensorScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(listSensorScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ListSensorResultLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(83, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -600,7 +646,7 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
                     .addComponent(TimeLifeLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(ListEECCLabel)
+                    .addComponent(ListSheduleLabel)
                     .addComponent(ListSensorResultLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -609,18 +655,30 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        ListSheduleLabel.getAccessibleContext().setAccessibleName("List Schedule : 0");
+        ListSensorResultLabel.getAccessibleContext().setAccessibleName("List Path X: 0");
+
+        jButton1.setText("ShowAllPath");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ShowAllPathActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(70, 70, 70)
+                .addGap(39, 39, 39)
                 .addComponent(CalculateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(67, 67, 67)
+                .addGap(57, 57, 57)
                 .addComponent(ShowButton)
-                .addGap(76, 76, 76)
+                .addGap(39, 39, 39)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(DoneButton, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(43, 43, 43))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -648,7 +706,8 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(CalculateButton)
                     .addComponent(DoneButton)
-                    .addComponent(ShowButton))
+                    .addComponent(ShowButton)
+                    .addComponent(jButton1))
                 .addContainerGap())
         );
 
@@ -664,7 +723,8 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
             //Algorithm2 mAlgorithm = new Algorithm2();
             TimeRunningLabel.setText("Time Running : ...");
             TimeLifeLabel.setText("Total time life : ...");
-            MyAlgorithm3 mAlgorithm = new MyAlgorithm3();
+            //MyAlgorithm3 mAlgorithm = new MyAlgorithm3();
+            NDSTAlgorithm mAlgorithm = new NDSTAlgorithm();
             Thread thread;
             thread = new Thread(new Runnable() {
                 @Override
@@ -674,9 +734,11 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
                     long end = System.currentTimeMillis();
                     timeRun = end-begin;
                     JOptionPane.showMessageDialog(null, "Run finished !");
-                    calculateTotalTime();
-                    updateListTarget();
-                    displayResult();
+                    updateListSchedule();
+                    displayResultAlgorithm();
+//                    calculateTotalTime();
+//                    updateListTarget();
+//                    displayResult();
                 }
             });
             thread.start();
@@ -774,11 +836,7 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
                 
                 PathItem path = mListofListPath.get(mListTargetIndex).get(mListPathIndex);
                 List<Integer> list = path.getPath();
-//                for (int i = 0; i < list.size(); i++) {
-//                    //Change Value On foreach Sensor
-//                    mListSensorNodes.get(list.get(i)).setStatus(1);
-//                   
-//                }
+
                 mPathSensor = path.getPath();
                 
                 
@@ -795,10 +853,19 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
                     }
                 }
                 
+                int firstSensor = list.get(0);
+                NodeItem sensingNode = mListSensorNodes.get(firstSensor);
+                int minTaget = -1;
+                for (int i = 0 ; i< mListTargetNodes.size();i++) {
+                    NodeItem targetNode = mListTargetNodes.get(i);
+                    float distance = SensorUtility.calculateDistance(sensingNode.getX(), sensingNode.getY(), targetNode.getX(), targetNode.getY());
+                    if (distance <= SensorUtility.mRsValue) minTaget = i;
+                }
+                
                 if (minSink != -1) {
                     frameCoordinateSystemPanel.SinkSelected = minSink;
                     frameCoordinateSystemPanel.isShowPathSelected = true;
-                    frameCoordinateSystemPanel.TargetSelected = mListTargetIndex;
+                    frameCoordinateSystemPanel.TargetSelected = minTaget;
                 }
 
             }
@@ -830,6 +897,60 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
         // TODO add your handling code here:
 
     }//GEN-LAST:event_EoValueTextFieldActionPerformed
+
+    private void ShowAllPathActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ShowAllPathActionPerformed
+        // TODO add your handling code here:
+         //Clear data
+        for (int j = 0; j < mListSensorNodes.size(); j++) {
+            mListSensorNodes.get(j).setStatus(0);
+        }
+        mListPathSensor.clear();
+        mListOfListTargetId.clear();
+        mListSinkId.clear();
+        if (mListTargetIndex >= 0 && mListTargetIndex < mListofListPath.size()) {
+            List<PathItem> ListPathItem = mListofListPath.get(mListTargetIndex);
+            
+            for (int i =0; i< ListPathItem.size(); i++) {
+                List<Integer> Path = ListPathItem.get(i).getPath();
+                mListPathSensor.add(Path);
+                  //Find List Of List target
+                int lastSensor = Path.get(Path.size()-1);
+                NodeItem sensorNode = mListSensorNodes.get(lastSensor);
+                float MinDistane = Float.MAX_VALUE;
+                int minSink = -1;
+                for (int j = 0 ; j< mListSinkNodes.size();j++) {
+                    NodeItem sinkNode = mListSinkNodes.get(j);
+                    float distance = SensorUtility.calculateDistance(sensorNode.getX(), sensorNode.getY(), sinkNode.getX(), sinkNode.getY());
+                    if (distance < MinDistane) {
+                        MinDistane = distance;
+                        if (MinDistane <= SensorUtility.mRcValue) minSink = j;
+                    }
+                }
+                mListSinkId.add(minSink);
+                  
+                  //Find list Sink Id
+                int firstSensor = Path.get(0);
+                NodeItem sensingNode = mListSensorNodes.get(firstSensor);
+                List<Integer> listTargetId = new ArrayList<>();
+                for (int j = 0 ; j< mListTargetNodes.size();j++) {
+                    NodeItem targetNode = mListTargetNodes.get(j);
+                    float distance = SensorUtility.calculateDistance(sensingNode.getX(), sensingNode.getY(), targetNode.getX(), targetNode.getY());
+                    if (distance <= SensorUtility.mRsValue) 
+                    {
+                        listTargetId.add(j);
+                    }
+                }
+                mListOfListTargetId.add(listTargetId);
+            }
+            
+            for (int i =0; i< mListOfListTargetId.size(); i++) {
+            	System.out.print(" "+mListOfListTargetId.get(i).get(0));
+            }
+            //Set enable 
+            frameCoordinateSystemPanel.isShowAllPathSelected = true;
+        }
+        coordinatePanel.refresh();
+    }//GEN-LAST:event_ShowAllPathActionPerformed
 
     /**
      * @param args the command line arguments
@@ -876,8 +997,8 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
     private javax.swing.JTextField ErValueTextField;
     private javax.swing.JTextField EsValueTextField;
     private javax.swing.JTextField EtValueTextField;
-    private javax.swing.JLabel ListEECCLabel;
     private javax.swing.JLabel ListSensorResultLabel;
+    private javax.swing.JLabel ListSheduleLabel;
     private javax.swing.JTextField MaxHopperTextField;
     private javax.swing.JLabel NumberSensorLabel;
     private javax.swing.JLabel NumberSinkLabel;
@@ -886,6 +1007,7 @@ public class frameMyAlgorithm3 extends javax.swing.JFrame {
     private javax.swing.JButton ShowButton;
     private javax.swing.JLabel TimeLifeLabel;
     private javax.swing.JLabel TimeRunningLabel;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

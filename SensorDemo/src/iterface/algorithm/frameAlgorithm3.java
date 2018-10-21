@@ -8,6 +8,7 @@ package iterface.algorithm;
 import algorithm.Algorithm3;
 import algorithm.Algorithm3_v1;
 import algorithm.Algorithm3_v2;
+import algorithm.EECCAlgorithm;
 import algorithm.TempAlgorithm;
 import common.SensorUtility;
 import static common.SensorUtility.*;
@@ -28,6 +29,7 @@ import model.NodeItem;
 /**
  *
  * @author Hieu
+ * ---------------------------------------------------------THUAT TOAN  EECC-----------------------------------------------
  */
 public class frameAlgorithm3 extends javax.swing.JFrame {
 
@@ -661,7 +663,8 @@ public class frameAlgorithm3 extends javax.swing.JFrame {
             //Algorithm2 mAlgorithm = new Algorithm2();
             TimeRunningLabel.setText("Time Running : ...");
             TimeLifeLabel.setText("Total time life : ...");
-            Algorithm3_v1 mAlgorithm = new Algorithm3_v1();
+            //Algorithm3_v1 mAlgorithm = new Algorithm3_v1();
+            EECCAlgorithm mAlgorithm = new EECCAlgorithm();
             Thread thread;
             thread = new Thread(new Runnable() {
                 @Override

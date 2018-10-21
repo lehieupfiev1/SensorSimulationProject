@@ -13,7 +13,9 @@ import java.util.List;
  * @author Hieu
  */
 public class CustomPathItem {
+   int id;
     List<Integer> listId;
+    List<Integer> listPositionId;
     PathItem pathItem;
     double time;
 
@@ -23,15 +25,58 @@ public class CustomPathItem {
     public CustomPathItem(PathItem pathItem) {
         this.pathItem = pathItem;
         listId = new ArrayList<>();
+        listPositionId = new ArrayList<>();
         time =0;
     }
 
     public CustomPathItem(List<Integer> listId, PathItem pathItem) {
         this.listId = listId;
         this.pathItem = pathItem;
+        listPositionId = new ArrayList<>();
         time =0;
     }
 
+    public CustomPathItem(int id, PathItem pathItem, double time) {
+        this.id = id;
+        this.pathItem = pathItem;
+        listPositionId = new ArrayList<>();
+        this.time = time;
+    }
+
+    public CustomPathItem(int id, List<Integer> listId, PathItem pathItem, double time) {
+        this.id = id;
+        this.listId = listId;
+        this.pathItem = pathItem;
+        listPositionId = new ArrayList<>();
+        this.time = time;
+    }
+
+    public CustomPathItem(int id, List<Integer> listId, List<Integer> listPositionId, PathItem pathItem, double time) {
+        this.id = id;
+        this.listId = listId;
+        this.listPositionId = listPositionId;
+        this.pathItem = pathItem;
+        this.time = time;
+    }
+    
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public List<Integer> getListPositionId() {
+        return listPositionId;
+    }
+
+    public void setListPositionId(List<Integer> listPositionId) {
+        this.listPositionId = listPositionId;
+    }
+    
+    
     public List<Integer> getListId() {
         return listId;
     }
@@ -56,4 +101,9 @@ public class CustomPathItem {
         this.time = time;
     }
     
+    public void addTime(double times) {
+        synchronized (this) {
+           this.time += times;
+        }
+    }
 }

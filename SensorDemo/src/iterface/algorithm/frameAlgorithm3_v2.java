@@ -6,6 +6,7 @@
 package iterface.algorithm;
 
 import algorithm.Algorithm3_v2;
+import algorithm.MCLCTAlgorithm;
 import common.SensorUtility;
 import static common.SensorUtility.mListSinkNodes;
 import static common.SensorUtility.*;
@@ -24,6 +25,7 @@ import model.NodeItem;
 /**
  *
  * @author sev_user
+ * ---------------------------------------------------------THUAT TOAN  MCLCT-----------------------------------------------
  */
 public class frameAlgorithm3_v2 extends javax.swing.JFrame {
 
@@ -731,7 +733,8 @@ public class frameAlgorithm3_v2 extends javax.swing.JFrame {
             //Algorithm2 mAlgorithm = new Algorithm2();
             TimeRunningLabel.setText("Time Running : ...");
             TimeLifeLabel.setText("Total time life : ...");
-            Algorithm3_v2 mAlgorithm = new Algorithm3_v2();
+            //Algorithm3_v2 mAlgorithm = new Algorithm3_v2();
+            MCLCTAlgorithm mAlgorithm = new MCLCTAlgorithm();
             Thread thread;
             thread = new Thread(new Runnable() {
                 @Override

@@ -163,6 +163,8 @@ public class frameMain extends javax.swing.JFrame {
         jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
         ShowAllPathMenuItem = new javax.swing.JCheckBoxMenuItem();
         showEnableSensorMenuItem = new javax.swing.JCheckBoxMenuItem();
+        ShowPathSelectMenuItem = new javax.swing.JCheckBoxMenuItem();
+        ShowAllPathSelectMenuItem = new javax.swing.JCheckBoxMenuItem();
         AlgorithmMenu = new javax.swing.JMenu();
         MyAlgorithmMenuItem = new javax.swing.JMenuItem();
         Algorithm1MenuItem = new javax.swing.JMenuItem();
@@ -404,6 +406,25 @@ public class frameMain extends javax.swing.JFrame {
         });
         ViewMenu.add(showEnableSensorMenuItem);
 
+        ShowPathSelectMenuItem.setSelected(true);
+        ShowPathSelectMenuItem.setText("Show Path Select");
+        ShowPathSelectMenuItem.setAutoscrolls(true);
+        ShowPathSelectMenuItem.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                showPathSelectStateChanged(evt);
+            }
+        });
+        ViewMenu.add(ShowPathSelectMenuItem);
+
+        ShowAllPathSelectMenuItem.setSelected(true);
+        ShowAllPathSelectMenuItem.setText("Show AllPath Select");
+        ShowAllPathSelectMenuItem.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                ShowAllPathSelect(evt);
+            }
+        });
+        ViewMenu.add(ShowAllPathSelectMenuItem);
+
         menuBar.add(ViewMenu);
 
         AlgorithmMenu.setText("Algorithm");
@@ -440,10 +461,10 @@ public class frameMain extends javax.swing.JFrame {
         });
         AlgorithmMenu.add(Algorithm2);
 
-        MyAlgorithm3MenuItem.setText("NDST Algorithm");
+        MyAlgorithm3MenuItem.setText("PALL-CAPS Algorithm");
         MyAlgorithm3MenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                MyAlgorithm3MenuItemActionPerformed(evt);
+                NDSTAlgorithmMenuItemActionPerformed(evt);
             }
         });
         AlgorithmMenu.add(MyAlgorithm3MenuItem);
@@ -451,7 +472,7 @@ public class frameMain extends javax.swing.JFrame {
         Algoritm3MenuItem.setText("EECC Algorithm");
         Algoritm3MenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Algoritm3MenuItemActionPerformed(evt);
+                EECCAlgorithmMenuItemActionPerformed(evt);
             }
         });
         AlgorithmMenu.add(Algoritm3MenuItem);
@@ -459,7 +480,7 @@ public class frameMain extends javax.swing.JFrame {
         Algorithm3_v2MenuItem.setText("MCLCT Algorithm");
         Algorithm3_v2MenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Algorithm3_v2MenuItemActionPerformed(evt);
+                MCLCTAlgorithmMenuItemActionPerformed(evt);
             }
         });
         AlgorithmMenu.add(Algorithm3_v2MenuItem);
@@ -830,19 +851,19 @@ public class frameMain extends javax.swing.JFrame {
         coordinatePanel.refresh();
     }//GEN-LAST:event_showSinkViewStateChanged
 
-    private void Algoritm3MenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Algoritm3MenuItemActionPerformed
+    private void EECCAlgorithmMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EECCAlgorithmMenuItemActionPerformed
         // TODO add your handling code here:
         frameAlgorithm3 mFrameAlgorithm = new frameAlgorithm3();
         mFrameAlgorithm.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         mFrameAlgorithm.setVisible(true);
-    }//GEN-LAST:event_Algoritm3MenuItemActionPerformed
+    }//GEN-LAST:event_EECCAlgorithmMenuItemActionPerformed
 
-    private void MyAlgorithm3MenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MyAlgorithm3MenuItemActionPerformed
+    private void NDSTAlgorithmMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NDSTAlgorithmMenuItemActionPerformed
         // TODO add your handling code here:
         frameMyAlgorithm3 mFrameAlgorithm = new frameMyAlgorithm3();
         mFrameAlgorithm.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         mFrameAlgorithm.setVisible(true);
-    }//GEN-LAST:event_MyAlgorithm3MenuItemActionPerformed
+    }//GEN-LAST:event_NDSTAlgorithmMenuItemActionPerformed
 //
 //    private void MyAlgorithm4MenuItemActionPerformed(ActionEvent e) {
 //        frameMyAlgorithm4 mFrameAlgorithm = new frameMyAlgorithm4();
@@ -867,12 +888,12 @@ public class frameMain extends javax.swing.JFrame {
         mFrameAlgorithm.setVisible(true);
     }//GEN-LAST:event_MyAlgorithm4MenuItemActionPerformed
 
-    private void Algorithm3_v2MenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Algorithm3_v2MenuItemActionPerformed
+    private void MCLCTAlgorithmMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MCLCTAlgorithmMenuItemActionPerformed
         // TODO add your handling code here:
         frameAlgorithm3_v2 mFrameAlgorithm = new frameAlgorithm3_v2();
         mFrameAlgorithm.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         mFrameAlgorithm.setVisible(true);
-    }//GEN-LAST:event_Algorithm3_v2MenuItemActionPerformed
+    }//GEN-LAST:event_MCLCTAlgorithmMenuItemActionPerformed
 
     private void showEnableSensorStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showEnableSensorStateChanged
         // TODO add your handling code here:
@@ -884,6 +905,28 @@ public class frameMain extends javax.swing.JFrame {
         }
         coordinatePanel.refresh();
     }//GEN-LAST:event_showEnableSensorStateChanged
+
+    private void showPathSelectStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showPathSelectStateChanged
+        // TODO add your handling code here:
+        int state = evt.getStateChange();
+        if (state == ItemEvent.SELECTED) {
+            coordinatePanel.setShowPathSelect(true);
+        } else {
+            coordinatePanel.setShowPathSelect(false);
+        }
+        coordinatePanel.refresh();
+    }//GEN-LAST:event_showPathSelectStateChanged
+
+    private void ShowAllPathSelect(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_ShowAllPathSelect
+        // TODO add your handling code here:
+        int state = evt.getStateChange();
+        if (state == ItemEvent.SELECTED) {
+            coordinatePanel.setShowAllPathSelect(true);
+        } else {
+            coordinatePanel.setShowAllPathSelect(false);
+        }
+        coordinatePanel.refresh();
+    }//GEN-LAST:event_ShowAllPathSelect
 
     public void saveFile() {
         JFileChooser chooser = new JFileChooser();
@@ -996,6 +1039,8 @@ public class frameMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem SaveFileMenuItem;
     private javax.swing.JMenu SensorMenu;
     private javax.swing.JCheckBoxMenuItem ShowAllPathMenuItem;
+    private javax.swing.JCheckBoxMenuItem ShowAllPathSelectMenuItem;
+    private javax.swing.JCheckBoxMenuItem ShowPathSelectMenuItem;
     private javax.swing.JMenu TargetMenu;
     private javax.swing.JMenu ViewMenu;
     private javax.swing.JMenuItem aboutMenuItem;

@@ -18,6 +18,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.ImageIcon;
@@ -47,9 +48,11 @@ public class frameCoordinateSystemPanel extends JPanel{
     static boolean isShowAllPath = false;
     static boolean isEnableSenor = false;
     public static boolean isShowPathSelected = false;
+    public static boolean isShowAllPathSelected = false;
     public static int TargetSelected;
     public static int SinkSelected;
     public static int offset = 1;
+  
     
     JPopupMenu popup;
     JMenuItem deleteSensorItem;
@@ -463,6 +466,17 @@ public class frameCoordinateSystemPanel extends JPanel{
         refresh();
     }
     
+    public void setShowPathSelect(boolean view) {
+        isShowPathSelected = view;
+        refresh();
+    }
+    
+    public void setShowAllPathSelect(boolean view) {
+        isShowAllPathSelected = view;
+        refresh();
+    }
+    
+    
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g); //To change body of generated methods, choose Tools | Templates.
@@ -509,7 +523,7 @@ public class frameCoordinateSystemPanel extends JPanel{
                         } else {
                             g.setColor(new Color(0, 0, 0, 0));
                         }
-                        g.drawOval(cellX -(int)(sizeRect*(SensorUtility.mRsValue-0.5)), cellY-(int)(sizeRect*(SensorUtility.mRsValue-0.5)), (int)(2*sizeRect*SensorUtility.mRsValue),(int)(2*sizeRect*SensorUtility.mRsValue));
+                        g.drawOval(cellX -(int)(sizeRect*(SensorUtility.mRcValue-0.5)), cellY-(int)(sizeRect*(SensorUtility.mRcValue-0.5)), (int)(2*sizeRect*SensorUtility.mRcValue),(int)(2*sizeRect*SensorUtility.mRcValue));
                     } else {
                         g.drawOval(cellX, cellY, sizeRect, sizeRect);
                     }   break;
@@ -554,9 +568,16 @@ public class frameCoordinateSystemPanel extends JPanel{
             if (SensorUtility.mPathSensor != null || !SensorUtility.mPathSensor.isEmpty()) {
                 paintPathFromTargetToSink(g, TargetSelected, SensorUtility.mPathSensor, SinkSelected);
             }
-            isShowPathSelected = false;
+            //isShowPathSelected = false;
         }
         
+        //Draw All Path
+        if (isShowAllPathSelected) {
+            if (SensorUtility.mListPathSensor != null || !SensorUtility.mListPathSensor.isEmpty()) {
+                paintAllPathOfListPath(g, SensorUtility.mListOfListTargetId, SensorUtility.mListPathSensor, SensorUtility.mListSinkId);
+            }
+            //isShowAllPathSelected = false;
+        }
     }
     public void fillCell(int x, int y, int type) {
         mListNodes.add(new NodeItem(x, y, type));
@@ -592,6 +613,9 @@ public class frameCoordinateSystemPanel extends JPanel{
     
     public void setShowAllPath(boolean view) {
         isShowAllPath = view;
+        if (view == false) {
+        	isShowAllPathSelected = false;
+        }
         refresh();
     }
     
@@ -646,6 +670,26 @@ public class frameCoordinateSystemPanel extends JPanel{
          
          
      }
+     
+    public void paintAllPathOfListPath(Graphics g, List<List<Integer>> ListofListTargetId, List<List<Integer>> ListOfListPathSensor , List<Integer> ListSinkId) {
+       //Check TH FAIL
+       if (ListofListTargetId == null || ListSinkId == null || ListOfListPathSensor == null ) return;
+       if (ListofListTargetId.size() != ListOfListPathSensor.size() || ListOfListPathSensor.size() != ListSinkId.size()) return;
+       System.out.println();
+       //Vong lap voi tung path Sensor
+       for (int i =0 ; i<ListOfListPathSensor.size(); i++) {
+           List<Integer> PathSensor = ListOfListPathSensor.get(i);
+           List<Integer> ListTargetId = ListofListTargetId.get(i);
+           int sinkId = ListSinkId.get(i);
+           for (int j =0; j < ListTargetId.size(); j++) {
+               int targetId = ListTargetId.get(j);
+               System.out.print(" "+targetId);
+               paintPathFromTargetToSink(g,targetId,PathSensor,sinkId);
+           }
+           
+       }
+        
+    }
     
     public void paintPathFromTargetToSink(Graphics g, int targetId, List<Integer> listPathSensor,int sinkId) {
         if (listPathSensor.isEmpty()) return;
@@ -659,17 +703,20 @@ public class frameCoordinateSystemPanel extends JPanel{
         g.drawLine(getPX(targetNode.getX()), getPY(targetNode.getY()), getPX(senSorNode.getX()), getPY(senSorNode.getY()));
         
         //Noi cac sensor voi nhau
-        
-        for (int i =1 ; i< listPathSensor.size();i++) {
-            NodeItem senSorNodeNext = mListSensorNodes.get(listPathSensor.get(i));
-            g.drawLine(getPX(senSorNode.getX()), getPY(senSorNode.getY()), getPX(senSorNodeNext.getX()), getPY(senSorNodeNext.getY()));
-            
-            senSorNode = mListSensorNodes.get(listPathSensor.get(i));
-            senSorNodeNext = null;
-            
-        }
+		if (listPathSensor.size() >= 2) {
+			for (int i = 1; i < listPathSensor.size(); i++) {
+				NodeItem senSorNodeNext = mListSensorNodes.get(listPathSensor.get(i));
+				g.drawLine(getPX(senSorNode.getX()), getPY(senSorNode.getY()), getPX(senSorNodeNext.getX()),
+						getPY(senSorNodeNext.getY()));
+
+				senSorNode = mListSensorNodes.get(listPathSensor.get(i));
+				senSorNodeNext = null;
+
+			}
+		}
         
         //Noi Sensor voi Sink
+		senSorNode = mListSensorNodes.get(listPathSensor.get(listPathSensor.size()-1));
         g.drawLine(getPX(senSorNode.getX()), getPY(senSorNode.getY()), getPX(sinkNode.getX()), getPY(sinkNode.getY()));
         
     }
